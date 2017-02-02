@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\common\base;
+namespace api\common\base;
 
 /**
  * Created by PhpStorm.

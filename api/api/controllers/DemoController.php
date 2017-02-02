@@ -6,16 +6,21 @@
  * Time: 下午1:39
  */
 
-namespace frontend\controllers;
+namespace api\controllers;
 
 
-use frontend\common\base\Controller;
+use api\common\base\Controller;
 
 class DemoController extends Controller
 {
     public function actionIndex()
     {
-        return ['name' => '12'];
+        return ['hello world!'];
+    }
+
+    public function actionError()
+    {
+        echo  1; die;
     }
 
 }

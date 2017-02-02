@@ -7,10 +7,10 @@ $params = array_merge(
 );
 
 return [
-    'id' => 'app-pc',
+    'id' => 'api-pc',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
-    'controllerNamespace' => 'frontend\controllers',
+    'controllerNamespace' => 'api\controllers',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-pc',
@@ -36,9 +36,9 @@ return [
                 ],
             ],
         ],
-//        'errorHandler' => [
-//            'errorAction' => 'site/error',
-//        ],
+        'errorHandler' => [
+            'errorAction' => 'demo/error',
+        ],
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
