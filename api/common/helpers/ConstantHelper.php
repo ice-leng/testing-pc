@@ -10,5 +10,7 @@ namespace common\helpers;
  */
 class ConstantHelper
 {
+    // 没有删除
+    CONST NOT_DELETE = 0;
 
 }

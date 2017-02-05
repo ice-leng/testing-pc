@@ -18,4 +18,5 @@ class Controller extends \yii\rest\Controller
         $behaviors['contentNegotiator']['formats'] = ['application/json' => Response::FORMAT_JSON];
         return $behaviors;
     }
+
 }

@@ -7,16 +7,36 @@ $params = array_merge(
 );
 
 return [
-    'id' => 'api-pc',
+    'id' => 'app-api',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'api\controllers',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-pc',
+            'csrfCookie' => [
+                'httpOnly' => true,
+                'path' => '/api',
+            ],
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
             ]
+        ],
+        'response' => [
+            'class' => 'yii\web\Response',
+            'on beforeSend' => function ($event) {
+                $response = $event->sender;
+                if ($response->data !== null) {
+                    $data = $response->data;
+                    $code = \api\common\helpers\CodeHelper::SYS_SUCCESS;
+                    $response->data = [
+                        'code' => isset($data['code']) ? $data['code'] : $code,
+                        'message' => isset($data['message']) ? $data['message'] : \api\common\helpers\CodeHelper::getCodeText($code),
+                    ];
+                    if( $response->data['code'] == 0 ) $response->data['data'] = $data;
+                    $response->statusCode = 200;
+                }
+            },
         ],
         'user' => [
             'identityClass' => 'common\models\User',
@@ -25,7 +45,7 @@ return [
         ],
         'session' => [
             // this is the name of the session cookie used for login on the frontend
-            'name' => 'tester-pc',
+            'name' => '_tester-api',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
