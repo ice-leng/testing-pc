@@ -24,7 +24,7 @@ class Controller extends \common\base\Controller
      */
     public function invalidParamException($code, $message = '')
     {
-        if( $message == '' ) $message = CodeHelper::class;
+        if( $message == '' ) $message = CodeHelper::getCodeText($code);
         ApiHelper::invalidParamException($code, $message);
     }
 
@@ -38,6 +38,7 @@ class Controller extends \common\base\Controller
      */
     public function invalidFormException($code, $message = '')
     {
+        if( $message == '' ) $message = CodeHelper::getCodeText($code);
         ApiHelper::invalidFormException($code, $message);
     }
 
