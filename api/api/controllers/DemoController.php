@@ -9,12 +9,22 @@
 namespace api\controllers;
 
 use api\common\base\Controller;
-use yii\web\NotFoundHttpException;
+use business\demo\DemoInterface;
 
 class DemoController extends Controller
 {
+
+    private $_demo;
+
+    public function __construct($id, \yii\base\Module $module, DemoInterface $demo, array $config = [])
+    {
+        $this->_demo = $demo;
+        parent::__construct($id, $module, $config);
+    }
+
+
     public function actionIndex()
     {
-        return ['msg'=>'hello world!'];
+        return $this->_demo->getData();
     }
 }

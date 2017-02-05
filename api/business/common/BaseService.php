@@ -1,18 +1,19 @@
 <?php
-
-namespace api\common\base;
-
-use api\common\helpers\ApiHelper;
-use api\common\helpers\CodeHelper;
-use yii\web\BadRequestHttpException;
-
 /**
  * Created by PhpStorm.
  * User: lengbin
- * Date: 2017/2/2
- * Time: 下午1:41
+ * Date: 2017/2/5
+ * Time: 下午6:31
  */
-class Controller extends \common\base\Controller
+
+namespace business\common;
+
+
+use common\helpers\BaseHelper;
+use common\helpers\CodeHelper;
+use yii\web\BadRequestHttpException;
+
+class BaseService
 {
 
     /**
@@ -28,7 +29,7 @@ class Controller extends \common\base\Controller
         if ($message == '') {
             $message = CodeHelper::getCodeText($code);
         }
-        ApiHelper::invalidParamException($code, $message);
+        BaseHelper::invalidParamException($code, $message);
     }
 
     /**
@@ -44,7 +45,7 @@ class Controller extends \common\base\Controller
         if ($message == '') {
             $message = CodeHelper::getCodeText($code);
         }
-        ApiHelper::invalidFormException($code, $message);
+        BaseHelper::invalidFormException($code, $message);
     }
 
 }

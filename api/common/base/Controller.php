@@ -12,6 +12,12 @@ use yii\web\Response;
  */
 class Controller extends \yii\rest\Controller
 {
+
+    public function __construct($id, $module, array $config = [])
+    {
+        parent::__construct($id, $module, $config);
+    }
+
     public function behaviors()
     {
         $behaviors = parent::behaviors();
