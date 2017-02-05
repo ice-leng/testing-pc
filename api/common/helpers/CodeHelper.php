@@ -46,7 +46,6 @@ class CodeHelper
     CONST SYS_SUCCESS = 0;
     CONST SYS_PARAMS_ERROR = 1;
     CONST SYS_FORM_ERROR = 2;
-    CONST SYS_NOT_FOUND = 404;
     /** 系统 **/
 
     /**--------------code 常量-------------------**/
@@ -74,7 +73,6 @@ class CodeHelper
             self::SYS_SUCCESS      => 'Success',
             self::SYS_PARAMS_ERROR => '请求参数错误',
             self::SYS_FORM_ERROR   => '请求表单参数错误',
-            self::SYS_NOT_FOUND    => 'Not Found',
             /** 系统 **/
             /** 项目 **/
 

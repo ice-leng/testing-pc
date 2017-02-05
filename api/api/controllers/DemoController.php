@@ -9,21 +9,12 @@
 namespace api\controllers;
 
 use api\common\base\Controller;
-use api\common\helpers\CodeHelper;
+use yii\web\NotFoundHttpException;
 
 class DemoController extends Controller
 {
     public function actionIndex()
     {
-        return ['hello world!'];
+        return ['msg'=>'hello world!'];
     }
-
-    public function actionError()
-    {
-        return [
-            'code'    => CodeHelper::SYS_NOT_FOUND,
-            'message' => CodeHelper::getCodeText(CodeHelper::SYS_NOT_FOUND),
-        ];
-    }
-
 }

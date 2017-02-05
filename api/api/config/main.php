@@ -28,15 +28,19 @@ return [
                 $response = $event->sender;
                 if ($response->data !== null) {
                     $data = $response->data;
-                    $code = \api\common\helpers\CodeHelper::SYS_SUCCESS;
-                    $response->data = [
-                        'code' => isset($data['code']) ? $data['code'] : $code,
-                        'message' => isset($data['message']) ? $data['message'] : \api\common\helpers\CodeHelper::getCodeText($code),
-                    ];
-                    if( $response->data['code'] == 0 ) $response->data['data'] = $data;
+                    //当抛出异常时，返回数据为string, 数据需要过滤掉
+                    if( is_array($data) ){
+                        $code = \api\common\helpers\CodeHelper::SYS_SUCCESS;
+                        $response->data = [
+                            'code' => isset($data['code']) ? $data['code'] : $code,
+                            'message' => isset($data['message']) ? $data['message'] : \api\common\helpers\CodeHelper::getCodeText($code),
+                        ];
+                        if( $response->data['code'] == 0 ) $response->data['data'] = $data;
+                    }
+                    // http 请求 全部为 200 请求通过。
                     $response->statusCode = 200;
                 }
-            },
+            }
         ],
         'user' => [
             'identityClass' => 'common\models\User',
@@ -57,7 +61,8 @@ return [
             ],
         ],
         'errorHandler' => [
-            'errorAction' => 'demo/error',
+//            'errorAction' => 'demo/error',
+            'class'=>'common\base\ErrorHandler',
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,
