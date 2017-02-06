@@ -8,6 +8,7 @@
 
 $impls = [
     \business\demo\impl\DemoImpl::class,
+    \business\project\impl\ProjectImpl::class,
 ];
 
 
