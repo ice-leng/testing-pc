@@ -25,4 +25,20 @@ class Controller extends \yii\rest\Controller
         return $behaviors;
     }
 
+    // pages 处理
+    protected function getList(array $result, array $params = [])
+    {
+        $page = $result['pages'];
+        $offset = isset($_GET['page']) ? $_GET['page'] : '1';
+        $totalPage = ceil($page->totalCount / $page->pageSize);
+        $list = ($totalPage >= $offset) ? $result['models'] : [];
+        return array_merge($params, [
+            'list'        => $list,
+            'currentPage' => $offset,
+            'pageSize'    => $page->pageSize,
+            'totalPage'   => $totalPage,
+            'totalCount'  => $page->totalCount,
+        ]);
+    }
+
 }

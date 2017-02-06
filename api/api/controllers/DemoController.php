@@ -22,9 +22,23 @@ class DemoController extends Controller
         parent::__construct($id, $module, $config);
     }
 
+    public function actionValidate()
+    {
+        return $this->_demo->getDemoValidate();
+    }
 
     public function actionIndex()
     {
-        return $this->_demo->getData();
+        return $this->getList($this->_demo->getDemoList());
     }
+
+    public function actionUpdate()
+    {
+        $params = [
+            'name' => '123ss',
+        ];
+        $this->_demo->updateDemo($params);
+        return [];
+    }
+
 }

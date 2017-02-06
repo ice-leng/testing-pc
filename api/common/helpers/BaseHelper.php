@@ -9,6 +9,7 @@
 namespace common\helpers;
 
 
+use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
 
 class BaseHelper
@@ -22,6 +23,7 @@ class BaseHelper
      */
     public static function invalidParamException($code, $message)
     {
+        if( is_array( $message ) ) $message = Json::encode($message);
         throw new BadRequestHttpException($message, $code);
     }
 
@@ -35,6 +37,7 @@ class BaseHelper
      */
     public static function invalidFormException($code, $message)
     {
+        if( is_array( $message ) ) $message = Json::encode($message);
         throw new BadRequestHttpException($message, $code);
     }
 }

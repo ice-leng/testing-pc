@@ -11,6 +11,7 @@ namespace business\common;
 
 use common\helpers\BaseHelper;
 use common\helpers\CodeHelper;
+use common\helpers\CreateFromValidate;
 use yii\web\BadRequestHttpException;
 
 class BaseService
@@ -46,6 +47,27 @@ class BaseService
             $message = CodeHelper::getCodeText($code);
         }
         BaseHelper::invalidFormException($code, $message);
+    }
+
+    /**
+     * 创建表单验证规则
+     *
+     * @param ActiveRecord $activeRecord
+     * @param array        $params
+     * @param string       $scenario 场景
+     *
+     * @return mixed
+     *
+     * @auth ice.leng(lengbin@geridge.com)
+     * @issue
+     */
+    public function createFromValidate(ActiveRecord $activeRecord, array $params = [], $scenario = '')
+    {
+        if( !empty($scenario) ){
+            $activeRecord->scenario = $scenario;
+        }
+        $data = new CreateFromValidate( $activeRecord, $params);
+        return $data->createValidate();
     }
 
 }
