@@ -7,14 +7,14 @@
  */
 
 $impls = [
-    \business\demo\impl\DemoImpl::class,
-    \business\project\impl\ProjectImpl::class,
+    'Demo.Demo' => \business\demo\impl\DemoImpl::class,
+    'Project.Project' => \business\project\impl\ProjectImpl::class,
 ];
 
 
-foreach( $impls as $impl ){
+foreach( $impls as $name => $impl ){
     $interfaces = class_implements($impl);
-    Yii::$container->set($impl, $impl);
+    Yii::$container->set($name, $impl);
     foreach( $interfaces as $interface){
         Yii::$container->set($interface, ['class' => $impl]);
     }
