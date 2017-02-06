@@ -34,7 +34,7 @@ class ErrorHandler extends \yii\web\ErrorHandler
                 if ($response->data !== null) {
                     $data = $response->data;
                     //当抛出异常时，返回数据为string, 数据需要过滤掉
-                    if( is_array($data) || $response->format == 'json' ){
+                    if( is_array($data) || ( $response->format == 'json' && count( json_decode($data, true) ) == 1 ) ){
                         $code = \api\common\helpers\CodeHelper::SYS_SUCCESS;
                         $response->data = [
                             'code' => isset($data['code']) ? $data['code'] : $code,
