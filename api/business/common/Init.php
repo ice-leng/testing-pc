@@ -14,6 +14,7 @@
 class Init
 {
 
+
     /**
      * 文件读取
      *
@@ -64,10 +65,11 @@ class Init
         // 先从 di  读取， 如果没有 读取缓存， 还是没有，读取文件
         $impls = require 'map/di.php';
         if( empty( $impls ) ){
-            $impls = self::_cacheService()->get('_common_cache_di');
+            $diKey = \common\helpers\ConstantHelper::COMMON_CACHE_DI;
+            $impls = self::_cacheService()->get($diKey);
             if( empty( $impls ) ) {
                 $impls = self::getFileNames(['impl']);
-                self::_cacheService()->set('_common_cache_di', $impls);
+                self::_cacheService()->set($diKey, $impls);
             }
         }
         foreach( $impls as $impl ){
