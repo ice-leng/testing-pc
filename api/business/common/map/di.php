@@ -7,8 +7,8 @@
  */
 
 return [
-    'Demo.Demo' => \business\demo\impl\DemoImpl::className(),
-    'Project.Project' => \business\project\impl\ProjectImpl::class,
+    \business\demo\impl\DemoImpl::class,
+    \business\project\impl\ProjectImpl::class,
 ];
 
 

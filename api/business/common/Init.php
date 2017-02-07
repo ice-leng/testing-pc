@@ -63,16 +63,16 @@ class Init
     {
         // 先从 di  读取， 如果没有 读取缓存， 还是没有，读取文件
         $impls = require 'map/di.php';
-        if( !empty( $impls ) ){
+        if( empty( $impls ) ){
             $impls = self::_cacheService()->get('_common_cache_di');
             if( empty( $impls ) ) {
                 $impls = self::getFileNames(['impl']);
                 self::_cacheService()->set('_common_cache_di', $impls);
             }
         }
-        foreach( $impls as $name => $impl ){
+        foreach( $impls as $impl ){
             $interfaces = class_implements($impl);
-            \Yii::$container->set($name, $impl);
+            \Yii::$container->set($impl, $impl);
             foreach( $interfaces as $interface){
                 \Yii::$container->set($interface, ['class' => $impl]);
             }
