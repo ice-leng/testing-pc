@@ -10,5 +10,11 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        // 全局缓存
+        'commonCache'=>[
+            'class' => 'yii\caching\FileCache',
+            'cachePath'=>'@common/cache'
+        ],
+
     ],
 ];
