@@ -106,19 +106,20 @@ class ActiveRecord extends \yii\db\ActiveRecord
     }
 
     /**
-     * 重构 getAttributes 方法， 如果返回值是空， 则不返回
-     * @param null  $names
-     * @param array $except
+     * 重构 save 方法，如果保存有错误，跑出错误
      *
-     * @return array
+     * @param bool $runValidation
+     * @param null $attributeNames
+     *
+     * @return bool
      */
-    public function getAttributes($names = null, $except = [])
+    public function save($runValidation = true, $attributeNames = null)
     {
-        $values = parent::getAttributes($names, $except);
-        foreach( $values as $name => $value ){
-            if( empty( $value ) ) unset( $values[$name] );
+        $row = parent::save($runValidation, $attributeNames);
+        if( !$this->validate() ){
+            $this->invalidFormException( $this->getFirstErrors() );
         }
-        return $values;
+        return $row;
     }
 
 

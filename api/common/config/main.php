@@ -1,6 +1,6 @@
 <?php
 
-require(__DIR__ . '/../../business/common/di.php');
+require(__DIR__ . '/../../business/common/Init.php');
 
 return [
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',

@@ -90,16 +90,13 @@ class Demo extends \business\common\ActiveRecord
      */
     public function updateDemo(array $params)
     {
-        $mode = new Demo();
-        $mode->setAttributes($params);
-        if( !$mode->validate() ) $this->invalidFormException( $mode->getErrors() );
-        if( $mode->id > 0 ){
-            $demo = $this->getDemoById($mode->id);
+        if( isset($params['id']) && !empty( $params['id'] ) ){
+            $demo = $this->getDemoById($params['id']);
             if( empty($demo) ) $this->invalidParamException('id不存在');
-            $demo->setAttributes($mode->getAttributes());
         }else{
-            $demo = $mode;
+            $demo = new Demo();
         }
+        $demo->setAttributes($params);
         $demo->save();
         return $demo;
     }

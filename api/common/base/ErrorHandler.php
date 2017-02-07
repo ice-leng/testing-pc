@@ -27,7 +27,7 @@ class ErrorHandler extends \yii\web\ErrorHandler
      * 由于我使用的是api接口，所以将 返回改为 json 数据
      *
      * 返回配置参数
-     * 'response' => [
+        'response' => [
             'class' => 'yii\web\Response',
             'on beforeSend' => function ($event) {
                 $response = $event->sender;
@@ -36,9 +36,15 @@ class ErrorHandler extends \yii\web\ErrorHandler
                     //当抛出异常时，返回数据为string, 数据需要过滤掉
                     if( is_array($data) || ( $response->format == 'json' && count( json_decode($data, true) ) == 1 ) ){
                         $code = \api\common\helpers\CodeHelper::SYS_SUCCESS;
+                        // message 默认为 系统定义
+                        // 当系统存在message 时， 如果数据传输过来是 json字符串，输出是转为json
+                        $message = \api\common\helpers\CodeHelper::getCodeText($code);
+                        if( isset($data['message']) && !empty( $data['message'] ) ){
+                            $message = json_decode($data['message']) == null ? $data['message'] : json_decode($data['message']);
+                        }
                         $response->data = [
                             'code' => isset($data['code']) ? $data['code'] : $code,
-                            'message' => isset($data['message']) ? $data['message'] : \api\common\helpers\CodeHelper::getCodeText($code),
+                            'message' => $message,
                         ];
                         if( $response->data['code'] == 0 ) $response->data['data'] = $data;
                     }
