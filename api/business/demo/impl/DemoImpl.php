@@ -18,9 +18,10 @@ class DemoImpl extends BaseService implements DemoInterface
 
     private $_demo;
 
-    public function __construct()
+    public function __construct(array $config = [])
     {
         $this->_demo = new Demo();
+        parent::__construct($config);
     }
 
     /**
@@ -33,6 +34,9 @@ class DemoImpl extends BaseService implements DemoInterface
      */
     public function getDemoList()
     {
+
+        $this->triggerService(self::EVENT_BEFORE_LIST, ['传入数据1','传入数据2']);
+        echo '外面实现类数据：';
         return $this->_demo->getDemoList();
     }
 

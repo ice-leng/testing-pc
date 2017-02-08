@@ -12,6 +12,9 @@ namespace business\demo;
 
 interface DemoInterface
 {
+
+    CONST EVENT_BEFORE_LIST = 'before_list';
+
     /**
      * 获得demo列表
      *

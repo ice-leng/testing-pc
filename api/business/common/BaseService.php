@@ -12,9 +12,11 @@ namespace business\common;
 use common\helpers\BaseHelper;
 use common\helpers\CodeHelper;
 use common\helpers\CreateFromValidate;
+use yii\base\Component;
+use yii\base\Event;
 use yii\web\BadRequestHttpException;
 
-class BaseService
+class BaseService extends Component
 {
 
     /**
@@ -68,6 +70,52 @@ class BaseService
         }
         $data = new CreateFromValidate( $activeRecord, $params);
         return $data->createValidate();
+    }
+
+    /**
+     *
+     * 设置 事件绑定
+     *
+     * @param string $event 事件名称/命名空间
+     */
+    public function setEvents($event){
+        if( empty($event) ) return;
+        $status = false;
+        // 检测 当前事件是否是 EventInterface 接口实现的
+        $interfaces = class_implements($event);
+        foreach ( $interfaces as $interface ){
+            if( $interface == EventInterface::class  ) {
+                $status = true;
+                break;
+            }
+        }
+        if( $status == false ) return;
+        // 绑定事件
+        $binds = call_user_func([ $event, 'triggers' ]);
+        foreach ( $binds as $bind ){
+            foreach ( $bind as $name => $fn ){
+                ServerEvent::on($this->className(), $name, [\Yii::createObject($event), $fn]);
+            }
+        }
+    }
+
+    /**
+     * 触发
+     * @param string        $name   触发名称
+     * @param Event | array $params 事件  /  参数
+     *
+     * @return Event
+     */
+    public function triggerService($name, $params)
+    {
+        if( !$params instanceof ServerEvent){
+            $event = new ServerEvent();
+            $event->setParams($params);
+        }else{
+            $event = $params;
+        }
+        $this->trigger($name, $event);
+        return $event;
     }
 
 }

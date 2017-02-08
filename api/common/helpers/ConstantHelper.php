@@ -12,6 +12,7 @@ class ConstantHelper
 {
     // cache
     CONST COMMON_CACHE_DI = '_common_cache_di';
+    CONST COMMON_CACHE_EVENT = '_common_cache_event';
     // cache
 
     // 没有删除
