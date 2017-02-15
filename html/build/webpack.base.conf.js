@@ -11,14 +11,17 @@ var cssSourceMapProd = (env === 'production' && config.build.productionSourceMap
 var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
 
 // 别名， 自定义别名
-var alias = {'vue$': 'vue/dist/vue.common.js', 'src': path.resolve(__dirname, '../src')};
+var alias = {
+    'vue$': 'vue/dist/vue.common.js',
+    'src': path.resolve(__dirname, '../src'),
+    'routers' : path.resolve(__dirname, '../configs/routers')
+};
 var customAlias = [
     'assets',
     'components',
     'configs',
     'filters',
     'requests',
-    'routers',
     'sessions',
     'views'
 ];
