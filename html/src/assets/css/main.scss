@@ -45,3 +45,13 @@ $content-top: 60px;
   }
 }
 
+.clearfix {
+  &:after {
+    content: ' ';
+    display: block;
+    clear: both;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+  }
+}

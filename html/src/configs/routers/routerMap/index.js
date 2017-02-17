@@ -10,6 +10,7 @@ const routers = [{
     text: '项目',
     name: 'project',
     children: projectMap,
+    redirect: '/project',
     component: resolve => {
         require(['views/layout/main'], resolve);
     }
