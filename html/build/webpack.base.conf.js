@@ -14,7 +14,7 @@ var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
 var alias = {
     'vue$': 'vue/dist/vue.common.js',
     'src': path.resolve(__dirname, '../src'),
-    'routers' : path.resolve(__dirname, '../configs/routers')
+    'routers': path.resolve(__dirname, '../src/configs/routers')
 };
 var customAlias = [
     'assets',

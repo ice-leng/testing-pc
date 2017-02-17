@@ -9,7 +9,7 @@ import RouterMap from './routerMap/index';
 Vue.use(VueRouter);
 
 const router = new VueRouter({
-    routes : RouterMap
+    routes: RouterMap
 });
 
 export default router;

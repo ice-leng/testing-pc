@@ -4,11 +4,3 @@
 
 import Vue from 'vue';
 
-let filters = [
-
-];
-
-for( let i = 0; i < filters.length; i++ ){
-    let filter = filters[i];
-
-}
