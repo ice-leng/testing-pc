@@ -21,7 +21,7 @@ var customAlias = [
     'components',
     'configs',
     'filters',
-    'requests',
+    'ajax',
     'sessions',
     'views'
 ];

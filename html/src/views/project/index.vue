@@ -1,5 +1,5 @@
 <template>
-    <div class="project-div" >
+    <div class="project-div">
         <div class="add">
             <el-button type="primary">添加</el-button>
         </div>
@@ -11,7 +11,7 @@
                         <span>好吃的汉堡</span>
                         <div class="bottom clearfix">
 
-                            <template >
+                            <template>
                                 <el-row>
                                     <el-col :span="6">
                                         xxxxx
@@ -59,13 +59,21 @@
 </style>
 
 <script>
+    import projectAjax from 'ajax/projectAjax';
+
     export default {
         data() {
             return {
                 list: [
                     {name: 'xx'}
-                ]
+                ],
+                demo: []
             };
+        },
+        created() {
+            projectAjax.demoList().then((data) => {
+                console.log(data);
+            });
         }
     };
 </script>

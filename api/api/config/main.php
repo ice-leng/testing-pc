@@ -45,6 +45,12 @@ return [
                     }
                     // http 请求 全部为 200 请求通过。
                     $response->statusCode = 200;
+                    // 设置 跨域问题
+                    $response->headers->add('Access-Control-Allow-Origin',Yii::$app->request->headers->get('Origin'));
+                    $response->headers->set('Access-Control-Allow-Credentials','true');
+                    $response->headers->set("Access-Control-Allow-Headers","Content-Type,X-Requested-With,Accept");
+                    $response->headers->set("Access-Control-Allow-Methods","GET,POST");
+                    $response->headers->set("Access-Control-Request-Methods","GET,POST");
                 }
             }
         ],

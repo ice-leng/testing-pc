@@ -8,8 +8,10 @@ import Routers from 'routers/index';
 import Sessions from 'sessions/index';
 import 'assets/css/reset.scss';
 import 'assets/css/main.scss';
+import VueResource from 'vue-resource';
 
 Vue.use(ElementUI);
+Vue.use(VueResource);
 
 /* eslint-disable no-new */
 new Vue({
