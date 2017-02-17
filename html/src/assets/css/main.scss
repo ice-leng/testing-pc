@@ -1,0 +1,47 @@
+html, body {
+  height: 100%;
+}
+
+.mgb0 {
+  margin-bottom: 0 !important;
+}
+
+#app, .content {
+  height: 100%;
+}
+
+$content-top: 60px;
+
+.content-row {
+  top: $content-top;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  overflow: hidden;
+}
+
+.content {
+  .top {
+    background: #58B7FF;
+    min-height: $content-top;
+  }
+  .nav-menu {
+    background: #eef1f6;
+    height: 100%;
+    width: 120px;
+  }
+  .main {
+
+  }
+  .content-left {
+    height: 100%
+  }
+  .content-right {
+    position: absolute;
+    left: 130px;
+    right: 10px;
+    top: 10px;
+  }
+}
+

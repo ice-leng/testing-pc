@@ -5,8 +5,9 @@ import App from './views/App';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-default/index.css';
 import Routers from 'routers/index';
-import 'assets/css/reset.scss';
 import Sessions from 'sessions/index';
+import 'assets/css/reset.scss';
+import 'assets/css/main.scss';
 
 Vue.use(ElementUI);
 

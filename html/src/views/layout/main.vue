@@ -1,23 +1,25 @@
 <template>
-    <el-row>
-        <el-col :span="24">
-            <div class="grid-content bg-purple-dark">
-                <div>测试文子</div>
+    <div class="content">
+        <el-row class="mgb0">
+            <el-col :span="24">
+                <div class="top">
+                    <div>测试文子</div>
+                </div>
+            </el-col>
+        </el-row>
+        <div class="content-row">
+            <div class="content-left">
+                <div class="nav-menu">
+                    <v-menu :type="getType()"></v-menu>
+                </div>
             </div>
-        </el-col>
-        <el-col :span="4">
-            <div class="grid-content bg-purple-dark">
-                <v-menu :type="getType()"></v-menu>
+            <div class="content-right">
+                <div class="main">
+                    <router-view></router-view>
+                </div>
             </div>
-        </el-col>
-
-        <el-col :span="20">
-            <div class="main">
-                <router-view></router-view>
-            </div>
-        </el-col>
-    </el-row>
-
+        </div>
+    </div>
 </template>
 
 <script>
@@ -34,21 +36,14 @@
     };
 </script>
 
-<style lang="scss" rel="stylesheet/scss">
+<style lang="scss" scoped rel="stylesheet/scss">
     .el-row {
         margin-bottom: 20px;
         &:last-child {
             margin-bottom: 0;
         }
     }
-
     .el-col {
         border-radius: 4px;
     }
-
-    .bg-purple-dark {
-        background: #58B7FF;
-        min-height: 36px;
-    }
-
 </style>
