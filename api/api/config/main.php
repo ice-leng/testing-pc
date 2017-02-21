@@ -11,6 +11,7 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'api\controllers',
+    'defaultRoute' => 'project',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-pc',

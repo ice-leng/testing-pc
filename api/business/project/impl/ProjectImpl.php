@@ -10,10 +10,19 @@ namespace business\project\impl;
 
 
 use business\common\BaseService;
+use business\project\dao\Project;
 use business\project\ProjectInterface;
 
 class ProjectImpl extends BaseService implements ProjectInterface
 {
+
+    private $_project;
+
+    public function __construct(array $config = [])
+    {
+        $this->_project = new Project();
+        parent::__construct($config);
+    }
 
     /**
      * 获得项目列表
@@ -22,6 +31,6 @@ class ProjectImpl extends BaseService implements ProjectInterface
      */
     public function getProjectList()
     {
-        return ['你好'];
+        return $this->_project->getProjectList();
     }
 }

@@ -6,7 +6,7 @@ import Base from './base';
 export default {
     demoList() {
         return Base({
-            url: '/demo',
+            url: '/project',
             isDispose: false
         });
     }
