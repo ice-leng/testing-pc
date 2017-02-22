@@ -25,12 +25,32 @@ class ProjectImpl extends BaseService implements ProjectInterface
     }
 
     /**
+     * 获得浏览器名称
+     *
+     * @param  $type
+     *
+     * @return string
+     */
+    private function getBrowserName($type)
+    {
+        $browser = [
+            1 => '谷歌浏览器',
+            2 => '火狐浏览器',
+        ];
+        return (isset($browser[$type]) && !empty($browser[$type])) ? $browser[$type] : $type;
+    }
+
+    /**
      * 获得项目列表
      *
-     * @return array []
+     * @return \array[]
      */
     public function getProjectList()
     {
-        return $this->_project->getProjectList();
+        $projects = $this->_project->getProjectList();
+        foreach ($projects['models'] as $key => $project) {
+            $projects['models'][$key]['browser'] = $this->getBrowserName($project['browser']);
+        }
+        return $projects;
     }
 }

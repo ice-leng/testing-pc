@@ -93,7 +93,6 @@ class Project extends \business\common\ActiveRecord
             'total_case',
             'total_bug',
             'total_item',
-            'is_delete',
         ])->from($this->tableName())->where([
             'is_delete' => ConstantHelper::NOT_DELETE,
         ])->orderBy('updated_at desc')->all();
