@@ -13,25 +13,113 @@ use yii\base\Model;
 
 class ElemeVueJsFormValidate extends CreateFromValidate
 {
-    //regexp
 
     private $_notSupportValidate = [
-        'trim'
+        'trim',
     ];
     private $_supportValidate = [
-        'required' => 'required',
-        'string'   => 'string',
-        'number'   => 'number',
-        'email'    => 'email',
-        'integer'  => 'integer',
-        'url'      => 'url',
-        'in'       => 'enum',
-        'match'    => 'regexp',
+        'required',
+        'string',
+        'number',
+        'email',
+        'integer',
+        'url',
+        'in',
+        'match',
     ];
+
+    private function _refactoring($rule)
+    {
+        $data = [];
+        switch ($rule['type']) {
+            case 'required':
+                $data = [
+                    'required' => true,
+                    'message'  => $rule['message'],
+                    'trigger'  => 'blur',
+                ];
+                break;
+            case 'string':
+                if (isset($rule['min'])) {
+                    $data = [
+                        'type'    => 'string',
+                        'min'     => $rule['min'],
+                        'message' => $rule['message'],
+                        'trigger' => 'blur',
+                    ];
+                }
+                if (isset($rule['max'])) {
+                    $data = [
+                        'type'    => 'string',
+                        'max'     => $rule['max'],
+                        'message' => $rule['message'],
+                        'trigger' => 'blur',
+                    ];
+                }
+                if (isset($rule['min']) && isset($rule['max'])) {
+                    $data = [
+                        'type'    => 'string',
+                        'min'     => $rule['min'],
+                        'max'     => $rule['max'],
+                        'message' => $rule['message'],
+                        'trigger' => 'blur',
+                    ];
+                }
+                break;
+            case 'number':
+                $data = [
+                    'type'    => 'number',
+                    'message' => $rule['message'],
+                    'trigger' => 'blur,change',
+                ];
+                break;
+            case 'email':
+                $data = [
+                    'type'    => 'email',
+                    'message' => $rule['message'],
+                    'trigger' => 'blur,change',
+                ];
+                break;
+            case 'integer':
+                $data = [
+                    'type'    => 'integer',
+                    'message' => $rule['message'],
+                    'trigger' => 'blur,change',
+                ];
+                break;
+            default:
+                $data = [
+                    'type'    => 'string',
+                    'match' => $rule['rule'],
+                    'message' => $rule['message'],
+                    'trigger' => 'blur,change',
+                ];
+                break;
+        }
+        return $data;
+    }
 
     public function createValidate()
     {
+        $data = [];
         $rules = parent::createValidate();
+        foreach ($rules['validates'] as $rule) {
+            if (in_array($rule['type'], $this->_notSupportValidate)) {
+                continue;
+            }
+            if (!in_array($rule['type'], $this->_supportValidate)) {
+                continue;
+            }
+            foreach ($rule['field'] as $field) {
+                if (isset($data[$field])) {
+                    array_push($data[$field], $this->_refactoring($rule));
+                } else {
+                    $data[$field][] = $this->_refactoring($rule);
+                }
+
+            }
+        }
+        $rules['validates'] = $data;
         return $rules;
     }
 
