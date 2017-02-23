@@ -1,7 +1,7 @@
 <template>
     <el-menu mode="vertical" :default-active="getDefaultRouter()" class="el-menu-vertical-demo" :router="true">
         <el-menu-item-group :title="menuList.text">
-            <el-menu-item :index="children.path" v-if="menuList.children"
+            <el-menu-item :index="children.path" v-if="menuList.children && children.key"
                           v-for="(children, index) in menuList.children">
                 <i :class="children.icon ? children.icon : 'el-icon-message'"></i>{{children.text}}
             </el-menu-item>

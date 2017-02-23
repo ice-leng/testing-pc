@@ -27,4 +27,10 @@ class ProjectController extends Controller
         $data = $this->_project->getProjectList();
         return $this->getList($data);
     }
+
+    public function actionFormValidate()
+    {
+        return $this->_project->getFormValidate();
+    }
+
 }

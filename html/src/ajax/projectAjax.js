@@ -4,9 +4,15 @@
 import Base from './base';
 
 export default {
-    demoList() {
+    projectList() {
         return Base({
             url: '/project',
+            isDispose: false
+        });
+    },
+    formValidate() {
+        return Base({
+            url: '/project/form-validate',
             isDispose: false
         });
     }

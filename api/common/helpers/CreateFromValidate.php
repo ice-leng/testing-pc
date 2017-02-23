@@ -81,12 +81,20 @@ class CreateFromValidate
             $msg = $this->_string == $type ? $validator->tooLong : $validator->tooBig;
             $data['message'] = ( isset( $rule['message'] ) && !empty( $rule['message'] ) ) ? $rule['message'] : $this->_setMessage( $msg, $replace );
         }
+
         if( isset( $rule['length'] ) ){
-            $data['length'] = $rule['length'];
-            $replace = ['{length, number}' => $data['length']];
-            $data['message'] = ( isset( $rule['message'] ) && !empty( $rule['message'] ) ) ? $rule['message'] : $this->_setMessage( $validator->notEqual, $replace );
+//            $data['length'] = $rule['length'];
+//            $replace = ['{length, number}' => $data['length']];
+//            $data['message'] = ( isset( $rule['message'] ) && !empty( $rule['message'] ) ) ? $rule['message'] : $this->_setMessage( $validator->notEqual, $replace );
+            $rule = array_merge($rule, [
+                'min' => $rule['length'][0],
+                'max' => $rule['length'][1],
+            ]);
+            unset($rule['length']);
         }
         if( isset( $rule['min'] ) && isset( $rule['max'] ) ){
+            $data['min'] = $rule['min'];
+            $data['max'] = $rule['max'];
             $replace = [
                 '{min, number}' => $data['min'],
                 '{min}'         => $data['min'],
@@ -133,7 +141,10 @@ class CreateFromValidate
                     $data['rule'] = $validator->numberPattern;
                     break;
                 case $this->_url:
-                    $data['rule'] = str_replace( '{schemes}', $rule['defaultScheme'], $validator->pattern );
+                    if(isset($rule['defaultScheme'])){
+                        $data['rule'] = str_replace( '{schemes}', $rule['defaultScheme'], $validator->pattern );
+                        $data['defaultScheme'] = $rule['defaultScheme'];
+                    }
                     break;
                 case $this->_match:
                     $data['rule'] = $rule['pattern'];
@@ -166,7 +177,38 @@ class CreateFromValidate
         // 针对 in 验证
         if( $type == $this->_in ) $data['range'] = $rule['range'];
         // 针对 对比 验证
-        if( $type == $this->_compare ) $data['compare'] = $rule['compareAttribute'];
+
+        if( $type == $this->_compare ) {
+            if( isset($rule['compareAttribute']) ){
+                $data['compare'] = $rule['compareAttribute'];
+            }
+            if( isset($rule['compareValue']) && isset($rule['operator']) ){
+                $data['rule'] = $this->_string;
+                switch ( $rule['operator'] ){
+                    case '>=':
+                        $data['max'] = $rule['compareValue'];
+                        $data['message'] = "只能包含至少{$data['max']}个字符。";
+                        break;
+                    case '>':
+                        $data['max'] = $rule['compareValue'] + 1;
+                        $data['message'] = "只能包含至少{$data['max']}个字符。";
+                        break;
+                    case '<=':
+                        $data['min'] = $rule['compareValue'];
+                        $data['message'] = "只能包含至多{$data['min']}个字符。";
+                        break;
+                    case '<':
+                        $data['min'] = $rule['compareValue'] - 1;
+                        $data['message'] = "只能包含至多{$data['min']}个字符。";
+                        break;
+                    case '=':
+                        $data['max'] = $rule['compareValue'] + 1;
+                        $data['min'] = $rule['compareValue'] - 1;
+                        $data['message'] = "应该包含至少{$data['min']}个字符, 只能包含至多{$data['max']}个字符。";
+                        break;
+                }
+            }
+        }
         // 根据类型 添加 validateUrl
         if( isset( $this->_validateUrls[ $type ] ) ) $data['validateUrl'] = $this->_validateUrls[ $type ];
         return $data;
@@ -221,7 +263,7 @@ class CreateFromValidate
             if( in_array( $type, $this->_exclude ) ) continue;
             $field = is_array($rule[0]) ? $rule[0] : [$rule[0]];
             $fields = array_merge( $fields, $field );
-            $data = ['field' => $rule[0], 'rule' => $type];
+            $data = ['field' => $rule[0], 'rule' => $type, 'type' => $type];
             $rule = array_merge( $data, $this->_generateRule( $key, $rule ) );
             $rules['validates'][] = $rule;
         }
@@ -230,6 +272,7 @@ class CreateFromValidate
             'name'  => \Yii::$app->request->csrfParam,
             'value' =>\Yii::$app->request->csrfToken,
         ];
+        $rules['formName'] = $this->_model->tableName();
         return $rules;
     }
 

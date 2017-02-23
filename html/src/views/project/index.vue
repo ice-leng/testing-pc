@@ -1,7 +1,9 @@
 <template>
     <div class="project-div">
         <div class="add">
-            <el-button type="primary">添加</el-button>
+            <router-link class="button" :to="{path: 'project/edit'}">
+                <el-button type="primary" class="button">添加</el-button>
+            </router-link>
         </div>
 
         <el-row class="clearfix" v-if="list.length">
@@ -42,15 +44,13 @@
                                     {{l.fixed_bug}}
                                 </el-col>
                                 <el-col :span="24">
-                                    <router-link class="button" to="test">
+                                    <router-link class="button" :to="{path: 'test', query: { id: l.id }}">
                                         <el-button type="text" class="button">设置测试项</el-button>
                                     </router-link>
-                                    <router-link class="button" to="test">
+                                    <router-link class="button" :to="{path: 'project/edit', query: { id: l.id }}">
                                         <el-button type="text" class="button">编辑</el-button>
                                     </router-link>
-                                    <router-link class="button" to="test">
-                                        <el-button type="text" class="button">删除</el-button>
-                                    </router-link>
+                                    <el-button type="text" class="button" @click="projectDelete(l.id)">删除</el-button>
                                 </el-col>
                             </el-row>
 
@@ -60,7 +60,7 @@
             </el-col>
         </el-row>
         <div v-else>
-            没有数据哦, 去添加一条。
+            没有数据哦, 去添加一条吧。
         </div>
     </div>
 
@@ -72,13 +72,10 @@
         padding: 14px;
         .add {
             margin: 10px;
-            color: red;
             padding: 0;
             text-align: right;
-
         }
     }
-
 </style>
 
 <script>
@@ -91,9 +88,16 @@
             };
         },
         created() {
-            projectAjax.demoList().then(({data}) => {
-                this.list = data.data.list;
+            projectAjax.projectList().then(({data}) => {
+                if (data.data.list.length > 0) {
+                    this.list = data.data.list;
+                }
             });
+        },
+        methods: {
+            projectDelete(id) {
+                console.log(id + 'test');
+            }
         }
     };
 </script>

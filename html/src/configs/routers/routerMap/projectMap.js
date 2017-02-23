@@ -10,6 +10,11 @@ export default [{
         require(['views/project/index'], resolve);
     }
 }, {
+    path: '/project/edit',
+    component: resolve => {
+        require(['views/project/edit'], resolve);
+    }
+}, {
     path: '/config',
     key: 'config',
     text: '配置',

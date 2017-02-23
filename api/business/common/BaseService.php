@@ -11,7 +11,7 @@ namespace business\common;
 
 use common\helpers\BaseHelper;
 use common\helpers\CodeHelper;
-use common\helpers\CreateFromValidate;
+use common\helpers\ElemeVueJsFormValidate;
 use yii\base\Component;
 use yii\base\Event;
 use yii\web\BadRequestHttpException;
@@ -68,7 +68,7 @@ class BaseService extends Component
         if( !empty($scenario) ){
             $activeRecord->scenario = $scenario;
         }
-        $data = new CreateFromValidate( $activeRecord, $params);
+        $data = new ElemeVueJsFormValidate( $activeRecord, $params);
         return $data->createValidate();
     }
 

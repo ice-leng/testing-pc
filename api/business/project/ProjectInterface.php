@@ -12,6 +12,8 @@ namespace business\project;
 interface ProjectInterface
 {
 
+    public function getFormValidate();
+
     /**
      * 获得项目列表
      *

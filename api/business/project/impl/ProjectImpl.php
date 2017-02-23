@@ -53,4 +53,9 @@ class ProjectImpl extends BaseService implements ProjectInterface
         }
         return $projects;
     }
+
+    public function getFormValidate()
+    {
+        return $this->createFromValidate($this->_project);
+    }
 }

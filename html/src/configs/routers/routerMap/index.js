@@ -19,6 +19,7 @@ const routers = [{
     key: 'test',
     text: '测试',
     name: 'test',
+    redirect: '/test/item',
     component: resolve => {
         require(['views/layout/main'], resolve);
     },
