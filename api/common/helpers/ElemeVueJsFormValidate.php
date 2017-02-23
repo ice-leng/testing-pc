@@ -80,6 +80,13 @@ class ElemeVueJsFormValidate extends CreateFromValidate
                     'trigger' => 'blur,change',
                 ];
                 break;
+            case 'in' :
+                $data = [
+                    'type'    => 'array',
+                    'message' => $rule['message'],
+                    'trigger' => 'change',
+                ];
+                break;
             case 'integer':
                 $data = [
                     'type'    => 'integer',
@@ -90,7 +97,7 @@ class ElemeVueJsFormValidate extends CreateFromValidate
             default:
                 $data = [
                     'type'    => 'string',
-                    'match' => $rule['rule'],
+                    'pattern' => $rule['rule'],
                     'message' => $rule['message'],
                     'trigger' => 'blur,change',
                 ];
