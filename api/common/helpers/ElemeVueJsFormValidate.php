@@ -27,7 +27,15 @@ class ElemeVueJsFormValidate extends CreateFromValidate
         'in',
         'match',
     ];
+    private $_required = [];
 
+    /**
+     * 重构
+     *
+     * @param $rule
+     *
+     * @return array
+     */
     private function _refactoring($rule)
     {
         $data = [];
@@ -38,6 +46,11 @@ class ElemeVueJsFormValidate extends CreateFromValidate
                     'message'  => $rule['message'],
                     'trigger'  => 'blur',
                 ];
+                $field = [];
+                foreach ($rule['field'] as $f){
+                    $field[$f] = true;
+                }
+                $this->_required = array_merge($this->_required, $field);
                 break;
             case 'string':
                 if (isset($rule['min'])) {
@@ -108,7 +121,7 @@ class ElemeVueJsFormValidate extends CreateFromValidate
 
     public function createValidate()
     {
-        $data = [];
+        $data = $fields = [];
         $rules = parent::createValidate();
         foreach ($rules['validates'] as $rule) {
             if (in_array($rule['type'], $this->_notSupportValidate)) {
@@ -127,6 +140,11 @@ class ElemeVueJsFormValidate extends CreateFromValidate
             }
         }
         $rules['validates'] = $data;
+        foreach ($rules['labels'] as $field => $label) {
+            $fields[$field] = '';
+        }
+        $rules['model'] = [$rules['formName'] => $fields];
+        $rules['required'] = $this->_required;
         return $rules;
     }
 
