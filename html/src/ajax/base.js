@@ -26,27 +26,25 @@ export default ({url, body = {}, method = 'get', isDispose = true}) => {
         Vue.http[method](url, body).then((response) => {
             let code = response.body.code;
             let msg = response.body.message;
-            if (isDispose) {
-                switch (code) {
-                    case 0:
+            switch (code) {
+                case 0:
+                    if (isDispose) {
                         msg && Message.success(msg);
-                        resolve(response);
-                        break;
-                    case 2:
-                        reject(response);
-                        break;
-                    case 404:
-                        Message.error('去404');
-                        break;
-                    case 500:
-                        Message.error('去500');
-                        break;
-                    default:
-                        msg && MessageBox.alert(msg);
-                        break;
-                }
-            } else {
-                resolve(response);
+                    }
+                    resolve(response);
+                    break;
+                case 2:
+                    reject(response);
+                    break;
+                case 404:
+                    Message.error('去404');
+                    break;
+                case 500:
+                    Message.error('去500');
+                    break;
+                default:
+                    msg && MessageBox.alert(msg);
+                    break;
             }
         }, (response) => {
             let status = response.status;

@@ -12,6 +12,10 @@ namespace business\project;
 interface ProjectInterface
 {
 
+    /**
+     * form validate
+     * @return mixed
+     */
     public function getFormValidate();
 
     /**

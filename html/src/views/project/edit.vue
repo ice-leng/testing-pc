@@ -6,8 +6,8 @@
         </div>
         <div class="mg20 w600">
             <el-form :model="model" :ref="formName" label-width="100px" >
-                <el-form-item :label="labels.name" prop="name" :rules="rules.name" :required="required.name">
-                    <el-input v-model="model.name"></el-input>
+                <el-form-item :label="labels.name || 'name'" prop="name" :rules="rules.name" :required="required.name">
+                    <el-input v-model="model.name" placeholder="啦啦啦德玛西亚"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="submitForm()">保存</el-button>
