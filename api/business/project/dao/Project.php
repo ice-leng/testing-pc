@@ -37,7 +37,7 @@ class Project extends \business\common\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'url'], 'required'],
+            [['name', 'url', 'browser'], 'required'],
             [
                 [
                     'browser',
@@ -48,8 +48,10 @@ class Project extends \business\common\ActiveRecord
                 ],
                 'integer',
             ],
-            [['name'], 'string', 'max' => 32],
-            [['url'], 'string', 'max' => 255],
+            //            [['name'], 'string', 'max' => 32],
+            [['url', 'id', 'name'], 'trim'],
+            //            [['url'], 'string', 'max' => 255],
+            [['url'], 'url'],
         ];
     }
 
@@ -94,5 +96,21 @@ class Project extends \business\common\ActiveRecord
             'is_delete' => ConstantHelper::NOT_DELETE,
         ])->orderBy('updated_at desc')->all();
         return $this->page($query);
+    }
+
+    /**
+     * 通过id获得项目信息
+     *
+     * @param int $id 项目id
+     *
+     * @return array|null|\yii\db\ActiveRecord
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getProjectById($id)
+    {
+        return $this->find()->where([
+            'id'        => $id,
+            'is_delete' => ConstantHelper::NOT_DELETE,
+        ])->one();
     }
 }

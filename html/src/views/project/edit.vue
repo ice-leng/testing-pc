@@ -5,10 +5,23 @@
             <hr/>
         </div>
         <div class="mg20 w600">
-            <el-form :model="model" :ref="formName" label-width="100px" >
-                <el-form-item :label="labels.name || 'name'" prop="name" :rules="rules.name" :required="required.name">
-                    <el-input v-model="model.name" placeholder="啦啦啦德玛西亚"></el-input>
+            <el-form v-if="isLoad" :model="model" :ref="formName" :rules="rules" label-width="160px">
+                <el-form-item :label="labels.name || 'name'" prop="name" :required="required.name">
+                    <el-input v-model="model.name" placeholder=""></el-input>
                 </el-form-item>
+                {{rules.url}}
+
+                <el-form-item :label="labels.url || 'url'" prop="url" :required="required.url">
+                    <el-input v-model="model.url" type="url" placeholder=""></el-input>
+                </el-form-item>
+
+                <el-form-item :label="labels.browser || 'browser'" prop="browser">
+                    <el-select v-model="model.browser" placeholder="请选择浏览器">
+                        <el-option v-for="browserType in browserTypes" :label="browserType.label"
+                                   :value="browserType.value"></el-option>
+                    </el-select>
+                </el-form-item>
+
                 <el-form-item>
                     <el-button type="primary" @click="submitForm()">保存</el-button>
                     <el-button @click="resetForm()">重置</el-button>
@@ -22,6 +35,7 @@
 
 <script>
     import projectAjax from 'ajax/projectAjax';
+    import jsonHelper from 'configs/helpers/jsonHelper';
 
     export default {
         data() {
@@ -30,17 +44,22 @@
                 rules: {},
                 labels: {},
                 required: {},
+                browserTypes: {},
+                isLoad: false,
                 formName: ''
             };
         },
         created() {
             projectAjax.formValidate().then(({data}) => {
                 if (typeof data.data === 'object') {
-                    this.formName = data.data.formName;
-                    this.model = data.data.model;
-                    this.rules = data.data.validates;
-                    this.labels = data.data.labels;
-                    this.required = data.data.required;
+                    let validate = data.data.validate;
+                    this.formName = validate.formName;
+                    this.model = validate.model;
+                    this.rules = jsonHelper.resetPattern(validate.validates);
+                    this.labels = validate.labels;
+                    this.required = validate.required;
+                    this.browserTypes = data.data.browserType;
+                    this.isLoad = true;
                 }
             });
         },

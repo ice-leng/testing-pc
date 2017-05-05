@@ -10,6 +10,7 @@ namespace api\controllers;
 
 
 use api\common\base\Controller;
+use api\common\helpers\ApiHelper;
 use business\project\ProjectInterface;
 
 class ProjectController extends Controller
@@ -30,7 +31,10 @@ class ProjectController extends Controller
 
     public function actionFormValidate()
     {
-        return $this->_project->getFormValidate();
+        return [
+            'validate'    => $this->_project->getFormValidate(),
+            'browserType' => ApiHelper::getBrowserType(),
+        ];
     }
 
 }

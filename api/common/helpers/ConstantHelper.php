@@ -18,6 +18,9 @@ class ConstantHelper
     // 没有删除
     CONST NOT_DELETE = 0;
 
+    CONST BROWSER_TYPE_CHROME = 1;
+    CONST BROWSER_TYPE_FIREFOX = 2;
+    CONST BROWSER_TYPE_IE = 3;
 
 
 }

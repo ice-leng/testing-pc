@@ -44,7 +44,7 @@ class ElemeVueJsFormValidate extends CreateFromValidate
                 $data = [
                     'required' => true,
                     'message'  => $rule['message'],
-                    'trigger'  => 'blur',
+//                    'trigger'  => 'blur',
                 ];
                 $field = [];
                 foreach ($rule['field'] as $f){
@@ -58,7 +58,7 @@ class ElemeVueJsFormValidate extends CreateFromValidate
                         'type'    => 'string',
                         'min'     => $rule['min'],
                         'message' => $rule['message'],
-                        'trigger' => 'blur',
+//                        'trigger' => 'blur',
                     ];
                 }
                 if (isset($rule['max'])) {
@@ -66,7 +66,7 @@ class ElemeVueJsFormValidate extends CreateFromValidate
                         'type'    => 'string',
                         'max'     => $rule['max'],
                         'message' => $rule['message'],
-                        'trigger' => 'blur',
+//                        'trigger' => 'blur',
                     ];
                 }
                 if (isset($rule['min']) && isset($rule['max'])) {
@@ -75,7 +75,7 @@ class ElemeVueJsFormValidate extends CreateFromValidate
                         'min'     => $rule['min'],
                         'max'     => $rule['max'],
                         'message' => $rule['message'],
-                        'trigger' => 'blur',
+//                        'trigger' => 'blur',
                     ];
                 }
                 break;
@@ -83,28 +83,35 @@ class ElemeVueJsFormValidate extends CreateFromValidate
                 $data = [
                     'type'    => 'number',
                     'message' => $rule['message'],
-                    'trigger' => 'blur,change',
+//                    'trigger' => 'blur,change',
                 ];
                 break;
             case 'email':
                 $data = [
                     'type'    => 'email',
                     'message' => $rule['message'],
-                    'trigger' => 'blur,change',
+//                    'trigger' => 'blur,change',
                 ];
                 break;
             case 'in' :
                 $data = [
                     'type'    => 'array',
                     'message' => $rule['message'],
-                    'trigger' => 'change',
+//                    'trigger' => 'change',
                 ];
                 break;
             case 'integer':
                 $data = [
                     'type'    => 'integer',
                     'message' => $rule['message'],
-                    'trigger' => 'blur,change',
+//                    'trigger' => 'blur,change',
+                ];
+                break;
+            case 'url':
+                $data = [
+                    'type'    => 'url',
+                    'message' => $rule['message'],
+//                  'trigger' => 'blur,change',
                 ];
                 break;
             default:
@@ -112,7 +119,7 @@ class ElemeVueJsFormValidate extends CreateFromValidate
                     'type'    => 'string',
                     'pattern' => $rule['rule'],
                     'message' => $rule['message'],
-                    'trigger' => 'blur,change',
+//                    'trigger' => 'blur,change',
                 ];
                 break;
         }
@@ -143,7 +150,7 @@ class ElemeVueJsFormValidate extends CreateFromValidate
         foreach ($rules['labels'] as $field => $label) {
             $fields[$field] = '';
         }
-        $rules['model'] = [$rules['formName'] => $fields];
+        $rules['model'] = $fields;
         $rules['required'] = $this->_required;
         return $rules;
     }
