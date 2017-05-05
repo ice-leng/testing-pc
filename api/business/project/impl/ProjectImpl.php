@@ -12,6 +12,7 @@ namespace business\project\impl;
 use business\common\BaseService;
 use business\project\dao\Project;
 use business\project\ProjectInterface;
+use common\helpers\BaseHelper;
 
 class ProjectImpl extends BaseService implements ProjectInterface
 {
@@ -33,10 +34,7 @@ class ProjectImpl extends BaseService implements ProjectInterface
      */
     private function getBrowserName($type)
     {
-        $browser = [
-            1 => '谷歌浏览器',
-            2 => '火狐浏览器',
-        ];
+        $browser = BaseHelper::getBrowserType(false);
         return (isset($browser[$type]) && !empty($browser[$type])) ? $browser[$type] : $type;
     }
 
@@ -57,5 +55,18 @@ class ProjectImpl extends BaseService implements ProjectInterface
     public function getFormValidate()
     {
         return $this->createFromValidate($this->_project);
+    }
+
+    /**
+     * 更新 / 添加 项目
+     *
+     * @param array $params [id => '', name => '', url => '', browser => '']
+     *
+     * @return object
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function updateProject(array $params)
+    {
+        return $this->_project->updateProject($params);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace business\project\dao;
 
+use common\helpers\CodeHelper;
 use common\helpers\ConstantHelper;
 use Yii;
 use yii\db\Query;
@@ -113,4 +114,28 @@ class Project extends \business\common\ActiveRecord
             'is_delete' => ConstantHelper::NOT_DELETE,
         ])->one();
     }
+
+    /**
+     * 更新 / 添加 项目
+     *
+     * @param array $params [id => '', name => '', url => '', browser => '']
+     *
+     * @return object
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function updateProject(array $params)
+    {
+        if (isset($params['id']) && !empty($params['id'])) {
+            $project = $this->getProjectById($params['id']);
+            if (empty($project)) {
+                $this->invalidParamException(CodeHelper::SYS_PARAMS_ERROR);
+            }
+        }else{
+            $project = new Project();
+        }
+        $project->setAttributes($params);
+        $project->save();
+        return $project;
+    }
+
 }

@@ -25,4 +25,13 @@ interface ProjectInterface
      */
     public function getProjectList();
 
+    /**
+     * 更新 / 添加 项目
+     * @param array $params [id => '', name => '', url => '', browser => '']
+     *
+     * @return object
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function updateProject(array $params);
+
 }

@@ -268,10 +268,10 @@ class CreateFromValidate
             $rules['validates'][] = $rule;
         }
         $rules['labels'] = $this->_getValidAttributeLabels( $fields );
-        $rules['_csrf'] = [
-            'name'  => \Yii::$app->request->csrfParam,
-            'value' =>\Yii::$app->request->csrfToken,
-        ];
+//        $rules['_csrf'] = [
+//            'name'  => \Yii::$app->request->csrfParam,
+//            'value' =>\Yii::$app->request->csrfToken,
+//        ];
         $rules['formName'] = $this->_model->tableName();
         return $rules;
     }

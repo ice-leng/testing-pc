@@ -11,7 +11,7 @@ Vue.http.headers.common['Accept'] = 'application/json';
 Vue.http.options.emulateJSON = true;
 Vue.http.options.credentials = true;
 
-export default ({url, body = {}, method = 'get', isDispose = true}) => {
+export default ({url, body = {}, method = 'get', isDispose = false}) => {
     url = Config.rootUrl() + url;
     return new Promise((resolve, reject) => {
         if (method.toUpperCase() === 'GET') {
@@ -28,9 +28,6 @@ export default ({url, body = {}, method = 'get', isDispose = true}) => {
             let msg = response.body.message;
             switch (code) {
                 case 0:
-                    if (isDispose) {
-                        msg && Message.success(msg);
-                    }
                     resolve(response);
                     break;
                 case 2:

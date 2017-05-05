@@ -9,7 +9,6 @@
                 <el-form-item :label="labels.name || 'name'" prop="name" :required="required.name">
                     <el-input v-model="model.name" placeholder=""></el-input>
                 </el-form-item>
-                {{rules.url}}
 
                 <el-form-item :label="labels.url || 'url'" prop="url" :required="required.url">
                     <el-input v-model="model.url" type="url" placeholder=""></el-input>
@@ -24,7 +23,6 @@
 
                 <el-form-item>
                     <el-button type="primary" @click="submitForm()">保存</el-button>
-                    <el-button @click="resetForm()">重置</el-button>
                     <el-button @click="$router.go(-1)">取消</el-button>
                 </el-form-item>
             </el-form>
@@ -66,16 +64,28 @@
         methods: {
             submitForm() {
                 this.$refs[this.formName].validate((valid) => {
-                    if (valid) {
-                        console.log('submit!');
-                    } else {
-                        console.log('error submit!!');
+                    if (!valid) {
                         return false;
                     }
+                    projectAjax.updateProject({
+                        id: this.model.id,
+                        name: this.model.name,
+                        url: this.model.url,
+                        browser: this.model.browser
+                    }).then((res) => {
+                        let msg = '';
+                        let _this = this;
+                        if (_this.model.id > 0) {
+                            msg = '修改成功';
+                        } else {
+                            msg = '创建成功';
+                        }
+                        this.$message.success(msg);
+                        setTimeout(function () {
+                            _this.$router.push('/project');
+                        }, 1000);
+                    });
                 });
-            },
-            resetForm() {
-                this.$refs[this.formName].resetFields();
             }
         }
     };

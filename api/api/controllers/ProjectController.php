@@ -37,4 +37,17 @@ class ProjectController extends Controller
         ];
     }
 
+    public function actionUpdate()
+    {
+        $params = \Yii::$app->request->post();
+        $data = [
+            'id'      => isset($params['id']) ? $params['id'] : '',
+            'name'    => isset($params['name']) ? $params['name'] : '',
+            'url'     => isset($params['url']) ? $params['url'] : '',
+            'browser' => isset($params['browser']) ? $params['browser'] : '',
+        ];
+        $this->_project->updateProject($data);
+        return [];
+    }
+
 }

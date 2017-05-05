@@ -6,14 +6,19 @@ import Base from './base';
 export default {
     projectList() {
         return Base({
-            url: '/project',
-            isDispose: false
+            url: '/project'
         });
     },
     formValidate() {
         return Base({
-            url: '/project/form-validate',
-            isDispose: false
+            url: '/project/form-validate'
+        });
+    },
+    updateProject(body) {
+        return Base({
+            method: 'post',
+            url: '/project/update',
+            body: body
         });
     }
 };
