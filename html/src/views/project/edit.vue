@@ -48,7 +48,9 @@
             };
         },
         created() {
-            projectAjax.formValidate().then(({data}) => {
+            projectAjax.formValidate({
+                id: this.$route.query.id
+            }).then(({data}) => {
                 if (typeof data.data === 'object') {
                     let validate = data.data.validate;
                     this.formName = validate.formName;

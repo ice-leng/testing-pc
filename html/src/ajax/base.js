@@ -15,7 +15,7 @@ export default ({url, body = {}, method = 'get', isDispose = false}) => {
     url = Config.rootUrl() + url;
     return new Promise((resolve, reject) => {
         if (method.toUpperCase() === 'GET') {
-            if (body.length > 0) url += ('?' + Config.parseParams(body));
+            if (JSON.stringify(body) !== '{}') url += '?' + Config.parseParams(body);
             body = {};
         } else {
             if (body.page) {

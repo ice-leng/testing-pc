@@ -13,6 +13,7 @@ use business\common\BaseService;
 use business\project\dao\Project;
 use business\project\ProjectInterface;
 use common\helpers\BaseHelper;
+use common\helpers\CodeHelper;
 
 class ProjectImpl extends BaseService implements ProjectInterface
 {
@@ -68,5 +69,38 @@ class ProjectImpl extends BaseService implements ProjectInterface
     public function updateProject(array $params)
     {
         return $this->_project->updateProject($params);
+    }
+
+    /**
+     * 通过项目id 获得项目新消息
+     *
+     * @param int $id
+     *
+     * @return array
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getProjectById($id)
+    {
+        $project = $this->_project->getProjectById($id);
+        if (empty($project)) {
+            $this->invalidParamException(CodeHelper::SYS_PARAMS_ERROR, '项目id不存在');
+        }
+        return $project;
+    }
+
+    /**
+     * 通过项目id 获得项目新消息
+     *
+     * @param int $id
+     *
+     * @return array
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function deleteProjectById($id)
+    {
+        $project = $this->getProjectById($id);
+        $project->is_delete = 1;
+        $project->save(false);
+        return $project;
     }
 }

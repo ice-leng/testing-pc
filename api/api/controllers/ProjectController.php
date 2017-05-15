@@ -31,8 +31,14 @@ class ProjectController extends Controller
 
     public function actionFormValidate()
     {
+        $id = \Yii::$app->request->get('id');
+        $validate = $this->_project->getFormValidate();
+        if(!empty($id)){
+            $project = $this->_project->getProjectById($id);
+            $validate['model'] = $project;
+        }
         return [
-            'validate'    => $this->_project->getFormValidate(),
+            'validate'    => $validate,
             'browserType' => ApiHelper::getBrowserType(),
         ];
     }
@@ -47,6 +53,13 @@ class ProjectController extends Controller
             'browser' => isset($params['browser']) ? $params['browser'] : '',
         ];
         $this->_project->updateProject($data);
+        return [];
+    }
+
+    public function actionDelete()
+    {
+        $id = \Yii::$app->request->get('id');
+        $this->_project->deleteProjectById($id);
         return [];
     }
 

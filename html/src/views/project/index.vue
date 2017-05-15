@@ -7,7 +7,7 @@
         </div>
 
         <el-row class="clearfix" v-if="list.length">
-            <el-col :span="10" v-for="(l, index) in list" :offset="index > 0 ? 2 : 0">
+            <el-col :span="10" v-for="(l, index) in list" :offset="index % 2 == 0 ? 0 : 2" class="mt20">
                 <el-card>
                     <div class="project-div">
                         <span>{{l.name}}(<a target="_blank" :href="l.url">{{l.url}}</a>)</span>
@@ -96,7 +96,23 @@
         },
         methods: {
             projectDelete(id) {
-                console.log(id + 'test');
+                this.$confirm('此操作将永久删除该文件, 是否继续？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    projectAjax.deleteProject({
+                        id: id
+                    }).then((res) => {
+                        this.$message.success('删除成功');
+                        let _this = this;
+                        setTimeout(function () {
+                            _this.$router.go(0);
+                        }, 1000);
+                    });
+                }).catch(() => {
+
+                });
             }
         }
     };

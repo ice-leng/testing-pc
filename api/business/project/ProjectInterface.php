@@ -34,4 +34,22 @@ interface ProjectInterface
      */
     public function updateProject(array $params);
 
+    /**
+     * 通过项目id 获得项目新消息
+     * @param int $id
+     *
+     * @return array
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getProjectById($id);
+
+    /**
+     * 通过项目id 获得项目新消息
+     * @param int $id
+     *
+     * @return array
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function deleteProjectById($id);
+
 }

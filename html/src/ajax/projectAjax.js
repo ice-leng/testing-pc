@@ -9,15 +9,22 @@ export default {
             url: '/project'
         });
     },
-    formValidate() {
+    formValidate(body) {
         return Base({
-            url: '/project/form-validate'
+            url: '/project/form-validate',
+            body: body
         });
     },
     updateProject(body) {
         return Base({
             method: 'post',
             url: '/project/update',
+            body: body
+        });
+    },
+    deleteProject(body) {
+        return Base({
+            url: '/project/delete',
             body: body
         });
     }
