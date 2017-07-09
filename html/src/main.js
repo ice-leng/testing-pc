@@ -9,6 +9,7 @@ import Sessions from 'sessions/index';
 import 'assets/css/reset.scss';
 import 'assets/css/main.scss';
 import VueResource from 'vue-resource';
+import './filters/index.js';
 
 Vue.use(ElementUI);
 Vue.use(VueResource);

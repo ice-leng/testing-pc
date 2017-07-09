@@ -10,7 +10,12 @@
             <el-col :span="10" v-for="(l, index) in list" :offset="index % 2 == 0 ? 0 : 2" class="mt20">
                 <el-card>
                     <div class="project-div">
-                        <span>{{l.name}}(<a target="_blank" :href="l.url">{{l.url}}</a>)</span>
+                        <span>
+                            {{l.name}}
+                            (<a target="_blank" :href="l.url">
+                                {{l.url | substring(30)}}
+                            </a>)
+                        </span>
                         <div class="mt10 clearfix">
                             <el-row>
                                 <el-col :span="6">
