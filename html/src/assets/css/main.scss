@@ -26,6 +26,16 @@ $content-top: 60px;
     background: #58B7FF;
     min-height: $content-top;
   }
+  .title {
+    color: white;
+    padding: 20px;
+  }
+  .return{
+    float: right;
+    a{
+      color: white;
+    }
+  }
   .nav-menu {
     background: #eef1f6;
     height: 100%;
@@ -56,11 +66,11 @@ $content-top: 60px;
   }
 }
 
-.mg20{
+.mg20 {
   margin: 20px !important;
 }
 
-.w600{
+.w600 {
   width: 600px;
 }
 

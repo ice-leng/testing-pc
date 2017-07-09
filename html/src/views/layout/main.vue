@@ -3,11 +3,19 @@
         <el-row class="mgb0">
             <el-col :span="24">
                 <div class="top">
-                    <div>测试文子</div>
+                    <div class="title">
+                        测试系统
+                        <span class="return" v-if="getType() !== 'project'">
+                            <router-link :to="{path: '/project'}">
+                                返回
+                            </router-link>
+                        </span>
+                    </div>
+
                 </div>
             </el-col>
         </el-row>
-        <div class="content-row">
+        <div class="content-row clearfix">
             <div class="content-left">
                 <div class="nav-menu">
                     <v-menu :type="getType()"></v-menu>
