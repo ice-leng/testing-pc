@@ -107,13 +107,6 @@ class ElemeVueJsFormValidate extends CreateFromValidate
 //                    'trigger' => 'blur,change',
                 ];
                 break;
-            case 'url':
-                $data = [
-                    'type'    => 'url',
-                    'message' => $rule['message'],
-//                  'trigger' => 'blur,change',
-                ];
-                break;
             default:
                 $data = [
                     'type'    => 'string',

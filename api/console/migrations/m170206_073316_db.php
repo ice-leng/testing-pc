@@ -40,54 +40,80 @@ class m170206_073316_db extends Migration
         ], $tableOptions . ' comment \'项目网络地址\'');
         $this->createIndex('project_id_index', '{{%project_url}}', 'project_id');
 
-        $this->createTable('{{%test_item}}', [
+        $this->createTable('{{%test_workflow}}', [
             'id'          => $this->primaryKey(),
             'project_id'  => $this->integer()->notNull()->comment('项目id'),
+            'before_flow' => $this->string(32)->notNull()->comment('前置流程'),
             'name'        => $this->string(32)->notNull()->comment('名称'),
-            'url'         => $this->string('255')->notNull()->comment('访问网络地址'),
             'fixed_bug'   => $this->integer()->notNull()->defaultValue(0)->comment('已修改bug'),
             'total_case'  => $this->integer()->notNull()->defaultValue(0)->comment('总测试用例'),
             'total_bug'   => $this->integer()->notNull()->defaultValue(0)->comment('总bug'),
             'exe_times'   => $this->integer()->notNull()->defaultValue(0)->comment('执行次数'),
             'order'       => $this->integer()->notNull()->defaultValue(0)->comment('排序'),
-            'is_exe'      => $this->integer()->notNull()->defaultValue(0)->comment('是否执行'),
-            'before_flow' => $this->string(32)->notNull()->comment('前置流程'),
-            'after_flow'  => $this->string(32)->notNull()->comment('后置流程'),
             'is_delete'   => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否删除'),
             'created_at'  => $this->integer()->notNull()->comment('创建时间'),
             'updated_at'  => $this->integer()->notNull()->comment('更新时间'),
-        ], $tableOptions . ' comment \'测试项\'');
-        $this->createIndex('project_id_index', '{{%test_item}}', 'project_id');
+        ], $tableOptions . ' comment \'测试流程\' ');
+        $this->createIndex('project_id_index', '{{%test_workflow}}', 'project_id');
 
+        $this->createTable('{{%test_item}}', [
+            'id'               => $this->primaryKey(),
+            'test_workflow_id' => $this->integer()->notNull()->comment('流程id'),
+            'name'             => $this->string(32)->notNull()->comment('名称'),
+            'type'             => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('访问类型'),
+            'url'              => $this->string('255')->notNull()->comment('访问网络地址'),
+            'is_delete'        => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否删除'),
+            'created_at'       => $this->integer()->notNull()->comment('创建时间'),
+            'updated_at'       => $this->integer()->notNull()->comment('更新时间'),
+        ], $tableOptions . ' comment \'测试项\'');
+        $this->createIndex('test_workflow_id_index', '{{%test_item}}', 'test_workflow_id');
+
+        $this->createTable('{{%test_set_case}}', [
+            'id'             => $this->primaryKey(),
+            'test_item_id'   => $this->integer()->notNull()->comment('测试项id'),
+            'name'           => $this->string(32)->notNull()->comment('名称'),
+            'element_type'   => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('查找类型'),
+            'element'        => $this->string('255')->notNull()->comment('查找元素'),
+            'element_params' => $this->string('255')->notNull()->comment('数据'),
+            'wait_time'      => $this->smallInteger(4)->notNull()->defaultValue(10)->comment('等待时间'),
+            'is_required'    => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否需要'),
+            'is_xss'         => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否xss攻击'),
+            'is_sql'         => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否sql注入'),
+            'is_delete'      => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否删除'),
+            'created_at'     => $this->integer()->notNull()->comment('创建时间'),
+            'updated_at'     => $this->integer()->notNull()->comment('更新时间'),
+        ], $tableOptions . ' comment \'设置测试用例\'');
+        $this->createIndex('test_item_id_index', '{{%test_set_case}}', 'test_item_id');
 
         $this->createTable('{{%test_case}}', [
-            'id'                  => $this->primaryKey(),
-            'test_item_id'        => $this->integer()->notNull()->comment('测试项id'),
-            'name'                => $this->string(32)->notNull()->comment('名称'),
-            'event_name'          => $this->smallInteger(1)->notNull()->defaultValue(2)->comment('事件名称'),
-            'find_element_type'   => $this->string('32')->notNull()->comment('查找类型'),
-            'find_element'        => $this->string('255')->notNull()->comment('查找元素'),
-            'find_element_params' => $this->string('255')->notNull()->comment('查找参数'),
-            'wait_time'           => $this->smallInteger(4)->notNull()->defaultValue(10)->comment('等待时间'),
-            'is_right'            => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否正确'),
-            'is_delete'           => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否删除'),
-            'created_at'          => $this->integer()->notNull()->comment('创建时间'),
-            'updated_at'          => $this->integer()->notNull()->comment('更新时间'),
+            'id'               => $this->primaryKey(),
+            'test_workflow_id' => $this->integer()->notNull()->comment('流程id'),
+            'test_item_id'     => $this->integer()->notNull()->comment('测试项id'),
+            'name'             => $this->string(32)->notNull()->comment('名称'),
+            'element_type'     => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('查找类型'),
+            'element'          => $this->string('255')->notNull()->comment('查找元素'),
+            'element_params'   => $this->string('255')->notNull()->comment('数据'),
+            'wait_time'        => $this->smallInteger(4)->notNull()->defaultValue(10)->comment('等待时间'),
+            'is_right'         => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否正确'),
+            'is_delete'        => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否删除'),
+            'created_at'       => $this->integer()->notNull()->comment('创建时间'),
+            'updated_at'       => $this->integer()->notNull()->comment('更新时间'),
         ], $tableOptions . ' comment \'测试用例\'');
+        $this->createIndex('test_workflow_id_index', '{{%test_case}}', 'test_workflow_id');
         $this->createIndex('test_item_id_index', '{{%test_case}}', 'test_item_id');
-
 
         $this->createTable('{{%test_accept}}', [
             'id'                  => $this->primaryKey(),
-            'test_case_id'        => $this->integer()->notNull()->comment('测试用例id'),
-            'find_element_type'   => $this->string('32')->notNull()->comment('查找类型'),
-            'find_element'        => $this->string('255')->notNull()->comment('查找元素'),
-            'find_element_params' => $this->string('255')->notNull()->comment('查找参数'),
+            'test_item_id'        => $this->integer()->notNull()->comment('测试项id'),
+            'element_type'     => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('查找类型'),
+            'element'          => $this->string('255')->notNull()->comment('查找元素'),
+            'accept_type'     => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('期望类型'),
+            'accept_params'   => $this->string('255')->notNull()->comment('期望数据'),
             'is_delete'           => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否删除'),
             'created_at'          => $this->integer()->notNull()->comment('创建时间'),
             'updated_at'          => $this->integer()->notNull()->comment('更新时间'),
         ], $tableOptions . ' comment \'测试期望\'');
-        $this->createIndex('test_case_id_index', '{{%test_accept}}', 'test_case_id');
+        $this->createIndex('test_item_id_index', '{{%test_accept}}', 'test_item_id');
 
         $this->createTable('{{%test_log}}', [
             'id'           => $this->primaryKey(),
@@ -132,8 +158,6 @@ class m170206_073316_db extends Migration
             'created_at'     => $this->integer()->notNull(),
             'updated_at'     => $this->integer()->notNull(),
         ], $tableOptions . ' comment \'系统配置参数\'');
-
-
     }
 
     public function down()
@@ -141,7 +165,9 @@ class m170206_073316_db extends Migration
         $this->dropTable('{{%demo}}');
         $this->dropTable('{{%project}}');
         $this->dropTable('{{%project_url}}');
+        $this->dropTable('{{%test_workflow}}');
         $this->dropTable('{{%test_item}}');
+        $this->dropTable('{{%test_set_case}}');
         $this->dropTable('{{%test_case}}');
         $this->dropTable('{{%test_accept}}');
         $this->dropTable('{{%test_log}}');
