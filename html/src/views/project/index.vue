@@ -50,8 +50,9 @@
                                 </el-col>
                                 <el-col :span="24">
                                     <router-link class="button" :to="{path: 'test', query: { id: l.id }}">
-                                        <el-button type="text" class="button">设置测试项</el-button>
+                                        <el-button type="text" class="button">设置测试流程</el-button>
                                     </router-link>
+                                    <el-button type="text" class="button">运行</el-button>
                                     <router-link class="button" :to="{path: 'project/edit', query: { id: l.id }}">
                                         <el-button type="text" class="button">编辑</el-button>
                                     </router-link>
