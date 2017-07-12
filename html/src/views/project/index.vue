@@ -1,5 +1,9 @@
 <template>
     <div class="project-div">
+        <el-breadcrumb separator="/">
+            <el-breadcrumb-item :to="{ path: '/project' }">项目列表</el-breadcrumb-item>
+        </el-breadcrumb>
+
         <div class="add">
             <router-link class="button" :to="{path: 'project/edit'}">
                 <el-button type="primary" class="button">添加</el-button>
@@ -75,7 +79,7 @@
 
 <style lang="scss" scoped rel="stylesheet/scss">
     .project-div {
-        padding: 14px;
+        padding: 10px;
         .add {
             margin: 10px;
             padding: 0;

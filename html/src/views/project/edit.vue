@@ -1,9 +1,9 @@
 <template>
     <div>
-        <div>
-            <h1>项目编辑</h1>
-            <hr/>
-        </div>
+        <el-breadcrumb separator="/" class="pd10">
+            <el-breadcrumb-item :to="{ path: '/project' }">项目列表</el-breadcrumb-item>
+            <el-breadcrumb-item>项目编辑</el-breadcrumb-item>
+        </el-breadcrumb>
         <div class="mg20 w600">
             <el-form v-if="isLoad" :model="model" :ref="formName" :rules="rules" label-width="160px" >
                 <el-form-item :label="labels.name || 'name'" prop="name" :required="required.name"  :error="error.name">
