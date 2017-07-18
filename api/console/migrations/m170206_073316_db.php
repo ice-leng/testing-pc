@@ -43,7 +43,7 @@ class m170206_073316_db extends Migration
         $this->createTable('{{%test_workflow}}', [
             'id'          => $this->primaryKey(),
             'project_id'  => $this->integer()->notNull()->comment('项目id'),
-            'before_flow' => $this->string(32)->notNull()->comment('前置流程'),
+            'before_flow' => $this->string(32)->comment('前置流程'),
             'name'        => $this->string(32)->notNull()->comment('名称'),
             'fixed_bug'   => $this->integer()->notNull()->defaultValue(0)->comment('已修改bug'),
             'total_case'  => $this->integer()->notNull()->defaultValue(0)->comment('总测试用例'),
@@ -73,8 +73,10 @@ class m170206_073316_db extends Migration
             'test_item_id'   => $this->integer()->notNull()->comment('测试项id'),
             'name'           => $this->string(32)->notNull()->comment('名称'),
             'element_type'   => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('查找类型'),
+            'event_type'     => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('事件类型'),
+            'event_params'   => $this->string('255')->notNull()->comment('事件参数'),
             'element'        => $this->string('255')->notNull()->comment('查找元素'),
-            'element_params' => $this->string('255')->notNull()->comment('数据'),
+            'element_params' => $this->string('255')->notNull()->comment('参数'),
             'wait_time'      => $this->smallInteger(4)->notNull()->defaultValue(10)->comment('等待时间'),
             'is_required'    => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否需要'),
             'is_xss'         => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否xss攻击'),
@@ -91,8 +93,10 @@ class m170206_073316_db extends Migration
             'test_item_id'     => $this->integer()->notNull()->comment('测试项id'),
             'name'             => $this->string(32)->notNull()->comment('名称'),
             'element_type'     => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('查找类型'),
+            'event_type'       => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('事件类型'),
+            'event_params'     => $this->string('255')->notNull()->comment('事件参数'),
             'element'          => $this->string('255')->notNull()->comment('查找元素'),
-            'element_params'   => $this->string('255')->notNull()->comment('数据'),
+            'element_params'   => $this->string('255')->notNull()->comment('参数'),
             'wait_time'        => $this->smallInteger(4)->notNull()->defaultValue(10)->comment('等待时间'),
             'is_right'         => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否正确'),
             'is_delete'        => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否删除'),
@@ -103,15 +107,15 @@ class m170206_073316_db extends Migration
         $this->createIndex('test_item_id_index', '{{%test_case}}', 'test_item_id');
 
         $this->createTable('{{%test_accept}}', [
-            'id'                  => $this->primaryKey(),
-            'test_item_id'        => $this->integer()->notNull()->comment('测试项id'),
-            'element_type'     => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('查找类型'),
-            'element'          => $this->string('255')->notNull()->comment('查找元素'),
-            'accept_type'     => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('期望类型'),
-            'accept_params'   => $this->string('255')->notNull()->comment('期望数据'),
-            'is_delete'           => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否删除'),
-            'created_at'          => $this->integer()->notNull()->comment('创建时间'),
-            'updated_at'          => $this->integer()->notNull()->comment('更新时间'),
+            'id'            => $this->primaryKey(),
+            'test_item_id'  => $this->integer()->notNull()->comment('测试项id'),
+            'element_type'  => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('查找类型'),
+            'element'       => $this->string('255')->notNull()->comment('查找元素'),
+            'accept_type'   => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('期望类型'),
+            'accept_params' => $this->string('255')->notNull()->comment('期望数据'),
+            'is_delete'     => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否删除'),
+            'created_at'    => $this->integer()->notNull()->comment('创建时间'),
+            'updated_at'    => $this->integer()->notNull()->comment('更新时间'),
         ], $tableOptions . ' comment \'测试期望\'');
         $this->createIndex('test_item_id_index', '{{%test_accept}}', 'test_item_id');
 

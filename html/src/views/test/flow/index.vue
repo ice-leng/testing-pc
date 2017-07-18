@@ -5,7 +5,7 @@
             <el-breadcrumb-item>测试流程</el-breadcrumb-item>
         </el-breadcrumb>
         <div class="add">
-            <router-link class="button" :to="{path: '/test/edit'}">
+            <router-link class="button" :to="{path: '/test/edit', query: { pid: this.$route.query.id }}">
                 <el-button type="primary" class="button">添加</el-button>
             </router-link>
         </div>

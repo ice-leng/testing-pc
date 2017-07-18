@@ -11,6 +11,7 @@
 return [
     \business\demo\impl\DemoImpl::class,
     \business\project\impl\ProjectImpl::class,
+    \business\test\impl\TestImpl::class,
 ];
 
 

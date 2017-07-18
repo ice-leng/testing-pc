@@ -16,8 +16,8 @@
 
                 <el-form-item :label="labels.browser || 'browser'" prop="browser" :error="error.browser">
                     <el-select v-model="model.browser" placeholder="请选择浏览器">
-                        <el-option v-for="browserType in browserTypes" :label="browserType.label"
-                                   :value="browserType.value"></el-option>
+                        <el-option v-for="browserType in browserTypes" :label="browserType.text"
+                                   :value="browserType.id"></el-option>
                     </el-select>
                 </el-form-item>
 

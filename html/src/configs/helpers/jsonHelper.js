@@ -14,8 +14,8 @@ class JsonHelper {
                         let reg = new RegExp(pattern);
                         params[name][i].pattern = reg;
                     }
-                    if (name === 'url' && params[name][i].pattern !== undefined) {
-                        let strRegex = '^((https|http|ftp|rtsp|mms)?://)' +
+                    if (params[name][i].type === 'url') {
+                        let strRegex = '^((https|http)?://)' +
                             '?(([0-9a-z_!~*().&=+$%-]+: )?[0-9a-z_!~*().&=+$%-]+@)?' +
                             '(([0-9]{1,3}\\.){3}[0-9]{1,3}' +
                             '|' +
@@ -27,6 +27,7 @@ class JsonHelper {
                             '(/[0-9a-z_!~*().;?:@&=+$,%#-]+)+/?)$';
                         let urlReg = new RegExp(strRegex);
                         params[name][i].pattern = urlReg;
+                        params[name][i].type = 'string';
                     }
                     rules[i] = params[name][i];
                 }

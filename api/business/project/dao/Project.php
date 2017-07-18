@@ -49,10 +49,10 @@ class Project extends \business\common\ActiveRecord
                 ],
                 'integer',
             ],
-            //            [['name'], 'string', 'max' => 32],
+            [['name'], 'string', 'max' => 32],
             [['url', 'id', 'name'], 'trim'],
-            //            [['url'], 'string', 'max' => 255],
-            [['url'], 'url'],
+            [['url'], 'string', 'max' => 255],
+            [['url'], 'url', 'defaultScheme' => 'http'],
         ];
     }
 
