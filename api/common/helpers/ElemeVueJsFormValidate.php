@@ -58,7 +58,6 @@ class ElemeVueJsFormValidate extends CreateFromValidate
                         'type'    => 'string',
                         'min'     => $rule['min'],
                         'message' => $rule['message'],
-//                        'trigger' => 'blur',
                     ];
                 }
                 if (isset($rule['max'])) {
@@ -66,7 +65,6 @@ class ElemeVueJsFormValidate extends CreateFromValidate
                         'type'    => 'string',
                         'max'     => $rule['max'],
                         'message' => $rule['message'],
-//                        'trigger' => 'blur',
                     ];
                 }
                 if (isset($rule['min']) && isset($rule['max'])) {
@@ -75,43 +73,59 @@ class ElemeVueJsFormValidate extends CreateFromValidate
                         'min'     => $rule['min'],
                         'max'     => $rule['max'],
                         'message' => $rule['message'],
-//                        'trigger' => 'blur',
                     ];
                 }
+                break;
+            case 'integer':
+                if (isset($rule['min'])) {
+                    $data = [
+                        'type'    => 'integer',
+                        'min'     => $rule['min'],
+                        'message' => $rule['message'],
+                    ];
+                } else if (isset($rule['max'])) {
+                    $data = [
+                        'type'    => 'integer',
+                        'max'     => $rule['max'],
+                        'message' => $rule['message'],
+                    ];
+                }else if (isset($rule['min']) && isset($rule['max'])) {
+                    $data = [
+                        'type'    => 'integer',
+                        'min'     => $rule['min'],
+                        'max'     => $rule['max'],
+                        'message' => $rule['message'],
+                    ];
+                }else{
+                    $data = [
+                        'type'    => 'integer',
+                        'message' => $rule['message'],
+                    ];
+                }
+
                 break;
             case 'number':
                 $data = [
                     'type'    => 'number',
                     'message' => $rule['message'],
-//                    'trigger' => 'blur,change',
                 ];
                 break;
             case 'email':
                 $data = [
                     'type'    => 'email',
                     'message' => $rule['message'],
-//                    'trigger' => 'blur,change',
                 ];
                 break;
             case 'in' :
                 $data = [
                     'type'    => 'array',
                     'message' => $rule['message'],
-//                    'trigger' => 'change',
-                ];
-                break;
-            case 'integer':
-                $data = [
-                    'type'    => 'integer',
-                    'message' => $rule['message'],
-//                    'trigger' => 'blur,change',
                 ];
                 break;
             case 'url':
                 $data = [
                     'type'    => 'url',
                     'message' => $rule['message'],
-//                  'trigger' => 'blur,change',
                 ];
                 break;
             default:
@@ -119,7 +133,6 @@ class ElemeVueJsFormValidate extends CreateFromValidate
                     'type'    => 'string',
                     'pattern' => $rule['rule'],
                     'message' => $rule['message'],
-//                    'trigger' => 'blur,change',
                 ];
                 break;
         }

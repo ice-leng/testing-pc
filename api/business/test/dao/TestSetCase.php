@@ -39,6 +39,7 @@ class TestSetCase extends \business\common\ActiveRecord
         return [
             [['name', 'event_type', 'element_type', 'element', 'element_params', 'event_params'], 'required'],
             [['test_item_id', 'element_type', 'wait_time', 'is_required', 'is_xss', 'is_sql'], 'integer'],
+            [['wait_time'], 'integer', 'min' => 0],
             [['name'], 'string', 'max' => 32],
             [['element', 'element_params', 'event_params'], 'string', 'max' => 255],
             [
@@ -75,9 +76,9 @@ class TestSetCase extends \business\common\ActiveRecord
             'event_type'     => '事件类型',
             'event_params'   => '事件参数',
             'element'        => '查找元素',
-            'element_params' => '参数',
+            'element_params' => '填充数据',
             'wait_time'      => '等待时间',
-            'is_required'    => '是否需要',
+            'is_required'    => '是否必填',
             'is_xss'         => '是否xss攻击',
             'is_sql'         => '是否sql注入',
             'is_delete'      => '是否删除',

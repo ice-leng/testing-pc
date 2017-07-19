@@ -30,9 +30,9 @@ $content-top: 60px;
     color: white;
     padding: 20px;
   }
-  .return{
+  .return {
     float: right;
-    a{
+    a {
       color: white;
     }
   }
@@ -50,8 +50,10 @@ $content-top: 60px;
   .content-right {
     position: absolute;
     left: 130px;
-    right: 10px;
+    right: 0;
     top: 10px;
+    overflow-y: auto;
+    height: 100%;
   }
 }
 
@@ -66,7 +68,7 @@ $content-top: 60px;
   }
 }
 
-.pd10{
+.pd10 {
   padding: 10px !important;
 }
 

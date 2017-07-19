@@ -6,18 +6,17 @@
             <el-breadcrumb-item>测试流程编辑</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <div class="mg20 ">
-            <el-form v-if="isLoad" :model="model.flow" :ref="formName.flow" :rules="rules.flow" label-width="160px">
+        <div class="mg20">
+            <!-- flow start -->
+            <el-form v-if="isLoad" :model="model.flow" :ref="formName.flow" :rules="rules.flow" label-width="70px">
                 <el-form-item :label="labels.flow.name || 'name'" prop="name" :required="required.flow.name"
                               :error="error.flow.name">
                     <el-input v-model="model.flow.name" placeholder=""></el-input>
                 </el-form-item>
-
                 <el-form-item :label="labels.flow.order || 'order'" prop="order" :required="required.flow.order"
                               :error="error.flow.order">
                     <el-input v-model="model.flow.order" placeholder=""></el-input>
                 </el-form-item>
-
                 <el-form-item :label="labels.flow.before_flow || 'before_flow'" prop="before_flow"
                               :required="required.flow.before_flow" :error="error.flow.before_flow">
                     <el-tag
@@ -47,12 +46,13 @@
                     </el-dialog>
                     <el-button class="button-new-tag" size="small" @click="addBeforeWorkflow">+ 添加流程</el-button>
                 </el-form-item>
-
-                <el-form-item label="测试项">
-                    <el-collapse accordion v-if="this.showItem.length > 0" :value="itemOpen">
+                <!-- flow end -->
+                <!-- item start -->
+                <el-form-item label="测试项" :required="required.flow.name" :error="itemError">
+                    <el-collapse v-if="this.showItem.length > 0" :value="itemOpen">
                         <el-collapse-item v-for="(item, i) in showItem" :name="i">
                             <template slot="title">{{item.name}}</template>
-                            <div class="tag-dialog right" @click="deleteItem(item)">
+                            <div class="tag-dialog right" @click="deleteItem(item, i)">
                                 <i class="el-icon-delete"></i>
                             </div>
                             <div class="clearfix"></div>
@@ -72,7 +72,8 @@
 
                                 <el-form-item :label="labels.item.type || 'browser'" prop="browser"
                                               :error="error.item.type">
-                                    <el-select v-model="item.type" placeholder="类型" :change="changeItemType(item.type, i)">
+                                    <el-select v-model="item.type" placeholder="类型"
+                                               :change="changeItemType(item.type, i)">
                                         <el-option v-for="itemType in itemTypes" :label="itemType.text"
                                                    :value="itemType.id"></el-option>
                                     </el-select>
@@ -84,16 +85,322 @@
                                 </el-form-item>
 
                             </el-form>
+                            <!-- item end -->
+                            <!-- set case start -->
+                            <div class="mt10">
+                                <div class="left">用例设置</div>
+                                <div class="right">
+                                    <el-button class="button-new-tag" size="small" @click="addCase(item.id, i)">
+                                        + 添加用例设置
+                                    </el-button>
+                                </div>
+                                <div class="clearfix"></div>
+                                <el-table
+                                        class="mt10"
+                                        :data="showCase[(item.id !== '' ? item.id : i)]"
+                                        border
+                                        style="width: 100%">
+                                    <el-table-column :label="labels.setCase.name" width="140">
+                                        <template scope="scope">
+                                            <div class="tCell">
+                                                <el-form
+                                                        v-if="isLoad"
+                                                        :model="scope.row"
+                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :rules="rules.setCase"
+                                                >
+                                                    <el-form-item prop="name"
+                                                                  :error="error.setCase[(item.id !== '' ? item.id : i)][scope.$index]['name']">
+                                                        <el-input v-model="scope.row.name" placeholder=""></el-input>
+                                                    </el-form-item>
+                                                </el-form>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column :label="labels.setCase.event_type" width="140">
+                                        <template scope="scope">
+                                            <div class="tCell">
+                                                <el-form
+                                                        v-if="isLoad"
+                                                        :model="scope.row"
+                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :rules="rules.setCase"
+                                                >
+                                                    <el-form-item prop="event_type"
+                                                                  :error="error.setCase[(item.id !== '' ? item.id : i)][scope.$index]['event_type']">
+                                                        <el-select v-model="scope.row.event_type" placeholder="事件类型">
+                                                            <el-option v-for="eventType in eventTypes"
+                                                                       :label="eventType.text"
+                                                                       :value="eventType.id"></el-option>
+                                                        </el-select>
+                                                    </el-form-item>
+                                                </el-form>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column :label="labels.setCase.event_params" width="210">
+                                        <template scope="scope">
+                                            <div class="tCell">
+                                                <el-form
+                                                        v-if="isLoad"
+                                                        :model="scope.row"
+                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :rules="rules.setCase"
+                                                >
+                                                    <el-form-item prop="event_params"
+                                                                  :error="error.setCase[(item.id !== '' ? item.id : i)][scope.$index]['event_params']">
+                                                        <el-input v-model="scope.row.event_params"
+                                                                  placeholder=""></el-input>
+                                                    </el-form-item>
+                                                </el-form>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column :label="labels.setCase.element_type" width="140">
+                                        <template scope="scope">
+                                            <div class="tCell">
+                                                <el-form
+                                                        v-if="isLoad"
+                                                        :model="scope.row"
+                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :rules="rules.setCase"
+                                                >
+                                                    <el-form-item prop="element_type"
+                                                                  :error="error.setCase[(item.id !== '' ? item.id : i)][scope.$index]['element_type']">
+                                                        <el-select v-model="scope.row.element_type" placeholder="查找类型">
+                                                            <el-option v-for="elementType in elementTypes"
+                                                                       :label="elementType.text"
+                                                                       :value="elementType.id"></el-option>
+                                                        </el-select>
+                                                    </el-form-item>
+                                                </el-form>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column :label="labels.setCase.element" width="210">
+                                        <template scope="scope">
+                                            <div class="tCell">
+                                                <el-form
+                                                        v-if="isLoad"
+                                                        :model="scope.row"
+                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :rules="rules.setCase"
+                                                >
+                                                    <el-form-item prop="element"
+                                                                  :error="error.setCase[(item.id !== '' ? item.id : i)][scope.$index]['element']">
+                                                        <el-input v-model="scope.row.element" placeholder=""></el-input>
+                                                    </el-form-item>
+                                                </el-form>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column :label="labels.setCase.element_params" width="210">
+                                        <template scope="scope">
+                                            <div class="tCell">
+                                                <el-form
+                                                        v-if="isLoad"
+                                                        :model="scope.row"
+                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :rules="rules.setCase"
+                                                >
+                                                    <el-form-item prop="element_params"
+                                                                  :error="error.setCase[(item.id !== '' ? item.id : i)][scope.$index]['element_params']">
+                                                        <el-input v-model="scope.row.element_params"
+                                                                  placeholder=""></el-input>
+                                                    </el-form-item>
+                                                </el-form>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column :label="labels.setCase.wait_time" width="210">
+                                        <template scope="scope">
+                                            <div class="tCell">
+                                                <el-form
+                                                        v-if="isLoad"
+                                                        :model="scope.row"
+                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :rules="rules.setCase"
+                                                >
+                                                    <el-form-item prop="wait_time"
+                                                                  :error="error.setCase[(item.id !== '' ? item.id : i)][scope.$index]['wait_time']">
+                                                        <el-input-number v-model="scope.row.wait_time"
+                                                                         placeholder=""></el-input-number>
+                                                    </el-form-item>
+                                                </el-form>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column :label="labels.setCase.is_required" width="120">
+                                        <template scope="scope">
+                                            <div class="tCell">
+                                                <el-form
+                                                        v-if="isLoad"
+                                                        :model="scope.row"
+                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :rules="rules.setCase"
+                                                >
+                                                    <el-checkbox prop="is_required"
+                                                                 v-model="scope.row.is_required"></el-checkbox>
+                                                </el-form>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column :label="labels.setCase.is_xss" width="120">
+                                        <template scope="scope">
+                                            <div class="tCell">
+                                                <el-form
+                                                        v-if="isLoad"
+                                                        :model="scope.row"
+                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :rules="rules.setCase"
+                                                >
+                                                    <el-checkbox prop="is_xss" v-model="scope.row.is_xss"></el-checkbox>
+                                                </el-form>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column :label="labels.setCase.is_sql" width="120">
+                                        <template scope="scope">
+                                            <div class="tCell">
+                                                <el-form
+                                                        v-if="isLoad"
+                                                        :model="scope.row"
+                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :rules="rules.setCase"
+                                                >
+                                                    <el-checkbox prop="is_sql" v-model="scope.row.is_sql"></el-checkbox>
+                                                </el-form>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column label="操作">
+                                        <template scope="scope">
+                                            <el-button
+                                                    size="small"
+                                                    type="danger"
+                                                    @click="deleteCase(scope.$index, i)">删除
+                                            </el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                            <!-- set case end -->
+                            <!-- accept start -->
+                            <div class="mt10">
+                                <div class="left">期望设置</div>
+                                <div class="right">
+                                    <el-button class="button-new-tag" size="small" @click="addAccept(item.id, i)">
+                                        + 添加期望设置
+                                    </el-button>
+                                </div>
+                                <div class="clearfix"></div>
+                                <el-table
+                                        class="mt10"
+                                        :data="showAccept[(item.id !== '' ? item.id : i)]"
+                                        border
+                                        style="width: 100%">
+                                    <el-table-column :label="labels.accept.element_type" width="140">
+                                        <template scope="scope">
+                                            <div class="tCell">
+                                                <el-form
+                                                        v-if="isLoad"
+                                                        :model="scope.row"
+                                                        :ref="formName.accept+i+scope.$index"
+                                                        :rules="rules.accept"
+                                                >
+                                                    <el-form-item prop="element_type"
+                                                                  :error="error.accept[(item.id !== '' ? item.id : i)][scope.$index]['element_type']">
+                                                        <el-select v-model="scope.row.element_type" placeholder="查找类型">
+                                                            <el-option v-for="elementType in elementTypes"
+                                                                       :label="elementType.text"
+                                                                       :value="elementType.id"></el-option>
+                                                        </el-select>
+                                                    </el-form-item>
+                                                </el-form>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column :label="labels.accept.element" width="210">
+                                        <template scope="scope">
+                                            <div class="tCell">
+                                                <el-form
+                                                        v-if="isLoad"
+                                                        :model="scope.row"
+                                                        :ref="formName.accept+i+scope.$index"
+                                                        :rules="rules.setCase"
+                                                >
+                                                    <el-form-item prop="element"
+                                                                  :error="error.accept[(item.id !== '' ? item.id : i)][scope.$index]['element']">
+                                                        <el-input v-model="scope.row.element" placeholder=""></el-input>
+                                                    </el-form-item>
+                                                </el-form>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column :label="labels.accept.accept_type" width="300">
+                                        <template scope="scope">
+                                            <div class="tCell">
+                                                <el-form
+                                                        v-if="isLoad"
+                                                        :model="scope.row"
+                                                        :ref="formName.accept+i+scope.$index"
+                                                        :rules="rules.setCase"
+                                                >
+                                                    <el-form-item prop="accept_type"
+                                                                  :error="error.accept[(item.id !== '' ? item.id : i)][scope.$index]['accept_type']">
+                                                        <el-select v-model="scope.row.accept_type" placeholder="期望类型"
+                                                                   size="300">
+                                                            <el-option v-for="acceptType in acceptTypes"
+                                                                       :label="acceptType.text"
+                                                                       :value="acceptType.id"></el-option>
+                                                        </el-select>
+                                                    </el-form-item>
+                                                </el-form>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column :label="labels.accept.accept_params" width="210">
+                                        <template scope="scope">
+                                            <div class="tCell">
+                                                <el-form
+                                                        v-if="isLoad"
+                                                        :model="scope.row"
+                                                        :ref="formName.accept+i+scope.$index"
+                                                        :rules="rules.setCase"
+                                                >
+                                                    <el-form-item prop="accept_params"
+                                                                  :error="error.accept[(item.id !== '' ? item.id : i)][scope.$index]['accept_params']">
+                                                        <el-input v-model="scope.row.accept_params"
+                                                                  placeholder=""></el-input>
+                                                    </el-form-item>
+                                                </el-form>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column label="操作">
+                                        <template scope="scope">
+                                            <el-button
+                                                    size="small"
+                                                    type="danger"
+                                                    @click="deleteAccept(scope.$index, i)">删除
+                                            </el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                            <!-- accept end -->
+
                         </el-collapse-item>
                     </el-collapse>
                     <el-button class="button-new-tag" size="small" @click="addItem()">+ 添加测试项</el-button>
                 </el-form-item>
 
-
                 <el-form-item>
-                    <el-button type="primary" @click="search()">保存</el-button>
-                    <el-button type="info" @click="search()" :disabled="isCreateCase">生成测试用例</el-button>
-                    <el-button type="success" @click="search()" :disabled="isRun">运行</el-button>
+                    <el-button type="primary" @click="submit()">保存</el-button>
+                    <el-button type="info" @click="create()" :disabled="isCreateCase">生成测试用例</el-button>
+                    <el-button type="success" @click="run()" :disabled="isRun">运行</el-button>
                     <el-button @click="$router.go(-1)">取消</el-button>
                 </el-form-item>
             </el-form>
@@ -107,6 +414,11 @@
         margin-right: 5px;
         cursor: pointer;
     }
+
+    .tCell {
+        height: 52px;
+    }
+
 </style>
 
 
@@ -130,11 +442,19 @@
                 showItem: [],
                 showCase: [],
                 showAccept: [],
+                defaultItem: {},
+                defaultCase: {},
+                defaultAccept: {},
                 beforeFlow: [],
                 defaultFlow: [],
                 itemTypes: [],
+                acceptTypes: [],
+                elementTypes: [],
+                eventTypes: [],
                 itemOpen: [],
                 formName: {},
+                waitTime: 0,
+                itemError: '',
                 itemUrlStatus: false
             };
         },
@@ -144,7 +464,7 @@
             }).then(({data}) => {
                 if (typeof data.data === 'object') {
                     let validates = data.data;
-                    let count = ['flow', 'item', 'case', 'accept'];
+                    let count = ['flow', 'item', 'setCase', 'accept'];
                     for (let name in validates) {
                         let validate = validates[name];
                         if (count.indexOf(name) < 0) continue;
@@ -157,12 +477,39 @@
                     }
                     this.showFlow = this.model.flow.before_flow;
                     this.showItem = validates.itemNum === 0 ? [] : this.model.item;
-                    this.showCase = validates.caseNum === 0 ? [] : this.model.case;
-                    this.showAccept = validates.acceptNum === 0 ? [] : this.model.accept;
+                    this.showCase = this.model.setCase;
+                    this.showAccept = this.model.accept;
                     this.itemTypes = validates.itemTypes;
-                    if (this.$route.query.id > 0) {
-                        this.isCreateCase = false;
-                        this.isRun = false;
+                    this.eventTypes = validates.eventTypes;
+                    this.elementTypes = validates.elementTypes;
+                    this.acceptTypes = validates.acceptTypes;
+                    this.waitTime = validates.waitTime;
+                    this.defaultItem = this.model.item[0];
+                    this.isCreateCase = validates.isCreateCase;
+                    this.isRun = validates.isRun;
+                    for (let i in this.model.setCase) {
+                        this.error['setCase'][i] = [];
+                        for (let j = 0; j < this.model.setCase[i].length; j++) {
+                            if (JSON.stringify(this.defaultCase) === '{}') {
+                                this.defaultCase = this.model.setCase[i][j];
+                            }
+                            if (validates.setCaseNum === 0) {
+                                this.showCase = [[this.model.setCase[i][j]]];
+                            }
+                            this.error['setCase'][i].push({});
+                        }
+                    }
+                    for (let m in this.model.accept) {
+                        this.error['accept'][m] = [];
+                        for (let n = 0; n < this.model.accept[m].length; n++) {
+                            if (JSON.stringify(this.defaultAccept) === '{}') {
+                                this.defaultAccept = this.model.accept[m][n];
+                            }
+                            if (validates.acceptNum === 0) {
+                                this.showAccept = [[this.model.accept[m][n]]];
+                            }
+                            this.error['accept'][m].push({});
+                        }
                     }
                     this.isLoad = true;
                 }
@@ -223,15 +570,27 @@
                 this.showFlow = this.model.flow.before_flow;
             },
             addItem() {
-                let defaultData = this.model.item[0];
                 let data = {};
-                for (let i in defaultData) {
+                for (let i in this.defaultItem) {
                     data[i] = '';
                 }
                 this.showItem.push(data);
+                let num = this.showItem.length;
+                if (num > 1) {
+                    num -= 1;
+                    this.addCase('', num);
+                    this.addAccept('', num);
+                }
+                this.model.item = this.showItem;
             },
-            deleteItem(item) {
+            deleteItem(item, i) {
                 this.showItem.splice(this.showItem.indexOf(item), 1);
+                this.model.item = this.showItem;
+                let id = item.id !== '' ? item.id : i;
+                this.showCase.splice(this.showCase.indexOf(this.showCase[id]), 1);
+                this.showAccept.splice(this.showAccept.indexOf(this.showAccept[id]), 1);
+                this.model.setCase = this.showCase;
+                this.model.accept = this.showAccept;
             },
             changeItemType(id, i) {
                 if (id === '') return;
@@ -241,6 +600,111 @@
                     this.itemUrlStatus = true;
                     this.showItem[i]['url'] = '';
                 }
+            },
+            addCase(id, index) {
+                let errorSetCase;
+                let data = {};
+                if (id === '') {
+                    id = index;
+                }
+                if (typeof this.showCase[id] === 'undefined') {
+                    this.showCase[id] = [];
+                }
+                if (typeof this.error['setCase'][id] === 'undefined') {
+                    this.error['setCase'][id] = [];
+                }
+                errorSetCase = this.error['setCase'][id];
+                for (let i in this.defaultCase) {
+                    if (i === 'wait_time') {
+                        data[i] = this.waitTime;
+                    } else {
+                        data[i] = '';
+                    }
+                }
+                this.showCase[id].push(data);
+                errorSetCase.push({});
+                this.model.setCase = this.showCase;
+            },
+            deleteCase(index, i) {
+                if (typeof this.showCase[i] !== 'undefined') {
+                    this.showCase[i].splice(this.showCase[i].indexOf(this.showCase[i][index]), 1);
+                    this.model.setCase = this.showCase;
+                }
+            },
+            addAccept(id, index) {
+                let errorAccept;
+                let data = {};
+                if (id === '') {
+                    id = index;
+                }
+                if (typeof this.showAccept[id] === 'undefined') {
+                    this.showAccept[id] = [];
+                }
+                if (typeof this.error['accept'][id] === 'undefined') {
+                    this.error['accept'][id] = [];
+                }
+                errorAccept = this.error['accept'][id];
+                for (let i in this.defaultAccept) {
+                    data[i] = '';
+                }
+                this.showAccept[id].push(data);
+                errorAccept.push({});
+                this.model.accept = this.showAccept;
+            },
+            deleteAccept(index, i) {
+                if (typeof this.showAccept[i] !== 'undefined') {
+                    this.showAccept[i].splice(this.showAccept[i].indexOf(this.showAccept[i][index]), 1);
+                    this.model.accept = this.showAccept;
+                }
+            },
+            alert(message, offset) {
+                offset = offset || 0;
+                this.$notify.error({
+                    title: '错误',
+                    message: message,
+                    offset: offset
+                });
+            },
+            submit() {
+//                let count = ['flow', 'item', 'setCase', 'accept'];
+                this.$refs[this.formName.flow].validate((valid) => {
+                    let flowStatus = true;
+                    let setCaseStatus = 0;
+                    let acceptStatus = 0;
+                    this.itemError = '';
+                    // item
+                    if (this.showItem.length === 0) {
+                        this.itemError = '测试项不能为空';
+                        flowStatus = false;
+                    }
+                    if (!valid) {
+                        flowStatus = false;
+                    }
+
+                    for (let i = 0; i < this.showItem.length; i++) {
+                        let id = this.showItem[i].id || i;
+                        if (typeof this.showCase[id] === 'undefined') {
+                            setCaseStatus = 1;
+                            this.alert('用例设置验证错误，请刷新重新填写');
+                        }
+                        if (typeof this.showAccept[id] === 'undefined') {
+                            acceptStatus = 1;
+                            this.alert('期望设置验证错误，请刷新重新填写', 100);
+                        }
+                        if (setCaseStatus === 1 || acceptStatus === 1) {
+                            break;
+                        }
+                    }
+                    if (!flowStatus || !setCaseStatus || !acceptStatus) {
+                        return false;
+                    }
+                });
+            },
+            create() {
+                console.log(2);
+            },
+            run() {
+                console.log(1);
             }
         }
     };

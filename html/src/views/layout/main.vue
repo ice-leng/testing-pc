@@ -1,21 +1,24 @@
 <template>
     <div class="content">
-        <el-row class="mgb0">
-            <el-col :span="24">
-                <div class="top">
-                    <div class="title">
-                        测试系统
-                        <span class="return" v-if="getType() !== 'project'">
+        <div>
+            <el-row class="mgb0">
+                <el-col :span="24">
+                    <div class="top">
+                        <div class="title">
+                            测试系统
+                            <span class="return" v-if="getType() !== 'project'">
                             <router-link :to="{path: '/project'}">
                                 返回
                             </router-link>
                         </span>
-                    </div>
+                        </div>
 
-                </div>
-            </el-col>
-        </el-row>
-        <div class="content-row clearfix">
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+        <div class="clearfix"></div>
+        <div class="content-row">
             <div class="content-left">
                 <div class="nav-menu">
                     <v-menu :type="getType()"></v-menu>

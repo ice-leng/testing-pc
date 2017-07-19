@@ -42,26 +42,36 @@ class TestController extends Controller
         $itemValidate['model'] = [$itemValidate['model']];
         // 用例设置
         $setCaseNum = 0;
+        $time = 5;
         $setCaseValidate = $this->_test->getTestSetCaseFormValidate();
-        $setCaseValidate['model']['wait_time'] = 5;
-        $setCaseValidate['model'] = [$setCaseValidate['model']];
+        $setCaseValidate['model']['wait_time'] = $time;
+        $setCaseValidate['model'] = [[$setCaseValidate['model']]];
         // 期望
         $acceptNum = 0;
         $acceptValidate = $this->_test->getTestAcceptFormValidate();
-        $acceptValidate['model'] = [$acceptValidate['model']];
+        $acceptValidate['model'] = [[$acceptValidate['model']]];
+        $isCreateCase = false;
+        $isRun = false;
         if (!empty($id)) {
+            $itemNum = 1;
             $workflow = $this->_test->getTestWorkflowById($id);
             $flowValidate['model'] = $workflow;
         }
         return [
-            'flow'      => $flowValidate,
-            'item'      => $itemValidate,
-            'case'      => $setCaseValidate,
-            'accept'    => $acceptValidate,
-            'itemNum'   => $itemNum,
-            'caseNum'   => $setCaseNum,
-            'acceptNum' => $acceptNum,
-            'itemTypes' => BaseHelper::getTestItemType()
+            'flow'         => $flowValidate,
+            'item'         => $itemValidate,
+            'setCase'      => $setCaseValidate,
+            'accept'       => $acceptValidate,
+            'itemNum'      => $itemNum,
+            'setCaseNum'   => $setCaseNum,
+            'acceptNum'    => $acceptNum,
+            'itemTypes'    => BaseHelper::getTestItemType(),
+            'elementTypes' => BaseHelper::getTestCaseFindElementType(),
+            'eventTypes'   => BaseHelper::getTestCaseEventType(),
+            'acceptTypes'  => BaseHelper::getTestAcceptType(),
+            'waitTime'     => $time,
+            'isCreateCase' => !$isCreateCase,
+            'isRun'        => !$isRun,
         ];
     }
 

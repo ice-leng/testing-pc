@@ -90,7 +90,7 @@ class TestCase extends \business\common\ActiveRecord
             'event_params'     => '事件参数',
             'event_type'       => '事件类型',
             'element'          => '查找元素',
-            'element_params'   => '参数',
+            'element_params'   => '填充数据',
             'wait_time'        => '等待时间',
             'is_right'         => '是否正确',
             'is_delete'        => '是否删除',

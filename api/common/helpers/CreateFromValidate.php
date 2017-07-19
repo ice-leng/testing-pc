@@ -52,8 +52,12 @@ class CreateFromValidate
     private function _setMessage($msg, $data = [])
     {
         $replace = ['{attribute}' => ''];
-        $replace = array_merge( $replace, $data );
-        return strtr( $msg, $replace );
+        $replace = array_merge($replace, $data);
+        $data = strtr($msg, $replace);
+        if (mb_substr($data, 0, 1) === '的') {
+            $data = mb_substr($data, 1);
+        }
+        return $data;
     }
 
     /**
