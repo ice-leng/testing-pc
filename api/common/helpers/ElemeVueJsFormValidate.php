@@ -9,8 +9,6 @@
 namespace common\helpers;
 
 
-use yii\base\Model;
-
 class ElemeVueJsFormValidate extends CreateFromValidate
 {
 

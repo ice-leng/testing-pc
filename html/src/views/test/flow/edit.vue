@@ -66,12 +66,12 @@
 
                                 <el-form-item :label="labels.item.name || 'name'" prop="name"
                                               :required="required.item.name"
-                                              :error="error.item.name">
+                                              :error="error.item[i].name">
                                     <el-input v-model="item.name" placeholder=""></el-input>
                                 </el-form-item>
 
-                                <el-form-item :label="labels.item.type || 'browser'" prop="browser"
-                                              :error="error.item.type">
+                                <el-form-item :label="labels.item.type || 'type'" prop="type"
+                                              :error="error.item[i].type">
                                     <el-select v-model="item.type" placeholder="类型"
                                                :change="changeItemType(item.type, i)">
                                         <el-option v-for="itemType in itemTypes" :label="itemType.text"
@@ -80,7 +80,7 @@
                                 </el-form-item>
 
                                 <el-form-item :label="labels.item.url || 'url'" prop="url" :required="required.item.url"
-                                              :error="error.item.url">
+                                              :error="error.item[i].url">
                                     <el-input :disabled="itemUrlStatus" v-model="item.url" placeholder=""></el-input>
                                 </el-form-item>
 
@@ -99,6 +99,7 @@
                                         class="mt10"
                                         :data="showCase[(item.id !== '' ? item.id : i)]"
                                         border
+                                        v-loading.body=true
                                         style="width: 100%">
                                     <el-table-column :label="labels.setCase.name" width="140">
                                         <template scope="scope">
@@ -133,24 +134,6 @@
                                                                        :label="eventType.text"
                                                                        :value="eventType.id"></el-option>
                                                         </el-select>
-                                                    </el-form-item>
-                                                </el-form>
-                                            </div>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column :label="labels.setCase.event_params" width="210">
-                                        <template scope="scope">
-                                            <div class="tCell">
-                                                <el-form
-                                                        v-if="isLoad"
-                                                        :model="scope.row"
-                                                        :ref="formName.setCase+i+scope.$index"
-                                                        :rules="rules.setCase"
-                                                >
-                                                    <el-form-item prop="event_params"
-                                                                  :error="error.setCase[(item.id !== '' ? item.id : i)][scope.$index]['event_params']">
-                                                        <el-input v-model="scope.row.event_params"
-                                                                  placeholder=""></el-input>
                                                     </el-form-item>
                                                 </el-form>
                                             </div>
@@ -328,7 +311,7 @@
                                                         v-if="isLoad"
                                                         :model="scope.row"
                                                         :ref="formName.accept+i+scope.$index"
-                                                        :rules="rules.setCase"
+                                                        :rules="rules.accept"
                                                 >
                                                     <el-form-item prop="element"
                                                                   :error="error.accept[(item.id !== '' ? item.id : i)][scope.$index]['element']">
@@ -338,14 +321,14 @@
                                             </div>
                                         </template>
                                     </el-table-column>
-                                    <el-table-column :label="labels.accept.accept_type" width="300">
+                                    <el-table-column :label="labels.accept.accept_type">
                                         <template scope="scope">
                                             <div class="tCell">
                                                 <el-form
                                                         v-if="isLoad"
                                                         :model="scope.row"
                                                         :ref="formName.accept+i+scope.$index"
-                                                        :rules="rules.setCase"
+                                                        :rules="rules.accept"
                                                 >
                                                     <el-form-item prop="accept_type"
                                                                   :error="error.accept[(item.id !== '' ? item.id : i)][scope.$index]['accept_type']">
@@ -360,14 +343,14 @@
                                             </div>
                                         </template>
                                     </el-table-column>
-                                    <el-table-column :label="labels.accept.accept_params" width="210">
+                                    <el-table-column :label="labels.accept.accept_params">
                                         <template scope="scope">
                                             <div class="tCell">
                                                 <el-form
                                                         v-if="isLoad"
                                                         :model="scope.row"
                                                         :ref="formName.accept+i+scope.$index"
-                                                        :rules="rules.setCase"
+                                                        :rules="rules.accept"
                                                 >
                                                     <el-form-item prop="accept_params"
                                                                   :error="error.accept[(item.id !== '' ? item.id : i)][scope.$index]['accept_params']">
@@ -460,7 +443,8 @@
         },
         created() {
             testAjax.testWorkflowFormValidate({
-                id: this.$route.query.id
+                id: this.$route.query.id,
+                pid: this.$route.query.pid
             }).then(({data}) => {
                 if (typeof data.data === 'object') {
                     let validates = data.data;
@@ -475,6 +459,8 @@
                         this.required[name] = validate.required;
                         this.error[name] = {};
                     }
+                    this.model.flow.project_id = this.$route.query.pid || 0;
+                    this.model.flow.id = this.$route.query.id || 0;
                     this.showFlow = this.model.flow.before_flow;
                     this.showItem = validates.itemNum === 0 ? [] : this.model.item;
                     this.showCase = this.model.setCase;
@@ -487,6 +473,9 @@
                     this.defaultItem = this.model.item[0];
                     this.isCreateCase = validates.isCreateCase;
                     this.isRun = validates.isRun;
+                    for (let t = 0; t < this.model.item.length; t++) {
+                        this.error['item'][t] = {};
+                    }
                     for (let i in this.model.setCase) {
                         this.error['setCase'][i] = [];
                         for (let j = 0; j < this.model.setCase[i].length; j++) {
@@ -518,7 +507,9 @@
         methods: {
             addBeforeWorkflow() {
                 this.dialogVisible = true;
-                testAjax.testWorkflowName().then(({data}) => {
+                testAjax.testWorkflowName({
+                    pid: this.$route.query.pid
+                }).then(({data}) => {
                     if (typeof data.data === 'object') {
                         let dialog = data.data;
                         let beforeFlow = this.model.flow.before_flow;
@@ -580,6 +571,9 @@
                     num -= 1;
                     this.addCase('', num);
                     this.addAccept('', num);
+                    if (typeof this.error['item'][num] === 'undefined') {
+                        this.error['item'][num] = {};
+                    }
                 }
                 this.model.item = this.showItem;
             },
@@ -628,6 +622,7 @@
             deleteCase(index, i) {
                 if (typeof this.showCase[i] !== 'undefined') {
                     this.showCase[i].splice(this.showCase[i].indexOf(this.showCase[i][index]), 1);
+                    this.error['setCase'][i].splice(this.error['setCase'][i].indexOf(this.error['setCase'][i][index]), 1);
                     this.model.setCase = this.showCase;
                 }
             },
@@ -654,6 +649,7 @@
             deleteAccept(index, i) {
                 if (typeof this.showAccept[i] !== 'undefined') {
                     this.showAccept[i].splice(this.showAccept[i].indexOf(this.showAccept[i][index]), 1);
+                    this.error['accept'][i].splice(this.error['accept'][i].indexOf(this.error['accept'][i][index]), 1);
                     this.model.accept = this.showAccept;
                 }
             },
@@ -665,13 +661,15 @@
                     offset: offset
                 });
             },
-            submit() {
-//                let count = ['flow', 'item', 'setCase', 'accept'];
+            formValidate() {
+                let status;
                 this.$refs[this.formName.flow].validate((valid) => {
                     let flowStatus = true;
+                    let itemStatus = 0;
                     let setCaseStatus = 0;
                     let acceptStatus = 0;
                     this.itemError = '';
+                    this.itemOpen = [];
                     // item
                     if (this.showItem.length === 0) {
                         this.itemError = '测试项不能为空';
@@ -694,10 +692,60 @@
                         if (setCaseStatus === 1 || acceptStatus === 1) {
                             break;
                         }
+
+                        let iName = this.formName.item + i;
+                        this.$refs[iName][0].validate((iValid) => {
+                            if (!iValid) {
+                                itemStatus = 1;
+                            }
+                        });
+
+                        for (let s = 0; s < this.showCase[id].length; s++) {
+                            let cName = this.formName.setCase;
+                            cName = cName + id + s;
+                            for (let f = 0; f < this.$refs[cName].length; f++) {
+                                this.$refs[cName][f].validate((sValid) => {
+                                    if (!sValid) {
+                                        setCaseStatus = 2;
+                                    }
+                                });
+                            }
+                        }
+
+                        for (let a = 0; a < this.showAccept[id].length; a++) {
+                            let aName = this.formName.accept;
+                            aName = aName + id + a;
+                            for (let n = 0; n < this.$refs[aName].length; n++) {
+                                this.$refs[aName][n].validate((aValid) => {
+                                    if (!aValid) {
+                                        acceptStatus = 2;
+                                    }
+                                });
+                            }
+                        }
+                        if (itemStatus === 1 || setCaseStatus === 2 || acceptStatus === 2) {
+                            if (this.itemOpen.indexOf(i) < 0) {
+                                this.itemOpen.push(i);
+                            }
+                        }
                     }
-                    if (!flowStatus || !setCaseStatus || !acceptStatus) {
+                    if (!flowStatus || itemStatus > 0 || setCaseStatus > 0 || acceptStatus > 0) {
+                        status = false;
                         return false;
                     }
+                    status = true;
+                });
+                return status;
+            },
+            submit() {
+                let status = this.formValidate();
+                if (!status) {
+                    return status;
+                }
+                testAjax.testWorkflowUpdate(this.model).then((data) => {
+                    console.log(data);
+                }).catch((data) => {
+                    console.log(data);
                 });
             },
             create() {

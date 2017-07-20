@@ -55,7 +55,7 @@ class BaseHelper
      * @return array
      * @author lengbin(lengbin0@gmail.com)
      */
-    private static function _changeJson($params, $isJson)
+    public static function changeJson($params, $isJson=true)
     {
         $data = [];
         if ($isJson) {
@@ -86,7 +86,7 @@ class BaseHelper
             ConstantHelper::BROWSER_TYPE_FIREFOX => '火狐浏览器',
             ConstantHelper::BROWSER_TYPE_IE      => 'IE浏览器',
         ];
-        return self::_changeJson($params, $isJson);
+        return self::changeJson($params, $isJson);
     }
 
     /**
@@ -104,7 +104,7 @@ class BaseHelper
             ConstantHelper::TEST_ITEM_TYPE_PAGE => '当前页',
         ];
 
-        return self::_changeJson($params, $isJson);
+        return self::changeJson($params, $isJson);
     }
 
     /**
@@ -125,7 +125,7 @@ class BaseHelper
             ConstantHelper::TEST_CASE_EVENT_TYPE_FILE     => '上传事件',
             ConstantHelper::TEST_CASE_EVENT_TYPE_WAIT     => '等待事件',
         ];
-        return self::_changeJson($params, $isJson);
+        return self::changeJson($params, $isJson);
     }
 
     /**
@@ -146,7 +146,7 @@ class BaseHelper
             ConstantHelper::TEST_CASE_FIND_ELEMENT_TYPE_NAME  => 'name',
             ConstantHelper::TEST_CASE_FIND_ELEMENT_TYPE_LINK  => 'link',
         ];
-        return self::_changeJson($params, $isJson);
+        return self::changeJson($params, $isJson);
     }
 
     /**
@@ -181,7 +181,7 @@ class BaseHelper
             ConstantHelper::TEST_ACCEPT_TYPE_LINK_SEE             => '当前页面包含指定的连接',
             ConstantHelper::TEST_ACCEPT_TYPE_LINK_NOT_SEE         => '当前页面不包含指定的连接',
         ];
-        return self::_changeJson($params, $isJson);
+        return self::changeJson($params, $isJson);
     }
 
 }

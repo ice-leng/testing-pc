@@ -40,12 +40,14 @@ class TestWorkflow extends \business\common\ActiveRecord
             [['project_id', 'order', 'name'], 'required'],
             [
                 [
+                    'id',
                     'project_id',
                     'order',
                 ],
                 'integer',
             ],
-            [['name', 'before_flow'], 'string', 'max' => 32],
+            [['before_flow'], 'safe'],
+            [['name'], 'string', 'max' => 32],
 
         ];
     }
@@ -84,6 +86,22 @@ class TestWorkflow extends \business\common\ActiveRecord
             ->from($this->tableName())
             ->one();
         return isset($order['order']) ? $order['order'] : 0;
+    }
+
+    /**
+     * 通过项目id 获得所有测试流程
+     *
+     * @param $pid
+     *
+     * @return mixed
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getTestWorkflowByProjectId($pid)
+    {
+        return $this->find()->where([
+            'project_id' => $pid,
+            'is_delete' => 0,
+        ])->orderBy('order')->all();
     }
 
 }

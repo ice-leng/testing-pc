@@ -148,4 +148,22 @@ class TestImpl extends BaseService implements TestInterface
     {
         return $this->createFromValidate($this->_accept);
     }
+
+    /**
+     * 通过项目id 获得所有测试流程
+     *
+     * @param $pid
+     *
+     * @return mixed
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getTestWorkflowByProjectId($pid)
+    {
+        $testWorkflow =  $this->_workFlow->getTestWorkflowByProjectId($pid);
+        $data = [];
+        foreach ($testWorkflow as $flow) {
+            $data[$flow['id']] = $flow['name'];
+        }
+        return $data;
+    }
 }

@@ -16,7 +16,7 @@ class CreateFromValidate
     private $_model;
     private $_validateUrls;
     private $_hasMinMax  = ['string', 'integer'];
-    private $_exclude    = ['safe', 'filter', 'file', 'image'];
+    private $_exclude    = ['filter', 'file', 'image'];
     private $_string     = 'string';
     private $_integer    = 'integer';
     private $_number     = 'number';

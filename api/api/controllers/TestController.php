@@ -77,11 +77,21 @@ class TestController extends Controller
 
     public function actionTestWorkflowName()
     {
-        return [
-            ['id' => 1, 'text' => '呵呵'],
-            ['id' => 2, 'text' => '呵呵22'],
-            ['id' => 3, 'text' => '呵呵333'],
-        ];
+        $pid = \Yii::$app->request->get('pid');
+        $data = $this->_test->getTestWorkflowByProjectId($pid);
+        return BaseHelper::changeJson($data);
+    }
+
+    public function actionUpdate()
+    {
+        $params = \Yii::$app->request->post();
+        $data = $this->validateRequestParams($params, [
+            'flow',
+            'item',
+            'setCase',
+            'accept'
+        ], []);
+        return $params;
     }
 
 }

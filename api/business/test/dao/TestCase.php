@@ -37,7 +37,7 @@ class TestCase extends \business\common\ActiveRecord
     {
         return [
             [
-                ['test_workflow_id', 'test_item_id', 'event_type', 'name', 'element', 'element_params', 'event_params'],
+                ['test_workflow_id', 'test_item_id', 'event_type', 'name', 'element'],
                 'required',
             ],
             [
@@ -55,7 +55,7 @@ class TestCase extends \business\common\ActiveRecord
                 'integer',
             ],
             [['name'], 'string', 'max' => 32],
-            [['element', 'element_params', 'event_params'], 'string', 'max' => 255],
+            [['element', 'element_params'], 'string', 'max' => 255],
             [
                 [
                     'id',
@@ -63,7 +63,6 @@ class TestCase extends \business\common\ActiveRecord
                     'test_item_id',
                     'name',
                     'element_type',
-                    'event_params',
                     'event_type',
                     'element',
                     'element_params',
@@ -87,7 +86,6 @@ class TestCase extends \business\common\ActiveRecord
             'test_item_id'     => '测试项id',
             'name'             => '名称',
             'element_type'     => '查找类型',
-            'event_params'     => '事件参数',
             'event_type'       => '事件类型',
             'element'          => '查找元素',
             'element_params'   => '填充数据',

@@ -33,10 +33,10 @@ class TestAccept extends \business\common\ActiveRecord
     public function rules()
     {
         return [
-            [['test_item_id', 'element', 'accept_params'], 'required'],
+            [['test_item_id', 'element', 'accept_params', 'accept_type'], 'required'],
             [['test_item_id', 'element_type', 'accept_type'], 'integer'],
             [['element', 'accept_params'], 'string', 'max' => 255],
-            [['id', 'test_item_id', 'element', 'accept_type', 'accept_params'], 'trim'],
+            [[ 'test_item_id', 'element', 'accept_type', 'accept_params'], 'trim'],
         ];
     }
 

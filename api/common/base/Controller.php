@@ -64,7 +64,7 @@ class Controller extends \yii\rest\Controller
                     $param = $default;
                 }
             }
-            if($default === []){
+            if($default === [] && $param === null){
                 $param = [];
             }
             if (is_int($key)) {

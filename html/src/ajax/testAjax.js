@@ -16,5 +16,12 @@ export default {
             url: '/test/test-workflow-name',
             body: body
         });
+    },
+    testWorkflowUpdate(body) {
+        return Base({
+            url: '/test/update',
+            body: body,
+            method: 'post'
+        });
     }
 };
