@@ -32,12 +32,12 @@ class TestItem extends \business\common\ActiveRecord
     public function rules()
     {
         return [
-            [[ 'name', 'type'], 'required'],
+            [['name', 'type'], 'required'],
             [['test_workflow_id', 'type'], 'integer'],
             [['name'], 'string', 'max' => 32],
             [['url'], 'string', 'max' => 255],
             [['url'], 'url', 'defaultScheme' => 'http'],
-            [['url', 'id', 'name', 'type', 'test_workflow_id'], 'trim'],
+            [['id', 'url', 'name', 'type', 'test_workflow_id'], 'trim'],
         ];
     }
 
@@ -56,5 +56,37 @@ class TestItem extends \business\common\ActiveRecord
             'created_at'       => '创建时间',
             'updated_at'       => '更新时间',
         ];
+    }
+
+    /**
+     * 通过流程id 删除 测试项
+     *
+     * @param int $workflowId 流程id
+     *
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function deleteTestItem($workflowId)
+    {
+        TestItem::deleteAll([
+            'test_workflow_id' => $workflowId,
+        ]);
+    }
+
+    /**
+     * 添加 测试项
+     *
+     * @param array $params ['url', 'name', 'type', 'test_workflow_id']
+     *
+     * @return object
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function updateTestItem(array $params)
+    {
+        $workflowId = isset($params['test_workflow_id']) ? $params['test_workflow_id'] : 0;
+        $this->deleteTestItem($workflowId);
+        $item = new TestItem();
+        $item->setAttributes($params);
+        $item->save();
+        return $item;
     }
 }

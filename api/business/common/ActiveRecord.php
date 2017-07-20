@@ -49,7 +49,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
      */
     public function invalidParamException($message = '', $code = CodeHelper::SYS_PARAMS_ERROR)
     {
-        if ($message == '') {
+        if ($message === '') {
             $message = CodeHelper::getCodeText($code);
         }
         BaseHelper::invalidParamException($code, $message);
@@ -65,7 +65,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
      */
     public function invalidFormException($message = '', $code = CodeHelper::SYS_FORM_ERROR)
     {
-        if ($message == '') {
+        if ($message === '') {
             $message = CodeHelper::getCodeText($code);
         }
         BaseHelper::invalidFormException($code, $message);

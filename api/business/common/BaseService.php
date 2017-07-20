@@ -29,7 +29,7 @@ class BaseService extends Component
      */
     public function invalidParamException($code, $message = '')
     {
-        if ($message == '') {
+        if ($message === '') {
             $message = CodeHelper::getCodeText($code);
         }
         BaseHelper::invalidParamException($code, $message);
@@ -45,7 +45,7 @@ class BaseService extends Component
      */
     public function invalidFormException($code, $message = '')
     {
-        if ($message == '') {
+        if ($message === '') {
             $message = CodeHelper::getCodeText($code);
         }
         BaseHelper::invalidFormException($code, $message);

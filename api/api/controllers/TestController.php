@@ -91,6 +91,9 @@ class TestController extends Controller
             'setCase',
             'accept'
         ], []);
+        $workflow = $this->_test->update($data);
+
+
         return $params;
     }
 

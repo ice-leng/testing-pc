@@ -48,6 +48,7 @@ class TestWorkflow extends \business\common\ActiveRecord
             ],
             [['before_flow'], 'safe'],
             [['name'], 'string', 'max' => 32],
+            [['id', 'project_id', 'before_flow', 'name', 'order'], 'trim'],
 
         ];
     }
@@ -100,8 +101,63 @@ class TestWorkflow extends \business\common\ActiveRecord
     {
         return $this->find()->where([
             'project_id' => $pid,
-            'is_delete' => 0,
+            'is_delete'  => 0,
         ])->orderBy('order')->all();
+    }
+
+    /**
+     * 通过测试流程id获得测试流程信息
+     *
+     * @param int $id
+     *
+     * @return mixed
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getTestWorkflowById($id)
+    {
+        return $this->find()->where([
+            'id'        => $id,
+            'is_delete' => 0,
+        ])->one();
+    }
+
+
+    /**
+     * 添加 / 更新 测试流程
+     *
+     * @param array $params ['id', 'project_id', 'before_flow', 'name', 'order']
+     * @param array $flows  所有流程
+     *
+     * @return array
+     * @author lengbin(lengbin0@gmail.com)
+     * @throws Exception
+     */
+    public function updateTestWorkflow(array $params, $flows)
+    {
+        if (isset($params['id']) && !empty($params['id'])) {
+            $workflow = $this->getTestWorkflowById($params['id']);
+            if (empty($workflow)) {
+                $this->invalidParamException('测试流程不存在');
+            }
+        } else {
+            $workflow = new TestWorkflow();
+            $params['id'] = '';
+        }
+        if (isset($params['before_flow']) && is_array($params['before_flow'])) {
+            $ids = [];
+            foreach ($params['before_flow'] as $flow){
+                $id = isset($flow['id']) ? $flow['id'] : 0;
+                if(!isset($flows[$id]) || empty($flows[$id])){
+                    $this->invalidParamException("前置流程【{$flow['text']}】不存在");
+                }
+                $ids[] = $id;
+            }
+            $bf = implode(',', $ids);
+            $params['before_flow'] = $bf;
+        }
+        $workflow->setAttributes($params);
+        $workflow->save();
+        return $workflow;
     }
 
 }

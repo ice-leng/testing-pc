@@ -33,7 +33,7 @@ class TestAccept extends \business\common\ActiveRecord
     public function rules()
     {
         return [
-            [['test_item_id', 'element', 'accept_params', 'accept_type'], 'required'],
+            [['test_item_id', 'element_type', 'element', 'accept_params', 'accept_type'], 'required'],
             [['test_item_id', 'element_type', 'accept_type'], 'integer'],
             [['element', 'accept_params'], 'string', 'max' => 255],
             [[ 'test_item_id', 'element', 'accept_type', 'accept_params'], 'trim'],
@@ -56,5 +56,36 @@ class TestAccept extends \business\common\ActiveRecord
             'created_at'    => '创建时间',
             'updated_at'    => '更新时间',
         ];
+    }
+    /**
+     * 通过测试项id 删除 期望设置
+     *
+     * @param int $itemId 测试项id
+     *
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function deleteTestAccept($itemId)
+    {
+        TestAccept::deleteAll([
+            'test_item_id' => $itemId,
+        ]);
+    }
+
+    /**
+     * 添加 期望设置
+     *
+     * @param array $params ['test_item_id', 'element', 'accept_type', 'accept_params']
+     *
+     * @return object
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function updateTestAccept(array $params)
+    {
+        $itemId = isset($params['test_item_id']) ? $params['test_item_id'] : 0;
+        $this->deleteTestAccept($itemId);
+        $setCase = new TestAccept();
+        $setCase->setAttributes($params);
+        $setCase->save();
+        return $setCase;
     }
 }

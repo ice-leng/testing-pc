@@ -83,4 +83,45 @@ class TestSetCase extends \business\common\ActiveRecord
             'updated_at'     => '更新时间',
         ];
     }
+
+    /**
+     * 通过测试项id 删除 用例设置
+     *
+     * @param int $itemId 测试项id
+     *
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function deleteTestSetCase($itemId)
+    {
+        TestSetCase::deleteAll([
+            'test_item_id' => $itemId,
+        ]);
+    }
+
+    /**
+     * 添加 用例设置
+     *
+     * @param array $params ['test_item_id',
+     *                      'name',
+     *                      'element_type',
+     *                      'event_type',
+     *                      'element',
+     *                      'element_params',
+     *                      'wait_time',
+     *                      'is_required',
+     *                      'is_xss',
+     *                      'is_sql',]
+     *
+     * @return object
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function updateTestSetCase(array $params)
+    {
+        $itemId = isset($params['test_item_id']) ? $params['test_item_id'] : 0;
+        $this->deleteTestSetCase($itemId);
+        $setCase = new TestSetCase();
+        $setCase->setAttributes($params);
+        $setCase->save();
+        return $setCase;
+    }
 }

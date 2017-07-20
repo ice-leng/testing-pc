@@ -47,22 +47,13 @@ interface TestInterface
 
     /**
      * 通过项目id 获得所有测试流程
-     * @param $pid
      *
-     * @return mixed
+     * @param int $pid project id
+     *
+     * @return array [ [id => name], ... ]
      * @author lengbin(lengbin0@gmail.com)
      */
     public function getTestWorkflowByProjectId($pid);
-
-    /**
-     * 添加 / 更新 测试流程
-     *
-     * @param array $params
-     *
-     * @return mixed
-     * @author lengbin(lengbin0@gmail.com)
-     */
-    public function updateTestWorkflow(array $params);
 
     /**
      * 通过测试流程id获得测试流程排序
@@ -97,4 +88,19 @@ interface TestInterface
      * @author lengbin(lengbin0@gmail.com)
      */
     public function getTestAcceptFormValidate();
+
+    /**
+     * 添加 / 更新 测试流程
+     *
+     * @param array $params [
+     *                          'flow' => [],
+     *                          'item' => [],
+     *                          'setCase' => [],
+     *                          'accept => []'
+     *                      ]
+     *
+     * @return array
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function update(array $params);
 }

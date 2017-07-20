@@ -128,7 +128,7 @@ class Project extends \business\common\ActiveRecord
         if (isset($params['id']) && !empty($params['id'])) {
             $project = $this->getProjectById($params['id']);
             if (empty($project)) {
-                $this->invalidParamException(CodeHelper::SYS_PARAMS_ERROR);
+                $this->invalidParamException();
             }
         }else{
             $project = new Project();

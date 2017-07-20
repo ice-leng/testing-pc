@@ -743,9 +743,22 @@
                     return status;
                 }
                 testAjax.testWorkflowUpdate(this.model).then((data) => {
-                    console.log(data);
+                    console.log('success', data);
                 }).catch((data) => {
-                    console.log(data);
+                    let msg = data.data.message;
+                    this.error['flow'] = JSON.parse(msg['flow']);
+                    for (let i = 0; i < msg['item'].length; i++) {
+                        this.error['item'][i] = JSON.parse(msg['item'][i]);
+                        if (this.itemOpen.indexOf(i) < 0) {
+                            this.itemOpen.push(i);
+                        }
+                        for (let n = 0; n < msg['setCase'][i].length; n++) {
+                            this.error['setCase'][i][n] = JSON.parse(msg['setCase'][i][n]);
+                        }
+                        for (let m = 0; m < msg['accept'][i].length; m++) {
+                            this.error['accept'][i][m] = JSON.parse(msg['accept'][i][m]);
+                        }
+                    }
                 });
             },
             create() {

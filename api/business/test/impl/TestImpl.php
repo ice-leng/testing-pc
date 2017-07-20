@@ -17,6 +17,8 @@ use business\test\dao\TestLog;
 use business\test\dao\TestSetCase;
 use business\test\dao\TestWorkflow;
 use business\test\TestInterface;
+use common\helpers\CodeHelper;
+use yii\base\Exception;
 
 class TestImpl extends BaseService implements TestInterface
 {
@@ -83,19 +85,6 @@ class TestImpl extends BaseService implements TestInterface
     }
 
     /**
-     * 添加 / 更新 测试流程
-     *
-     * @param array $params
-     *
-     * @return mixed
-     * @author lengbin(lengbin0@gmail.com)
-     */
-    public function updateTestWorkflow(array $params)
-    {
-        // TODO: Implement updateTestWorkflow() method.
-    }
-
-    /**
      * 通过测试流程id获得测试流程排序
      *
      * @param int $id
@@ -152,9 +141,9 @@ class TestImpl extends BaseService implements TestInterface
     /**
      * 通过项目id 获得所有测试流程
      *
-     * @param $pid
+     * @param int $pid project id
      *
-     * @return mixed
+     * @return array [ [id => name], ... ]
      * @author lengbin(lengbin0@gmail.com)
      */
     public function getTestWorkflowByProjectId($pid)
@@ -165,5 +154,75 @@ class TestImpl extends BaseService implements TestInterface
             $data[$flow['id']] = $flow['name'];
         }
         return $data;
+    }
+
+    /**
+     * 添加 / 更新 测试流程
+     *
+     * @param array $params     [
+     *                          'flow' => [],
+     *                          'item' => [],
+     *                          'setCase' => [],
+     *                          'accept => []'
+     *                          ]
+     *
+     * @return array
+     * @author lengbin(lengbin0@gmail.com)
+     * @throws Exception
+     */
+    public function update(array $params)
+    {
+        $workflow = [];
+        $error = [];
+        $flow = isset($params['flow']) ? $params['flow'] : [];
+        $pid  = isset($flow['project_id']) ? $flow['project_id'] : 0;
+        $flows = $this->getTestWorkflowByProjectId($pid);
+        $items = isset($params['item']) ? $params['item'] : [];
+        $setCases = isset($params['setCase']) ? $params['setCase'] : [];
+        $accepts  = isset($params['accept']) ? $params['accept'] : [];
+        try{
+            $workflow = $this->_workFlow->updateTestWorkflow([], $flows);
+        }catch (Exception $e){
+            if ($e->getCode() === CodeHelper::SYS_PARAMS_ERROR) {
+                throw $e;
+            }
+            $error['flow'] = $e->getMessage();
+        }
+
+        foreach ($items as $i => $item){
+            $itemObj = [];
+            $flowId = isset($workflow['id']) ? $workflow['id'] : 0;
+            $item['test_workflow_id'] = $flowId;
+            try{
+                $itemObj = $this->_item->updateTestItem([]);
+            }catch (Exception $e){
+                $error['item'][$i] = $e->getMessage();
+            }
+            $setCase  = isset($setCases[$i]) ? $setCases[$i] : [];
+            $acceptes = isset($accepts[$i]) ? $accepts[$i] : [];
+            foreach ($setCase as $m => $case) {
+                $itemId = isset($itemObj['id']) ? $itemObj['id'] : 0;
+                $case['test_item_id'] = $itemId;
+                try{
+                    $itemObj = $this->_setCase->updateTestSetCase([]);
+                }catch (Exception $e){
+                    $error['setCase'][$i][$m] = $e->getMessage();
+                }
+            }
+            foreach ($acceptes as $n => $accept) {
+                $itemId = isset($itemObj['id']) ? $itemObj['id'] : 0;
+                $accept['test_item_id'] = $itemId;
+                try{
+                    $itemObj = $this->_accept->updateTestAccept([]);
+                }catch (Exception $e){
+                    $error['accept'][$i][$n] = $e->getMessage();
+                }
+            }
+        }
+
+        if(!empty($error)){
+            $this->invalidFormException(CodeHelper::SYS_FORM_ERROR, $error);
+        }
+        return $workflow;
     }
 }
