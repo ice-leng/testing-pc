@@ -741,8 +741,10 @@
                 if (!status) {
                     return status;
                 }
-                testAjax.testWorkflowUpdate(this.model).then((data) => {
-                    console.log('success', data);
+                testAjax.testWorkflowUpdate(this.model).then(({data}) => {
+                    let id = data.data.id;
+                    this.$router.replace({path: '/test/edit', query: {pid: this.$route.query.pid, id: id}});
+                    window.location.reload();
                 }).catch((data) => {
                     let msg = data.data.message;
                     this.error['flow'] = JSON.parse(msg['flow']);

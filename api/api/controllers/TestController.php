@@ -87,6 +87,7 @@ class TestController extends Controller
                     }
                 }
             }
+            $isCreateCase = true;
         }
         return [
             'flow'         => $flowValidate,
@@ -116,7 +117,6 @@ class TestController extends Controller
     public function actionUpdate()
     {
         $params = \Yii::$app->request->post();
-
         $data = $this->validateRequestParams($params, [
             'flow',
             'item',
@@ -124,9 +124,8 @@ class TestController extends Controller
             'accept',
         ], []);
         $workflow = $this->_test->update($data);
-
-
-        return $params;
+        $id = isset($workflow['id']) ? $workflow['id'] : 0;
+        return ['id' => $id];
     }
 
 }
