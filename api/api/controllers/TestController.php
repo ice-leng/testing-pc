@@ -60,7 +60,7 @@ class TestController extends Controller
                     $pid = \Yii::$app->request->get('pid');
                     $wfs = $this->_test->getTestWorkflowByProjectId($pid);
                     $wfIds = explode(',', $workflow['before_flow']);
-                    foreach ($wfIds as $wfId){
+                    foreach ($wfIds as $wfId) {
                         if (isset($wfs[$wfId])) {
                             $beforeFlow[$wfId] = $wfs[$wfId];
                         }
@@ -73,20 +73,20 @@ class TestController extends Controller
             if (count($items) > 0) {
                 $itemNum = 1;
                 $itemValidate['model'] = $items;
-                foreach ($items as $item){
+                foreach ($items as $item) {
+                    $tid = isset($item['id']) ? $item['id'] : '';
                     $setCase = $item->setCases;
                     if (count($setCase) > 0) {
                         $setCaseNum = 1;
-                        $setCaseValidate['model'] = [$item->id => $setCase];
+                        $setCaseValidate['model'][$tid] = $setCase;
                     }
                     $accept = $item->accepts;
                     if (count($accept) > 0) {
                         $acceptNum = 1;
-                        $acceptValidate['model'] = [$item->id => $accept];
+                        $acceptValidate['model'][$tid] = $accept;
                     }
                 }
             }
-
         }
         return [
             'flow'         => $flowValidate,
@@ -121,9 +121,9 @@ class TestController extends Controller
             'flow',
             'item',
             'setCase',
-            'accept'
+            'accept',
         ], []);
-        //$workflow = $this->_test->update($data);
+        $workflow = $this->_test->update($data);
 
 
         return $params;

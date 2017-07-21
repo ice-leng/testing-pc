@@ -113,8 +113,6 @@ class TestItem extends \business\common\ActiveRecord
      */
     public function updateTestItem(array $params)
     {
-        $workflowId = isset($params['test_workflow_id']) ? $params['test_workflow_id'] : 0;
-        $this->deleteTestItem($workflowId);
         $item = new TestItem();
         $item->setAttributes($params);
         $item->save();

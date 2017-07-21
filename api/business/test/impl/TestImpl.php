@@ -192,48 +192,55 @@ class TestImpl extends BaseService implements TestInterface
         $items = isset($params['item']) ? $params['item'] : [];
         $setCases = isset($params['setCase']) ? $params['setCase'] : [];
         $accepts = isset($params['accept']) ? $params['accept'] : [];
-        try {
-            $workflow = $this->_workFlow->updateTestWorkflow($flow, $flows);
-        } catch (Exception $e) {
-            if ($e->getCode() === CodeHelper::SYS_PARAMS_ERROR) {
-                throw $e;
-            }
-            $error['flow'] = $e->getMessage();
-        }
-
-        foreach ($items as $i => $item) {
-            $itemObj = [];
-            $flowId = isset($workflow['id']) ? $workflow['id'] : 0;
-            $item['test_workflow_id'] = $flowId;
+        $con = \Yii::$app->db->beginTransaction();
+        try{
             try {
-                $itemObj = $this->_item->updateTestItem($item);
+                $workflow = $this->_workFlow->updateTestWorkflow($flow, $flows);
             } catch (Exception $e) {
-                $error['item'][$i] = $e->getMessage();
+                if ($e->getCode() === CodeHelper::SYS_PARAMS_ERROR) {
+                    throw $e;
+                }
+                $error['flow'] = $e->getMessage();
             }
-            $setCase = isset($setCases[$i]) ? $setCases[$i] : [];
-            $acceptes = isset($accepts[$i]) ? $accepts[$i] : [];
-            $itemId = isset($itemObj['id']) ? $itemObj['id'] : 0;
-            foreach ($setCase as $m => $case) {
-                $case['test_item_id'] = $itemId;
-                $case['is_required'] = $case['is_required'] ? $case['is_required'] : 0;
-                $case['is_xss'] = $case['is_xss'] ? $case['is_xss'] : 0;
-                $case['is_sql'] = $case['is_sql'] ? $case['is_sql'] : 0;
+            $flowId = isset($workflow['id']) ? $workflow['id'] : 0;
+            $this->_item->deleteTestItem($flowId);
+            foreach ($items as $i => $item) {
+                $itemObj = [];
+                $item['test_workflow_id'] = $flowId;
                 try {
-                    $this->_setCase->updateTestSetCase($case);
+                    $itemObj = $this->_item->updateTestItem($item);
                 } catch (Exception $e) {
-                    $error['setCase'][$i][$m] = $e->getMessage();
+                    $error['item'][$i] = $e->getMessage();
+                }
+                $setCase = isset($setCases[$i]) ? $setCases[$i] : [];
+                $acceptes = isset($accepts[$i]) ? $accepts[$i] : [];
+                $itemId = isset($itemObj['id']) ? $itemObj['id'] : 0;
+                $this->_setCase->deleteTestSetCase($itemId);
+                $this->_accept->deleteTestAccept($itemId);
+                foreach ($setCase as $m => $case) {
+                    $case['test_item_id'] = $itemId;
+                    $case['is_required'] = $case['is_required'] ? 1 : 0;
+                    $case['is_xss'] = $case['is_xss'] ? 1 : 0;
+                    $case['is_sql'] = $case['is_sql'] ? 1 : 0;
+                    try {
+                        $this->_setCase->updateTestSetCase($case);
+                    } catch (Exception $e) {
+                        $error['setCase'][$i][$m] = $e->getMessage();
+                    }
+                }
+                foreach ($acceptes as $n => $accept) {
+                    $accept['test_item_id'] = $itemId;
+                    try {
+                        $this->_accept->updateTestAccept($accept);
+                    } catch (Exception $e) {
+                        $error['accept'][$i][$n] = $e->getMessage();
+                    }
                 }
             }
-            foreach ($acceptes as $n => $accept) {
-                $accept['test_item_id'] = $itemId;
-                try {
-                    $this->_accept->updateTestAccept($accept);
-                } catch (Exception $e) {
-                    $error['accept'][$i][$n] = $e->getMessage();
-                }
-            }
+            $con->commit();
+        }catch (Exception $e){
+            $con->rollBack();
         }
-
         if (!empty($error)) {
             $this->invalidFormException(CodeHelper::SYS_FORM_ERROR, $error);
         }

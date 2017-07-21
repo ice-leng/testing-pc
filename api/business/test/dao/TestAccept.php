@@ -81,8 +81,6 @@ class TestAccept extends \business\common\ActiveRecord
      */
     public function updateTestAccept(array $params)
     {
-        $itemId = isset($params['test_item_id']) ? $params['test_item_id'] : 0;
-        $this->deleteTestAccept($itemId);
         $setCase = new TestAccept();
         $setCase->setAttributes($params);
         $setCase->save();

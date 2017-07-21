@@ -117,8 +117,6 @@ class TestSetCase extends \business\common\ActiveRecord
      */
     public function updateTestSetCase(array $params)
     {
-        $itemId = isset($params['test_item_id']) ? $params['test_item_id'] : 0;
-        $this->deleteTestSetCase($itemId);
         $setCase = new TestSetCase();
         $setCase->setAttributes($params);
         $setCase->save();
