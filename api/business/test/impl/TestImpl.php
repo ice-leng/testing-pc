@@ -148,7 +148,7 @@ class TestImpl extends BaseService implements TestInterface
      */
     public function getTestWorkflowByProjectId($pid)
     {
-        $testWorkflow =  $this->_workFlow->getTestWorkflowByProjectId($pid);
+        $testWorkflow = $this->_workFlow->getTestWorkflowByProjectId($pid);
         $data = [];
         foreach ($testWorkflow as $flow) {
             $data[$flow['id']] = $flow['name'];
@@ -175,52 +175,55 @@ class TestImpl extends BaseService implements TestInterface
         $workflow = [];
         $error = [];
         $flow = isset($params['flow']) ? $params['flow'] : [];
-        $pid  = isset($flow['project_id']) ? $flow['project_id'] : 0;
+        $pid = isset($flow['project_id']) ? $flow['project_id'] : 0;
         $flows = $this->getTestWorkflowByProjectId($pid);
         $items = isset($params['item']) ? $params['item'] : [];
         $setCases = isset($params['setCase']) ? $params['setCase'] : [];
-        $accepts  = isset($params['accept']) ? $params['accept'] : [];
-        try{
-            $workflow = $this->_workFlow->updateTestWorkflow([], $flows);
-        }catch (Exception $e){
+        $accepts = isset($params['accept']) ? $params['accept'] : [];
+        try {
+            $workflow = $this->_workFlow->updateTestWorkflow($flow, $flows);
+        } catch (Exception $e) {
             if ($e->getCode() === CodeHelper::SYS_PARAMS_ERROR) {
                 throw $e;
             }
             $error['flow'] = $e->getMessage();
         }
 
-        foreach ($items as $i => $item){
+        foreach ($items as $i => $item) {
             $itemObj = [];
             $flowId = isset($workflow['id']) ? $workflow['id'] : 0;
             $item['test_workflow_id'] = $flowId;
-            try{
-                $itemObj = $this->_item->updateTestItem([]);
-            }catch (Exception $e){
+            try {
+                $itemObj = $this->_item->updateTestItem($item);
+            } catch (Exception $e) {
                 $error['item'][$i] = $e->getMessage();
             }
-            $setCase  = isset($setCases[$i]) ? $setCases[$i] : [];
+            $setCase = isset($setCases[$i]) ? $setCases[$i] : [];
             $acceptes = isset($accepts[$i]) ? $accepts[$i] : [];
             foreach ($setCase as $m => $case) {
                 $itemId = isset($itemObj['id']) ? $itemObj['id'] : 0;
                 $case['test_item_id'] = $itemId;
-                try{
-                    $itemObj = $this->_setCase->updateTestSetCase([]);
-                }catch (Exception $e){
+                $case['is_required'] = $case['is_required'] ? $case['is_required'] : 0;
+                $case['is_xss'] = $case['is_xss'] ? $case['is_xss'] : 0;
+                $case['is_sql'] = $case['is_sql'] ? $case['is_sql'] : 0;
+                try {
+                    $itemObj = $this->_setCase->updateTestSetCase($case);
+                } catch (Exception $e) {
                     $error['setCase'][$i][$m] = $e->getMessage();
                 }
             }
             foreach ($acceptes as $n => $accept) {
                 $itemId = isset($itemObj['id']) ? $itemObj['id'] : 0;
                 $accept['test_item_id'] = $itemId;
-                try{
-                    $itemObj = $this->_accept->updateTestAccept([]);
-                }catch (Exception $e){
+                try {
+                    $itemObj = $this->_accept->updateTestAccept($accept);
+                } catch (Exception $e) {
                     $error['accept'][$i][$n] = $e->getMessage();
                 }
             }
         }
 
-        if(!empty($error)){
+        if (!empty($error)) {
             $this->invalidFormException(CodeHelper::SYS_FORM_ERROR, $error);
         }
         return $workflow;
