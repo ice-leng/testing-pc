@@ -110,7 +110,7 @@ class TestWorkflow extends \business\common\ActiveRecord
      *
      * @param int $id
      *
-     * @return mixed
+     * @return object
      * @author lengbin(lengbin0@gmail.com)
      */
     public function getTestWorkflowById($id)
@@ -134,7 +134,7 @@ class TestWorkflow extends \business\common\ActiveRecord
      * @param array $params ['id', 'project_id', 'before_flow', 'name', 'order']
      * @param array $flows  所有流程
      *
-     * @return array
+     * @return mixed
      * @author lengbin(lengbin0@gmail.com)
      * @throws Exception
      */

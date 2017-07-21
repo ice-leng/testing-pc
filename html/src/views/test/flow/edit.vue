@@ -380,9 +380,9 @@
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="primary" @click="submit()">保存</el-button>
-                    <el-button type="info" @click="create()" :disabled="isCreateCase">生成测试用例</el-button>
-                    <el-button type="success" @click="run()" :disabled="isRun">运行</el-button>
+                    <el-button type="primary" @click="submit()" v-loading.fullscreen.lock="loading">保存</el-button>
+                    <el-button type="info" @click="create()" :disabled="isCreateCase" v-loading.fullscreen.lock="loading">生成测试用例</el-button>
+                    <el-button type="success" @click="run()" :disabled="isRun" v-loading.fullscreen.lock="loading">运行</el-button>
                     <el-button @click="$router.go(-1)">取消</el-button>
                 </el-form-item>
             </el-form>
@@ -437,7 +437,8 @@
                 formName: {},
                 waitTime: 0,
                 itemError: '',
-                itemUrlStatus: []
+                itemUrlStatus: [],
+                loading: false
             };
         },
         created() {
@@ -737,15 +738,18 @@
                 return status;
             },
             submit() {
+                this.loading = true;
                 let status = this.formValidate();
                 if (!status) {
                     return status;
                 }
                 testAjax.testWorkflowUpdate(this.model).then(({data}) => {
+                    this.loading = false;
                     let id = data.data.id;
                     this.$router.replace({path: '/test/edit', query: {pid: this.$route.query.pid, id: id}});
                     window.location.reload();
                 }).catch((data) => {
+                    this.loading = false;
                     let msg = data.data.message;
                     this.error['flow'] = JSON.parse(msg['flow']);
                     for (let i = 0; i < msg['item'].length; i++) {
@@ -763,10 +767,18 @@
                 });
             },
             create() {
-                console.log(2);
+                this.loading = true;
+                testAjax.generateCase({
+                    id: this.$route.query.id
+                }).then(({data}) => {
+                    this.isRun = false;
+                    this.loading = false;
+                });
             },
             run() {
+                this.loading = true;
                 console.log(1);
+                this.loading = false;
             }
         }
     };

@@ -23,5 +23,12 @@ export default {
             body: body,
             method: 'post'
         });
+    },
+    generateCase(body) {
+        return Base({
+            url: '/test/generate-case',
+            body: body,
+            method: 'get'
+        });
     }
 };

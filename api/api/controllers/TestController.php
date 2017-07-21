@@ -72,6 +72,8 @@ class TestController extends Controller
             $items = $this->_test->getTestItemByWorkflowId($id);
             if (count($items) > 0) {
                 $itemNum = 1;
+                $isCreateCase = true;
+                $isRun = $this->_test->isRun($id);
                 $itemValidate['model'] = $items;
                 foreach ($items as $item) {
                     $tid = isset($item['id']) ? $item['id'] : '';
@@ -87,7 +89,7 @@ class TestController extends Controller
                     }
                 }
             }
-            $isCreateCase = true;
+
         }
         return [
             'flow'         => $flowValidate,
@@ -126,6 +128,18 @@ class TestController extends Controller
         $workflow = $this->_test->update($data);
         $id = isset($workflow['id']) ? $workflow['id'] : 0;
         return ['id' => $id];
+    }
+
+    public function actionGenerateCase()
+    {
+        $id = \Yii::$app->request->get('id');
+        $this->_test->generateCase($id);
+        return [];
+    }
+
+    public function actionRun()
+    {
+
     }
 
 }

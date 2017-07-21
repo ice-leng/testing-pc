@@ -96,4 +96,64 @@ class TestCase extends \business\common\ActiveRecord
             'updated_at'       => '更新时间',
         ];
     }
+
+    /**
+     * 通过流程id 获得测试流程信息
+     *
+     * @param int $workflowId
+     *
+     * @return array|\yii\db\ActiveRecord[]
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getTestCaseByWorkflowId($workflowId)
+    {
+        return $this->find()->where([
+            'test_workflow_id' => $workflowId,
+        ])->all();
+    }
+
+    /**
+     * 删除 测试流程
+     *
+     * @param int $workflowId
+     *
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function deleteTestCaseByWorkflowId($workflowId)
+    {
+        TestCase::deleteAll([
+            'test_workflow_id' => $workflowId,
+        ]);
+    }
+
+    /**
+     * 批量添加 测试用例
+     *
+     * @param array $params
+     *
+     * @return array|int
+     * @throws \yii\db\Exception
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function batchAddTestCase(array $params)
+    {
+        if (empty($params)) {
+            return $params;
+        }
+        return Yii::$app->db->createCommand()->batchInsert($this->tableName(), [
+            'test_workflow_id',
+            'test_item_id',
+            'name',
+            'element_type',
+            'event_type',
+            'element',
+            'element_params',
+            'wait_time',
+            'is_right',
+            'is_delete',
+            'created_at',
+            'updated_at',
+        ], $params)->execute();
+    }
+
 }

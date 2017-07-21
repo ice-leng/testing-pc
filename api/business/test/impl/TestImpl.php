@@ -76,12 +76,16 @@ class TestImpl extends BaseService implements TestInterface
      *
      * @param int $id
      *
-     * @return mixed
+     * @return object
      * @author lengbin(lengbin0@gmail.com)
      */
     public function getTestWorkflowById($id)
     {
-        return $this->_workFlow->getTestWorkflowById($id);
+        $workflow = $this->_workFlow->getTestWorkflowById($id);
+        if (empty($workflow)) {
+            $this->invalidParamException(CodeHelper::SYS_PARAMS_ERROR, '测试流程不存在');
+        }
+        return $workflow;
     }
 
     /**
@@ -193,7 +197,7 @@ class TestImpl extends BaseService implements TestInterface
         $setCases = isset($params['setCase']) ? $params['setCase'] : [];
         $accepts = isset($params['accept']) ? $params['accept'] : [];
         $con = \Yii::$app->db->beginTransaction();
-        try{
+        try {
             try {
                 $workflow = $this->_workFlow->updateTestWorkflow($flow, $flows);
             } catch (Exception $e) {
@@ -238,12 +242,117 @@ class TestImpl extends BaseService implements TestInterface
                 }
             }
             $con->commit();
-        }catch (Exception $e){
+        } catch (Exception $e) {
             $con->rollBack();
         }
         if (!empty($error)) {
             $this->invalidFormException(CodeHelper::SYS_FORM_ERROR, $error);
         }
         return $workflow;
+    }
+
+    /**
+     * 是否执行测试
+     *
+     * @param int $workflowId
+     *
+     * @return mixed
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function isRun($workflowId)
+    {
+        $case = $this->_case->getTestCaseByWorkflowId($workflowId);
+        return empty($case) ? false : true;
+    }
+
+    /**
+     * batch case
+     *
+     * @param array $setCase
+     * @param int   $workflowId
+     * @param int   $isRight
+     * @param int   $type
+     *
+     * @return array
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    private function _getBatchCase($setCase, $workflowId, $isRight = 0, $type = 0)
+    {
+        switch ($type) {
+            case 1:
+                $name = '|不能为空';
+                $params = '';
+                break;
+            case 2:
+                $name = '|xss攻击';
+                $params = '<img src=”javacript:alert(/XSS/)”></img>';
+                break;
+            case 3:
+                $name = '|sql注入';
+                $params = ' or 1=1 ';
+                break;
+            default:
+                $name = '';
+                $params = $setCase['element_params'];
+                break;
+        }
+        return [
+            $workflowId,
+            $setCase['id'],
+            $setCase['name'] . $name,
+            $setCase['element_type'],
+            $setCase['event_type'],
+            $setCase['element'],
+            $params,
+            $setCase['wait_time'],
+            $isRight,
+            0,
+            time(),
+            time(),
+        ];
+    }
+
+    /**
+     * 通过流程id 生成测试用例
+     *
+     * @param int $workflowId
+     *
+     * @return mixed
+     * @author lengbin(lengbin0@gmail.com)
+     * @throws \Exception
+     */
+    public function generateCase($workflowId)
+    {
+        $cases = [];
+        $this->getTestWorkflowById($workflowId);
+        $items = $this->getTestItemByWorkflowId($workflowId);
+        foreach ($items as $item) {
+            $setCases = $item->setCases;
+            foreach ($setCases as $setCase) {
+                $isRequired = $setCase['is_required'] ? 1 : 0;
+                $isXss = $setCase['is_xss'] ? 1 : 0;
+                $isSql = $setCase['is_sql'] ? 1 : 0;
+                if ($isRequired) {
+                    $cases[] = $this->_getBatchCase($setCase, $workflowId, 0, 1);
+                }
+                if ($isXss) {
+                    $cases[] = $this->_getBatchCase($setCase, $workflowId, 0, 2);
+                }
+                if ($isSql) {
+                    $cases[] = $this->_getBatchCase($setCase, $workflowId, 0, 3);
+                }
+                $cases[] = $this->_getBatchCase($setCase, $workflowId, 1);
+            }
+        }
+        $con = \Yii::$app->db->beginTransaction();
+        try {
+            $this->_case->deleteTestCaseByWorkflowId($workflowId);
+            $this->_case->batchAddTestCase($cases);
+            $con->commit();
+        } catch (Exception $e) {
+            \Yii::error($e->getMessage());
+            $con->rollBack();
+            throw $e;
+        }
     }
 }
