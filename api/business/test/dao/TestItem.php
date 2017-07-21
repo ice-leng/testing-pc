@@ -59,6 +59,37 @@ class TestItem extends \business\common\ActiveRecord
     }
 
     /**
+     * 通过测试流程id获得测试流程项信息
+     *
+     * @param int $workflowId
+     *
+     * @return mixed
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getTestItemByWorkflowId($workflowId)
+    {
+        return $this->find()->select([
+            'id',
+            'test_workflow_id',
+            'name',
+            'type',
+            'url'
+        ])->where([
+            'test_workflow_id' => $workflowId
+        ])->all();
+    }
+
+    public function getSetCases()
+    {
+        return $this->hasMany(TestSetCase::className(), ['test_item_id' => 'id']);
+    }
+
+    public function getAccepts()
+    {
+        return $this->hasMany(TestAccept::className(), ['test_item_id' => 'id']);
+    }
+
+    /**
      * 通过流程id 删除 测试项
      *
      * @param int $workflowId 流程id

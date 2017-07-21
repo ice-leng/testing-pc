@@ -83,10 +83,10 @@ class TestWorkflow extends \business\common\ActiveRecord
     public function getMaxOrder()
     {
         $query = new Query();
-        $order = $query->select("MAX('order')")
+        $order = $query->select("MAX(`order`) as o")
             ->from($this->tableName())
             ->one();
-        return isset($order['order']) ? $order['order'] : 0;
+        return isset($order['o']) ? $order['o'] : 0;
     }
 
     /**
@@ -115,7 +115,13 @@ class TestWorkflow extends \business\common\ActiveRecord
      */
     public function getTestWorkflowById($id)
     {
-        return $this->find()->where([
+        return $this->find()->select([
+            'id',
+            'project_id',
+            'before_flow',
+            'name',
+            'order',
+        ])->where([
             'id'        => $id,
             'is_delete' => 0,
         ])->one();
@@ -145,9 +151,9 @@ class TestWorkflow extends \business\common\ActiveRecord
         }
         if (isset($params['before_flow']) && is_array($params['before_flow'])) {
             $ids = [];
-            foreach ($params['before_flow'] as $flow){
+            foreach ($params['before_flow'] as $flow) {
                 $id = isset($flow['id']) ? $flow['id'] : 0;
-                if(!isset($flows[$id]) || empty($flows[$id])){
+                if (!isset($flows[$id]) || empty($flows[$id])) {
                     $this->invalidParamException("前置流程【{$flow['text']}】不存在");
                 }
                 $ids[] = $id;

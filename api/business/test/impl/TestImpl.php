@@ -81,7 +81,20 @@ class TestImpl extends BaseService implements TestInterface
      */
     public function getTestWorkflowById($id)
     {
-        // TODO: Implement getTestWorkflowById() method.
+        return $this->_workFlow->getTestWorkflowById($id);
+    }
+
+    /**
+     * 通过测试流程id获得测试流程项信息
+     *
+     * @param int $workflowId
+     *
+     * @return mixed
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getTestItemByWorkflowId($workflowId)
+    {
+        return $this->_item->getTestItemByWorkflowId($workflowId);
     }
 
     /**
@@ -94,7 +107,6 @@ class TestImpl extends BaseService implements TestInterface
      */
     public function getTestWorkflowOrder($id = 0)
     {
-        $order = 0;
         if ($id > 0) {
             $workflow = $this->getTestWorkflowById($id);
             $order = $workflow->order;
@@ -200,23 +212,22 @@ class TestImpl extends BaseService implements TestInterface
             }
             $setCase = isset($setCases[$i]) ? $setCases[$i] : [];
             $acceptes = isset($accepts[$i]) ? $accepts[$i] : [];
+            $itemId = isset($itemObj['id']) ? $itemObj['id'] : 0;
             foreach ($setCase as $m => $case) {
-                $itemId = isset($itemObj['id']) ? $itemObj['id'] : 0;
                 $case['test_item_id'] = $itemId;
                 $case['is_required'] = $case['is_required'] ? $case['is_required'] : 0;
                 $case['is_xss'] = $case['is_xss'] ? $case['is_xss'] : 0;
                 $case['is_sql'] = $case['is_sql'] ? $case['is_sql'] : 0;
                 try {
-                    $itemObj = $this->_setCase->updateTestSetCase($case);
+                    $this->_setCase->updateTestSetCase($case);
                 } catch (Exception $e) {
                     $error['setCase'][$i][$m] = $e->getMessage();
                 }
             }
             foreach ($acceptes as $n => $accept) {
-                $itemId = isset($itemObj['id']) ? $itemObj['id'] : 0;
                 $accept['test_item_id'] = $itemId;
                 try {
-                    $itemObj = $this->_accept->updateTestAccept($accept);
+                    $this->_accept->updateTestAccept($accept);
                 } catch (Exception $e) {
                     $error['accept'][$i][$n] = $e->getMessage();
                 }

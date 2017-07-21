@@ -81,7 +81,7 @@
 
                                 <el-form-item :label="labels.item.url || 'url'" prop="url" :required="required.item.url"
                                               :error="error.item[i].url">
-                                    <el-input :disabled="itemUrlStatus" v-model="item.url" placeholder=""></el-input>
+                                    <el-input :disabled="itemUrlStatus[i]" v-model="item.url" placeholder=""></el-input>
                                 </el-form-item>
 
                             </el-form>
@@ -99,7 +99,6 @@
                                         class="mt10"
                                         :data="showCase[(item.id !== '' ? item.id : i)]"
                                         border
-                                        v-loading.body=true
                                         style="width: 100%">
                                     <el-table-column :label="labels.setCase.name" width="140">
                                         <template scope="scope">
@@ -107,7 +106,7 @@
                                                 <el-form
                                                         v-if="isLoad"
                                                         :model="scope.row"
-                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :ref="formName.setCase+(item.id !== '' ? item.id : i)+scope.$index"
                                                         :rules="rules.setCase"
                                                 >
                                                     <el-form-item prop="name"
@@ -124,7 +123,7 @@
                                                 <el-form
                                                         v-if="isLoad"
                                                         :model="scope.row"
-                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :ref="formName.setCase+(item.id !== '' ? item.id : i)+scope.$index"
                                                         :rules="rules.setCase"
                                                 >
                                                     <el-form-item prop="event_type"
@@ -145,7 +144,7 @@
                                                 <el-form
                                                         v-if="isLoad"
                                                         :model="scope.row"
-                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :ref="formName.setCase+(item.id !== '' ? item.id : i)+scope.$index"
                                                         :rules="rules.setCase"
                                                 >
                                                     <el-form-item prop="element_type"
@@ -166,7 +165,7 @@
                                                 <el-form
                                                         v-if="isLoad"
                                                         :model="scope.row"
-                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :ref="formName.setCase+(item.id !== '' ? item.id : i)+scope.$index"
                                                         :rules="rules.setCase"
                                                 >
                                                     <el-form-item prop="element"
@@ -183,7 +182,7 @@
                                                 <el-form
                                                         v-if="isLoad"
                                                         :model="scope.row"
-                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :ref="formName.setCase+(item.id !== '' ? item.id : i)+scope.$index"
                                                         :rules="rules.setCase"
                                                 >
                                                     <el-form-item prop="element_params"
@@ -201,7 +200,7 @@
                                                 <el-form
                                                         v-if="isLoad"
                                                         :model="scope.row"
-                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :ref="formName.setCase+(item.id !== '' ? item.id : i)+scope.$index"
                                                         :rules="rules.setCase"
                                                 >
                                                     <el-form-item prop="wait_time"
@@ -219,7 +218,7 @@
                                                 <el-form
                                                         v-if="isLoad"
                                                         :model="scope.row"
-                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :ref="formName.setCase+(item.id !== '' ? item.id : i)+scope.$index"
                                                         :rules="rules.setCase"
                                                 >
                                                     <el-checkbox prop="is_required"
@@ -234,7 +233,7 @@
                                                 <el-form
                                                         v-if="isLoad"
                                                         :model="scope.row"
-                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :ref="formName.setCase+(item.id !== '' ? item.id : i)+scope.$index"
                                                         :rules="rules.setCase"
                                                 >
                                                     <el-checkbox prop="is_xss" v-model="scope.row.is_xss"></el-checkbox>
@@ -248,7 +247,7 @@
                                                 <el-form
                                                         v-if="isLoad"
                                                         :model="scope.row"
-                                                        :ref="formName.setCase+i+scope.$index"
+                                                        :ref="formName.setCase+(item.id !== '' ? item.id : i)+scope.$index"
                                                         :rules="rules.setCase"
                                                 >
                                                     <el-checkbox prop="is_sql" v-model="scope.row.is_sql"></el-checkbox>
@@ -289,7 +288,7 @@
                                                 <el-form
                                                         v-if="isLoad"
                                                         :model="scope.row"
-                                                        :ref="formName.accept+i+scope.$index"
+                                                        :ref="formName.accept+(item.id !== '' ? item.id : i)+scope.$index"
                                                         :rules="rules.accept"
                                                 >
                                                     <el-form-item prop="element_type"
@@ -310,7 +309,7 @@
                                                 <el-form
                                                         v-if="isLoad"
                                                         :model="scope.row"
-                                                        :ref="formName.accept+i+scope.$index"
+                                                        :ref="formName.accept+(item.id !== '' ? item.id : i)+scope.$index"
                                                         :rules="rules.accept"
                                                 >
                                                     <el-form-item prop="element"
@@ -327,7 +326,7 @@
                                                 <el-form
                                                         v-if="isLoad"
                                                         :model="scope.row"
-                                                        :ref="formName.accept+i+scope.$index"
+                                                        :ref="formName.accept+(item.id !== '' ? item.id : i)+scope.$index"
                                                         :rules="rules.accept"
                                                 >
                                                     <el-form-item prop="accept_type"
@@ -349,7 +348,7 @@
                                                 <el-form
                                                         v-if="isLoad"
                                                         :model="scope.row"
-                                                        :ref="formName.accept+i+scope.$index"
+                                                        :ref="formName.accept+(item.id !== '' ? item.id : i)+scope.$index"
                                                         :rules="rules.accept"
                                                 >
                                                     <el-form-item prop="accept_params"
@@ -438,7 +437,7 @@
                 formName: {},
                 waitTime: 0,
                 itemError: '',
-                itemUrlStatus: false
+                itemUrlStatus: []
             };
         },
         created() {
@@ -589,9 +588,9 @@
             changeItemType(id, i) {
                 if (id === '') return;
                 if (id === 1) {
-                    this.itemUrlStatus = false;
+                    this.itemUrlStatus[i] = false;
                 } else {
-                    this.itemUrlStatus = true;
+                    this.itemUrlStatus[i] = true;
                     this.showItem[i]['url'] = '';
                 }
             },

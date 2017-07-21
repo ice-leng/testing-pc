@@ -53,9 +53,40 @@ class TestController extends Controller
         $isCreateCase = false;
         $isRun = false;
         if (!empty($id)) {
-            $itemNum = 1;
             $workflow = $this->_test->getTestWorkflowById($id);
-            $flowValidate['model'] = $workflow;
+            if (!empty($workflow)) {
+                if (!empty($workflow['before_flow'])) {
+                    $beforeFlow = [];
+                    $pid = \Yii::$app->request->get('pid');
+                    $wfs = $this->_test->getTestWorkflowByProjectId($pid);
+                    $wfIds = explode(',', $workflow['before_flow']);
+                    foreach ($wfIds as $wfId){
+                        if (isset($wfs[$wfId])) {
+                            $beforeFlow[$wfId] = $wfs[$wfId];
+                        }
+                    }
+                    $workflow['before_flow'] = BaseHelper::changeJson($beforeFlow);
+                }
+                $flowValidate['model'] = $workflow;
+            }
+            $items = $this->_test->getTestItemByWorkflowId($id);
+            if (count($items) > 0) {
+                $itemNum = 1;
+                $itemValidate['model'] = $items;
+                foreach ($items as $item){
+                    $setCase = $item->setCases;
+                    if (count($setCase) > 0) {
+                        $setCaseNum = 1;
+                        $setCaseValidate['model'] = [$item->id => $setCase];
+                    }
+                    $accept = $item->accepts;
+                    if (count($accept) > 0) {
+                        $acceptNum = 1;
+                        $acceptValidate['model'] = [$item->id => $accept];
+                    }
+                }
+            }
+
         }
         return [
             'flow'         => $flowValidate,
@@ -85,13 +116,14 @@ class TestController extends Controller
     public function actionUpdate()
     {
         $params = \Yii::$app->request->post();
+
         $data = $this->validateRequestParams($params, [
             'flow',
             'item',
             'setCase',
             'accept'
         ], []);
-        $workflow = $this->_test->update($data);
+        //$workflow = $this->_test->update($data);
 
 
         return $params;

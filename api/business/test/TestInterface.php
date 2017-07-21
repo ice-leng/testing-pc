@@ -46,6 +46,16 @@ interface TestInterface
     public function getTestWorkflowById($id);
 
     /**
+     * 通过测试流程id获得测试流程项信息
+     *
+     * @param int $workflowId
+     *
+     * @return mixed
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getTestItemByWorkflowId($workflowId);
+
+    /**
      * 通过项目id 获得所有测试流程
      *
      * @param int $pid project id
