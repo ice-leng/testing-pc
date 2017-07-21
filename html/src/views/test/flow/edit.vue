@@ -381,8 +381,8 @@
 
                 <el-form-item>
                     <el-button type="primary" @click="submit()" v-loading.fullscreen.lock="loading">保存</el-button>
-                    <el-button type="info" @click="create()" :disabled="isCreateCase" v-loading.fullscreen.lock="loading">生成测试用例</el-button>
-                    <el-button type="success" @click="run()" :disabled="isRun" v-loading.fullscreen.lock="loading">运行</el-button>
+                    <el-button type="info" @click="create()" :disabled="isCreateCase">生成测试用例</el-button>
+                    <el-button type="success" @click="run()" :disabled="isRun">运行</el-button>
                     <el-button @click="$router.go(-1)">取消</el-button>
                 </el-form-item>
             </el-form>
@@ -767,12 +767,10 @@
                 });
             },
             create() {
-                this.loading = true;
                 testAjax.generateCase({
                     id: this.$route.query.id
                 }).then(({data}) => {
                     this.isRun = false;
-                    this.loading = false;
                 });
             },
             run() {
