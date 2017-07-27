@@ -51,7 +51,7 @@ class TestController extends Controller
         $acceptValidate = $this->_test->getTestAcceptFormValidate();
         $acceptValidate['model'] = [[$acceptValidate['model']]];
         $isCreateCase = false;
-        $isRun = false;
+        $isRun = $this->_test->isRun($id);
         if (!empty($id)) {
             $workflow = $this->_test->getTestWorkflowById($id);
             if (!empty($workflow)) {
@@ -73,7 +73,6 @@ class TestController extends Controller
             if (count($items) > 0) {
                 $itemNum = 1;
                 $isCreateCase = true;
-                $isRun = $this->_test->isRun($id);
                 $itemValidate['model'] = $items;
                 foreach ($items as $item) {
                     $tid = isset($item['id']) ? $item['id'] : '';
@@ -105,7 +104,7 @@ class TestController extends Controller
             'acceptTypes'  => BaseHelper::getTestAcceptType(),
             'waitTime'     => $time,
             'isCreateCase' => !$isCreateCase,
-            'isRun'        => !$isRun,
+            'isRun'        => $isRun,
         ];
     }
 
@@ -139,7 +138,9 @@ class TestController extends Controller
 
     public function actionRun()
     {
-
+        $id = \Yii::$app->request->get('id');
+        $status = $this->_test->changeWorkFlowIsExe($id);
+        return ['status' => $status->is_exe];
     }
 
 }

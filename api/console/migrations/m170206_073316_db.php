@@ -50,6 +50,7 @@ class m170206_073316_db extends Migration
             'total_bug'   => $this->integer()->notNull()->defaultValue(0)->comment('总bug'),
             'exe_times'   => $this->integer()->notNull()->defaultValue(0)->comment('执行次数'),
             'order'       => $this->integer()->notNull()->defaultValue(0)->comment('排序'),
+            'is_exe'      => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否执行'),
             'is_delete'   => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否删除'),
             'created_at'  => $this->integer()->notNull()->comment('创建时间'),
             'updated_at'  => $this->integer()->notNull()->comment('更新时间'),

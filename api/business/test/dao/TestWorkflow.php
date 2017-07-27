@@ -68,6 +68,7 @@ class TestWorkflow extends \business\common\ActiveRecord
             'total_bug'   => '总bug',
             'exe_times'   => '执行次数',
             'order'       => '排序',
+            'is_exe'      => '是否执行',
             'is_delete'   => '是否删除',
             'created_at'  => '创建时间',
             'updated_at'  => '更新时间',
@@ -120,6 +121,7 @@ class TestWorkflow extends \business\common\ActiveRecord
             'project_id',
             'before_flow',
             'name',
+            'is_exe',
             'order',
         ])->where([
             'id'        => $id,
@@ -165,5 +167,4 @@ class TestWorkflow extends \business\common\ActiveRecord
         $workflow->save();
         return $workflow;
     }
-
 }

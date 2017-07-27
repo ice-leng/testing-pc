@@ -261,8 +261,11 @@ class TestImpl extends BaseService implements TestInterface
      */
     public function isRun($workflowId)
     {
-        $case = $this->_case->getTestCaseByWorkflowId($workflowId);
-        return empty($case) ? false : true;
+        if(empty($workflowId)){
+            return 0;
+        }
+        $workflow = $this->getTestWorkflowById($workflowId);
+        return $workflow->is_exe;
     }
 
     /**
@@ -313,6 +316,30 @@ class TestImpl extends BaseService implements TestInterface
     }
 
     /**
+     * 修改是否执行状态
+     * @param $workflowId
+     * @param $status
+     *
+     * @return object
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function changeWorkFlowIsExe($workflowId, $status=null)
+    {
+        $workflow = $this->getTestWorkflowById($workflowId);
+        if($status !== null){
+            $workflow->is_exe = $status;
+        }else{
+            if($workflow->is_exe === 1){
+                $workflow->is_exe = 0;
+            }else{
+                $workflow->is_exe = 1;
+            }
+        }
+        $workflow->save();
+        return $workflow;
+    }
+
+    /**
      * 通过流程id 生成测试用例
      *
      * @param int $workflowId
@@ -348,6 +375,7 @@ class TestImpl extends BaseService implements TestInterface
         try {
             $this->_case->deleteTestCaseByWorkflowId($workflowId);
             $this->_case->batchAddTestCase($cases);
+            $this->changeWorkFlowIsExe($workflowId, 1);
             $con->commit();
         } catch (Exception $e) {
             \Yii::error($e->getMessage());

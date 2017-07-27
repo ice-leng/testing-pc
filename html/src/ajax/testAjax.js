@@ -30,5 +30,12 @@ export default {
             body: body,
             method: 'get'
         });
+    },
+    changeRunStatus(body) {
+        return Base({
+            url: '/test/run',
+            body: body,
+            method: 'get'
+        });
     }
 };

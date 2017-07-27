@@ -134,5 +134,15 @@ interface TestInterface
      */
     public function generateCase($workflowId);
 
+    /**
+     * 修改是否执行状态
+     * @param $workflowId
+     * @param $status
+     *
+     * @return object
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function changeWorkFlowIsExe($workflowId, $status=null);
+
 
 }
