@@ -18,7 +18,7 @@
         "yiisoft/yii2": "~2.0.6",
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0",
-        "lengbin/helper-class": "^0.34",
+        "lengbin/helper-class": "^0.4",
         "guzzlehttp/guzzle": "^6.2",
         "facebook/webdriver": " ^1.0.1"
 

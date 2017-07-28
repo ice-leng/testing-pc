@@ -1,0 +1,23 @@
+# Codeception Test Suite Configuration
+#
+# Suite for acceptance tests.
+# Perform tests in browser using the WebDriver or PhpBrowser.
+# If you need both WebDriver and PHPBrowser tests - create a separate suite.
+
+actor: AcceptanceTester
+modules:
+    enabled:
+        - WebDriver:
+            url: http://www.xk.com/
+            browser: chrome
+#            browser: phantomjs
+#            browser: firefox
+#            host: 192.168.1.116
+        - \Helper\Acceptance
+
+extensions:
+    enabled:
+         - Codeception\Extension\Recorders
+#            delete_successful: false
+#         - Codeception\Extension\RunProcess:
+#              - java -jar /Users/lengbin/Documents/ice/server/selenium/selenium-server-standalone-3.0.0.jar
