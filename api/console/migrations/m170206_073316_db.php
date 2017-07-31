@@ -126,9 +126,7 @@ class m170206_073316_db extends Migration
             'name'         => $this->string('32')->notNull()->comment('名称'),
             'status'       => $this->smallInteger(1)->notNull()->comment('状态。1, 通过，2失败'),
             'type'         => $this->smallInteger(1)->notNull()->comment('错误类型'),
-            'url'          => $this->string('255')->notNull()->comment('错误截图'),
-            'count'        => $this->integer()->notNull()->comment('错误次数'),
-            'is_delete'    => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否删除'),
+            'url'          => $this->string('255')->comment('错误截图'),
             'created_at'   => $this->integer()->notNull()->comment('创建时间'),
             'updated_at'   => $this->integer()->notNull()->comment('更新时间'),
         ], $tableOptions . ' comment \'测试log\'');

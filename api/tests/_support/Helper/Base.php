@@ -9,7 +9,6 @@
 namespace Helper;
 
 use lengbin\helper\directory\DirHelper;
-use lengbin\helper\directory\FileHelper;
 
 require(dirname(dirname(dirname(__DIR__))) . '/vendor/yiisoft/yii2/Yii.php');
 require(dirname(dirname(dirname(__DIR__))) . '/common/config/bootstrap.php');
@@ -59,6 +58,7 @@ class Base extends \Codeception\Module
 
     public function _afterSuite()
     {
+        $log = \Helper\BaseHelperCase::getInstance(codecept_output_dir())->batchAddLog();
         parent::_afterSuite();
         $this->mvLog();
         $this->mvCase();

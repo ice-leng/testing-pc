@@ -9,10 +9,10 @@ use Yii;
  *
  * @property integer $id
  * @property integer $test_case_id
- * @property string $name
+ * @property string  $name
  * @property integer $status
  * @property integer $type
- * @property string $url
+ * @property string  $url
  * @property integer $count
  * @property integer $is_delete
  * @property integer $created_at
@@ -34,8 +34,8 @@ class TestLog extends \business\common\ActiveRecord
     public function rules()
     {
         return [
-            [['test_case_id', 'name', 'status', 'type', 'url', 'count', 'created_at', 'updated_at'], 'required'],
-            [['test_case_id', 'status', 'type', 'count', 'is_delete', 'created_at', 'updated_at'], 'integer'],
+            [['test_case_id', 'name', 'status', 'type'], 'required'],
+            [['test_case_id', 'status', 'type', 'created_at', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 32],
             [['url'], 'string', 'max' => 255],
         ];
@@ -47,16 +47,14 @@ class TestLog extends \business\common\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id'           => 'ID',
             'test_case_id' => '测试用例id',
-            'name' => '名称',
-            'status' => '状态。1, 通过，2失败',
-            'type' => '错误类型',
-            'url' => '错误截图',
-            'count' => '错误次数',
-            'is_delete' => '是否删除',
-            'created_at' => '创建时间',
-            'updated_at' => '更新时间',
+            'name'         => '名称',
+            'status'       => '状态。1, 通过，2失败',
+            'type'         => '错误类型',
+            'url'          => '错误截图',
+            'created_at'   => '创建时间',
+            'updated_at'   => '更新时间',
         ];
     }
 }
