@@ -14,7 +14,7 @@ use lengbin\helper\directory\FileHelper;
 require(dirname(dirname(dirname(__DIR__))) . '/vendor/yiisoft/yii2/Yii.php');
 require(dirname(dirname(dirname(__DIR__))) . '/common/config/bootstrap.php');
 require __DIR__ . '/Extension/Recorders.php';
-
+require __DIR__ . '/BaseHelperCase.php';
 
 class Base extends \Codeception\Module
 {

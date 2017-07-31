@@ -18,6 +18,3 @@ modules:
 extensions:
     enabled:
          - Codeception\Extension\Recorders
-#            delete_successful: false
-#         - Codeception\Extension\RunProcess:
-#              - java -jar /Users/lengbin/Documents/ice/server/selenium/selenium-server-standalone-3.0.0.jar

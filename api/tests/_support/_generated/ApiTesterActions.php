@@ -19,6 +19,33 @@ trait ApiTesterActions
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
+     *
+     * @see \Helper\Base::setTagDir()
+     */
+    public function setTagDir($tag) {
+        return $this->getScenario()->runStep(new \Codeception\Step\Action('setTagDir', func_get_args()));
+    }
+
+ 
+    /**
+     * [!] Method is generated. Documentation taken from corresponding module.
+     *
+     * Checks that array contains subset.
+     *
+     * @param array  $subset
+     * @param array  $array
+     * @param bool   $strict
+     * @param string $message
+     * @see \Codeception\Module::assertArraySubset()
+     */
+    public function assertArraySubset($subset, $array, $strict = null, $message = null) {
+        return $this->getScenario()->runStep(new \Codeception\Step\Action('assertArraySubset', func_get_args()));
+    }
+
+ 
+    /**
+     * [!] Method is generated. Documentation taken from corresponding module.
+     *
      * Sets HTTP header valid for all next requests. Use `deleteHeader` to unset it
      *
      * ```php
@@ -954,7 +981,7 @@ trait ApiTesterActions
      * ?>
      * ```
      *
-     * You can also apply filters to check values. Filter can be applied with `:` char after the type declatation.
+     * You can also apply filters to check values. Filter can be applied with `:` char after the type declaration.
      *
      * Here is the list of possible filters:
      *
@@ -1041,7 +1068,7 @@ trait ApiTesterActions
      * ?>
      * ```
      *
-     * You can also apply filters to check values. Filter can be applied with `:` char after the type declatation.
+     * You can also apply filters to check values. Filter can be applied with `:` char after the type declaration.
      *
      * Here is the list of possible filters:
      *
@@ -1258,7 +1285,7 @@ trait ApiTesterActions
      * $I->seeBinaryResponseEquals(md5($fileData));
      * ?>
      * ```
-     * Example: Using sha256 hsah
+     * Example: Using sha256 hash
      *
      * ```php
      * <?php
@@ -1300,7 +1327,7 @@ trait ApiTesterActions
      * $I->seeBinaryResponseEquals(md5($fileData));
      * ?>
      * ```
-     * Example: Using sha256 hsah
+     * Example: Using sha256 hash
      *
      * ```php
      * <?php

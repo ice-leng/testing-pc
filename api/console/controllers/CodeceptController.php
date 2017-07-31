@@ -23,6 +23,7 @@ class CodeceptController extends \yii\console\Controller
         $com = ' --steps --html index.html --tap run.log --ext DotReporter -o "paths: output: api/web/tests/'.date('YmdHis').'"';
         $codecept = \Yii::getAlias('@vendor') . '/bin/codecept run ';
         $data = shell_exec($codecept . $str . $com);
+        echo $data;
     }
 
     /**
@@ -53,6 +54,10 @@ class CodeceptController extends \yii\console\Controller
         $this->cmd('api');
     }
 
+    /**
+     * test after failed group, run this , test failed case
+     * @author lengbin(lengbin0@gmail.com)
+     */
     public function actionFailed()
     {
         $codecept = \Yii::getAlias('@vendor') . '/bin/codecept run -g failed ';
