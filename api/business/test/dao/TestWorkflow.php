@@ -10,7 +10,6 @@ use yii\db\Query;
  *
  * @property integer $id
  * @property integer $project_id
- * @property string  $before_flow
  * @property string  $name
  * @property integer $fixed_bug
  * @property integer $total_case
@@ -46,9 +45,8 @@ class TestWorkflow extends \business\common\ActiveRecord
                 ],
                 'integer',
             ],
-            [['before_flow'], 'safe'],
             [['name'], 'string', 'max' => 32],
-            [['id', 'project_id', 'before_flow', 'name', 'order'], 'trim'],
+            [['id', 'project_id', 'name', 'order'], 'trim'],
 
         ];
     }
@@ -61,7 +59,6 @@ class TestWorkflow extends \business\common\ActiveRecord
         return [
             'id'          => 'ID',
             'project_id'  => '项目id',
-            'before_flow' => '前置流程',
             'name'        => '名称',
             'fixed_bug'   => '已修改bug',
             'total_case'  => '总测试用例',
@@ -119,7 +116,6 @@ class TestWorkflow extends \business\common\ActiveRecord
         return $this->find()->select([
             'id',
             'project_id',
-            'before_flow',
             'name',
             'is_exe',
             'order',
@@ -129,18 +125,35 @@ class TestWorkflow extends \business\common\ActiveRecord
         ])->one();
     }
 
+    /**
+     * 获得需要执行的测试流程列表
+     *
+     * @return array
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getExeTestWorkflowList()
+    {
+        return $this->find()->where([
+            'is_delete' => 0,
+            'is_exe'    => 1,
+        ])->all();
+    }
+
+    public function getCases()
+    {
+        return $this->hasMany(TestCase::className(), ['test_workflow_id' => 'id']);
+    }
 
     /**
      * 添加 / 更新 测试流程
      *
-     * @param array $params ['id', 'project_id', 'before_flow', 'name', 'order']
-     * @param array $flows  所有流程
+     * @param array $params ['id', 'project_id', 'name', 'order']
      *
      * @return mixed
      * @author lengbin(lengbin0@gmail.com)
      * @throws Exception
      */
-    public function updateTestWorkflow(array $params, $flows)
+    public function updateTestWorkflow(array $params)
     {
         if (isset($params['id']) && !empty($params['id'])) {
             $workflow = $this->getTestWorkflowById($params['id']);
@@ -150,18 +163,7 @@ class TestWorkflow extends \business\common\ActiveRecord
         } else {
             $workflow = new TestWorkflow();
             $params['id'] = '';
-        }
-        if (isset($params['before_flow']) && is_array($params['before_flow'])) {
-            $ids = [];
-            foreach ($params['before_flow'] as $flow) {
-                $id = isset($flow['id']) ? $flow['id'] : 0;
-                if (!isset($flows[$id]) || empty($flows[$id])) {
-                    $this->invalidParamException("前置流程【{$flow['text']}】不存在");
-                }
-                $ids[] = $id;
-            }
-            $bf = implode(',', $ids);
-            $params['before_flow'] = $bf;
+            $params['is_exe'] = 2;
         }
         $workflow->setAttributes($params);
         $workflow->save();

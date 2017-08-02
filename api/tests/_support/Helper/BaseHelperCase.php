@@ -62,7 +62,9 @@ class BaseHelperCase
 
     public function batchAddLog()
     {
-        return $this->getDb()->batchInsert('test_log', [
+        $tableName = 'test_log';
+        $this->getDb()->truncate($tableName);
+        return $this->getDb()->batchInsert($tableName, [
             'test_case_id',
             'name',
             'status',

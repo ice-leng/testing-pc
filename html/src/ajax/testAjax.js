@@ -11,9 +11,9 @@ export default {
             body: body
         });
     },
-    testWorkflowName(body) {
+    testItemName(body) {
         return Base({
-            url: '/test/test-workflow-name',
+            url: '/test/test-item-name',
             body: body
         });
     },

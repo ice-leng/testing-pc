@@ -10,6 +10,7 @@ namespace api\controllers;
 
 
 use api\common\base\Controller;
+use business\project\ProjectInterface;
 use business\test\TestInterface;
 use common\helpers\BaseHelper;
 
@@ -17,11 +18,19 @@ class TestController extends Controller
 {
 
     private $_test;
+    private $_project;
 
-    public function __construct($id, \yii\base\Module $module, TestInterface $test, array $config = [])
+    public function __construct($id, \yii\base\Module $module, ProjectInterface $project, TestInterface $test, array $config = [])
     {
+        $this->_project = $project;
         $this->_test = $test;
         parent::__construct($id, $module, $config);
+    }
+
+    protected function getProject()
+    {
+        $pid = \Yii::$app->request->get('pid');
+        $this->_project->getProjectById($pid);
     }
 
     public function actionIndex()
@@ -31,7 +40,9 @@ class TestController extends Controller
 
     public function actionFormValidate()
     {
+        $this->getProject();
         $id = \Yii::$app->request->get('id');
+        $pid = \Yii::$app->request->get('pid');
         // 测试流程规则
         $flowValidate = $this->_test->getTestWorkflowFormValidate();
         $order = $this->_test->getTestWorkflowOrder();
@@ -39,6 +50,7 @@ class TestController extends Controller
         // 测试项
         $itemNum = 0;
         $itemValidate = $this->_test->getTestItemFormValidate();
+        $itemValidate['model']['before_item'] = [];
         $itemValidate['model'] = [$itemValidate['model']];
         // 用例设置
         $setCaseNum = 0;
@@ -55,25 +67,17 @@ class TestController extends Controller
         if (!empty($id)) {
             $workflow = $this->_test->getTestWorkflowById($id);
             if (!empty($workflow)) {
-                if (!empty($workflow['before_flow'])) {
-                    $beforeFlow = [];
-                    $pid = \Yii::$app->request->get('pid');
-                    $wfs = $this->_test->getTestWorkflowByProjectId($pid);
-                    $wfIds = explode(',', $workflow['before_flow']);
-                    foreach ($wfIds as $wfId) {
-                        if (isset($wfs[$wfId])) {
-                            $beforeFlow[$wfId] = $wfs[$wfId];
-                        }
-                    }
-                    $workflow['before_flow'] = BaseHelper::changeJson($beforeFlow);
-                }
                 $flowValidate['model'] = $workflow;
             }
-            $items = $this->_test->getTestItemByWorkflowId($id);
+            $items = $this->_test->getTestItemByWorkflowId($id, $pid);
             if (count($items) > 0) {
                 $itemNum = 1;
                 $isCreateCase = true;
                 $itemValidate['model'] = $items;
+                $setCaseModel = $setCaseValidate['model'];
+                $acceptModel = $acceptValidate['model'];
+                $setCaseValidate['model'] = [];
+                $acceptValidate['model'] = [];
                 foreach ($items as $item) {
                     $tid = isset($item['id']) ? $item['id'] : '';
                     $setCase = $item->setCases;
@@ -86,6 +90,12 @@ class TestController extends Controller
                         $acceptNum = 1;
                         $acceptValidate['model'][$tid] = $accept;
                     }
+                }
+                if (empty($setCaseValidate['model'])) {
+                    $setCaseValidate['model'] = $setCaseModel;
+                }
+                if (empty($acceptValidate['model'])) {
+                    $acceptValidate['model'] = $acceptModel;
                 }
             }
 
@@ -108,10 +118,12 @@ class TestController extends Controller
         ];
     }
 
-    public function actionTestWorkflowName()
+    public function actionTestItemName()
     {
+        $this->getProject();
         $pid = \Yii::$app->request->get('pid');
-        $data = $this->_test->getTestWorkflowByProjectId($pid);
+        $id = \Yii::$app->request->get('id');
+        $data = $this->_test->getTestItemByProjectId($pid, $id);
         return BaseHelper::changeJson($data);
     }
 
@@ -132,6 +144,7 @@ class TestController extends Controller
     public function actionGenerateCase()
     {
         $id = \Yii::$app->request->get('id');
+        $this->getProject();
         $this->_test->generateCase($id);
         return [];
     }

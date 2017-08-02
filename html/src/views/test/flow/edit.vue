@@ -17,35 +17,6 @@
                               :error="error.flow.order">
                     <el-input v-model="model.flow.order" placeholder=""></el-input>
                 </el-form-item>
-                <el-form-item :label="labels.flow.before_flow || 'before_flow'" prop="before_flow"
-                              :required="required.flow.before_flow" :error="error.flow.before_flow">
-                    <el-tag
-                            :key="tag"
-                            v-for="tag in showFlow"
-                            :closable="true"
-                            :close-transition="false"
-                            type="primary"
-                            @close="handleClose(tag)"
-                    >
-                        {{tag.text}}
-                    </el-tag>
-                    <el-dialog :title="labels.flow.before_flow || 'before_flow'" :visible.sync="dialogVisible"
-                               size="tiny">
-                        <el-tag
-                                :key="tag2.id"
-                                v-for="tag2 in beforeFlow"
-                                :type="tag2.type"
-                                class="tag-dialog"
-                        >
-                            <div @click="dialogClick(tag2.id)">{{tag2.text}}</div>
-                        </el-tag>
-                        <span slot="footer" class="dialog-footer">
-                            <el-button @click="dialogCancel">取 消</el-button>
-                            <el-button type="primary" @click="dialogSure">确 定</el-button>
-                        </span>
-                    </el-dialog>
-                    <el-button class="button-new-tag" size="small" @click="addBeforeWorkflow">+ 添加流程</el-button>
-                </el-form-item>
                 <!-- flow end -->
                 <!-- item start -->
                 <el-form-item label="测试项" :required="required.flow.name" :error="itemError">
@@ -84,6 +55,38 @@
                                     <el-input :disabled="itemUrlStatus[i]" v-model="item.url" placeholder=""></el-input>
                                 </el-form-item>
 
+                                <br/><br/>
+
+                                <el-form-item :label="labels.item.before_item || 'before_item'" prop="before_item"
+                                              :required="required.item.before_item" :error="error.item.before_item">
+                                    <el-tag
+                                            :key="tag"
+                                            v-for="tag in model.item[i].before_item"
+                                            :closable="true"
+                                            :close-transition="false"
+                                            type="primary"
+                                            @close="handleClose(tag, i)"
+                                    >
+                                        {{tag.text}}
+                                    </el-tag>
+                                    <el-dialog :title="labels.item.before_item || 'before_item'" :visible.sync="dialogVisible"
+                                               size="tiny">
+                                        <el-tag
+                                                :key="tag2.id"
+                                                v-for="tag2 in beforeItem"
+                                                :type="tag2.type"
+                                                class="tag-dialog"
+                                        >
+                                            <div @click="dialogClick(tag2.id)">{{tag2.text}}</div>
+                                        </el-tag>
+                                        <span slot="footer" class="dialog-footer">
+                                            <el-button @click="dialogCancel">取 消</el-button>
+                                            <el-button type="primary" @click="dialogSure(item, i)">确 定</el-button>
+                                        </span>
+                                    </el-dialog>
+                                    <el-button class="button-new-tag" size="small" @click="addBeforeItem(item.before_item, i)">+ 添加{{labels.item.before_item}}</el-button>
+                                </el-form-item>
+
                             </el-form>
                             <!-- item end -->
                             <!-- set case start -->
@@ -100,23 +103,6 @@
                                         :data="showCase[(item.id !== '' ? item.id : i)]"
                                         border
                                         style="width: 100%">
-                                    <el-table-column :label="labels.setCase.name" width="140">
-                                        <template scope="scope">
-                                            <div class="tCell">
-                                                <el-form
-                                                        v-if="isLoad"
-                                                        :model="scope.row"
-                                                        :ref="formName.setCase+(item.id !== '' ? item.id : i)+scope.$index"
-                                                        :rules="rules.setCase"
-                                                >
-                                                    <el-form-item prop="name"
-                                                                  :error="error.setCase[(item.id !== '' ? item.id : i)][scope.$index]['name']">
-                                                        <el-input v-model="scope.row.name" placeholder=""></el-input>
-                                                    </el-form-item>
-                                                </el-form>
-                                            </div>
-                                        </template>
-                                    </el-table-column>
                                     <el-table-column :label="labels.setCase.event_type" width="140">
                                         <template scope="scope">
                                             <div class="tCell">
@@ -382,7 +368,7 @@
                 <el-form-item>
                     <el-button type="primary" @click="submit()" v-loading.fullscreen.lock="loading">保存</el-button>
                     <el-button type="info" @click="create()" :disabled="isCreateCase">生成测试用例</el-button>
-                    <el-button type="success" @click="run()" :disabled="isCreateCase">{{isRun ? '激活' : '取消'}}测试</el-button>
+                    <el-button type="success" @click="run()" :disabled="isExe">{{isRun === 1 ? '取消' : '激活'}}测试</el-button>
                     <el-button @click="$router.go(-1)">取消</el-button>
                 </el-form-item>
             </el-form>
@@ -419,16 +405,16 @@
                 isLoad: false,
                 isCreateCase: true,
                 isRun: false,
+                isExe: false,
                 dialogVisible: false,
-                showFlow: [],
                 showItem: [],
                 showCase: [],
                 showAccept: [],
                 defaultItem: {},
                 defaultCase: {},
                 defaultAccept: {},
-                beforeFlow: [],
-                defaultFlow: [],
+                beforeItem: [],
+                defaultBeforeItem: [],
                 itemTypes: [],
                 acceptTypes: [],
                 elementTypes: [],
@@ -461,7 +447,6 @@
                     }
                     this.model.flow.project_id = this.$route.query.pid || 0;
                     this.model.flow.id = this.$route.query.id || 0;
-                    this.showFlow = this.model.flow.before_flow;
                     this.showItem = validates.itemNum === 0 ? [] : this.model.item;
                     this.showCase = this.model.setCase;
                     this.showAccept = this.model.accept;
@@ -472,6 +457,7 @@
                     this.waitTime = validates.waitTime;
                     this.defaultItem = this.model.item[0];
                     this.isCreateCase = validates.isCreateCase;
+                    this.isExe = validates.isRun === 0;
                     this.isRun = validates.isRun;
                     for (let t = 0; t < this.model.item.length; t++) {
                         this.error['item'][t] = {};
@@ -505,30 +491,31 @@
             });
         },
         methods: {
-            addBeforeWorkflow() {
+            addBeforeItem(beforeItem, k) {
                 this.dialogVisible = true;
-                testAjax.testWorkflowName({
-                    pid: this.$route.query.pid
+                let selfId = this.model.item[k].id || 0;
+                testAjax.testItemName({
+                    pid: this.$route.query.pid,
+                    id: selfId
                 }).then(({data}) => {
                     if (typeof data.data === 'object') {
                         let dialog = data.data;
-                        let beforeFlow = this.model.flow.before_flow;
                         for (let i = 0; i < dialog.length; i++) {
                             let type = 'primary';
-                            for (let j = 0; j < beforeFlow.length; j++) {
-                                if (dialog[i]['id'] === beforeFlow[j]['id']) {
+                            for (let j = 0; j < beforeItem.length; j++) {
+                                if (dialog[i]['id'] === beforeItem[j]['id']) {
                                     type = '';
                                 }
                             }
                             dialog[i]['type'] = type;
                         }
-                        this.beforeFlow = dialog;
-                        this.defaultFlow = dialog;
+                        this.beforeItem = dialog;
+                        this.defaultBeforeItem = dialog;
                     }
                 });
             },
             dialogClick(id) {
-                let dialog = this.beforeFlow;
+                let dialog = this.beforeItem;
                 let type = '';
                 for (let i = 0; i < dialog.length; i++) {
                     if (dialog[i]['id'] === id) {
@@ -538,32 +525,29 @@
                         dialog[i]['type'] = type;
                     }
                 }
-                this.beforeFlow = dialog;
+                this.beforeItem = dialog;
             },
-            dialogSure() {
-                let dialog = this.beforeFlow;
-                this.model.flow.before_flow = [];
+            dialogSure(item, k) {
+                let dialog = this.beforeItem;
                 for (let i = 0; i < dialog.length; i++) {
                     if (dialog[i]['type'] !== 'primary') {
                         delete dialog[i]['type'];
-                        this.model.flow.before_flow.push(dialog[i]);
+                        this.model.item[k].before_item.push(dialog[i]);
                     }
                 }
-                this.showFlow = this.model.flow.before_flow;
                 this.dialogVisible = false;
             },
             dialogCancel() {
                 this.dialogVisible = false;
-                this.beforeFlow = this.defaultFlow;
+                this.beforeItem = this.defaultBeforeItem;
             },
-            handleClose(tag) {
-                this.model.flow.before_flow.splice(this.model.flow.before_flow.indexOf(tag), 1);
-                this.showFlow = this.model.flow.before_flow;
+            handleClose(tag, i) {
+                this.model.item[i].before_item.splice(this.model.item[i].before_item.indexOf(tag), 1);
             },
             addItem() {
                 let data = {};
                 for (let i in this.defaultItem) {
-                    data[i] = '';
+                    data[i] = i === 'before_item' ? [] : '';
                 }
                 this.showItem.push(data);
                 let num = this.showItem.length;
@@ -741,9 +725,14 @@
                 this.loading = true;
                 let status = this.formValidate();
                 if (!status) {
+                    this.loading = false;
                     return status;
                 }
                 testAjax.testWorkflowUpdate(this.model).then(({data}) => {
+                    this.$message({
+                        message: '编辑成功!',
+                        type: 'success'
+                    });
                     this.loading = false;
                     let id = data.data.id;
                     this.$router.replace({path: '/test/edit', query: {pid: this.$route.query.pid, id: id}});
@@ -768,9 +757,15 @@
             },
             create() {
                 testAjax.generateCase({
-                    id: this.$route.query.id
+                    id: this.$route.query.id,
+                    pid: this.$route.query.pid
                 }).then(({data}) => {
-                    this.isRun = true;
+                    this.isRun = 1;
+                    this.isExe = false;
+                    this.$message({
+                        message: '生成测试用完成!',
+                        type: 'success'
+                    });
                 });
             },
             run() {

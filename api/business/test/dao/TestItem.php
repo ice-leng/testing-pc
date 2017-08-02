@@ -33,11 +33,12 @@ class TestItem extends \business\common\ActiveRecord
     {
         return [
             [['name', 'type'], 'required'],
-            [['test_workflow_id', 'type'], 'integer'],
+            [['test_workflow_id', 'type', 'project_id'], 'integer'],
             [['name'], 'string', 'max' => 32],
             [['url'], 'string', 'max' => 255],
             [['url'], 'url', 'defaultScheme' => 'http'],
-            [['id', 'url', 'name', 'type', 'test_workflow_id'], 'trim'],
+            ['before_item', 'safe'],
+            [['id', 'url', 'name', 'type', 'test_workflow_id', 'before_item', 'project_id'], 'trim'],
         ];
     }
 
@@ -49,6 +50,8 @@ class TestItem extends \business\common\ActiveRecord
         return [
             'id'               => 'ID',
             'test_workflow_id' => '流程id',
+            'project_id'       => '项目id',
+            'before_item'      => '前置测试项',
             'name'             => '名称',
             'type'             => '访问类型',
             'url'              => '访问网络地址',
@@ -71,12 +74,50 @@ class TestItem extends \business\common\ActiveRecord
         return $this->find()->select([
             'id',
             'test_workflow_id',
+            'before_item',
             'name',
             'type',
-            'url'
+            'url',
         ])->where([
-            'test_workflow_id' => $workflowId
+            'test_workflow_id' => $workflowId,
         ])->all();
+    }
+
+    /**
+     * 通过项目id 获得所有测试项
+     *
+     * @param $pid
+     * @param $id
+     *
+     * @return mixed
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getTestItemByProjectId($pid, $id=0)
+    {
+        $itmes = $this->find()->where([
+            'project_id' => $pid,
+            'is_delete'  => 0,
+        ]);
+        if($id > 0 ){
+            $itmes->andFilterCompare('id', $id, '<');
+        }
+        return $itmes->all();
+    }
+
+    /**
+     * 通过id 获得所有测试项
+     *
+     * @param $id
+     *
+     * @return mixed
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getTestItemById($id)
+    {
+        return $this->find()->where([
+            'id'        => $id,
+            'is_delete' => 0,
+        ])->one();
     }
 
     public function getSetCases()
@@ -107,13 +148,33 @@ class TestItem extends \business\common\ActiveRecord
      * 添加 测试项
      *
      * @param array $params ['url', 'name', 'type', 'test_workflow_id']
+     * @param array $testItems [[1=>name]]
      *
      * @return object
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function updateTestItem(array $params)
+    public function updateTestItem(array $params, array $testItems)
     {
-        $item = new TestItem();
+        if (isset($params['id']) && !empty($params['id'])) {
+            $item = $this->getTestItemById($params['id']);
+            if (empty($item)) {
+                $this->invalidParamException('测试项id不存在');
+            }
+        } else {
+            $item = new TestItem();
+        }
+        if (isset($params['before_item']) && is_array($params['before_item'])) {
+            $ids = [];
+            foreach ($params['before_item'] as $tItem) {
+                $id = isset($tItem['id']) ? $tItem['id'] : 0;
+                if (!isset($testItems[$id]) || empty($testItems[$id])) {
+                    $this->invalidParamException("前置测试项【{$tItem['text']}】不存在");
+                }
+                $ids[] = $id;
+            }
+            $bf = implode(',', $ids);
+            $params['before_item'] = $bf;
+        }
         $item->setAttributes($params);
         $item->save();
         return $item;

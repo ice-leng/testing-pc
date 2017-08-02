@@ -8,11 +8,21 @@
 
 namespace console\controllers;
 
+use business\test\TestInterface;
+use console\models\CreatePhpFile;
 use lengbin\helper\directory\DirHelper;
+use yii\base\Module;
 
 class CodeceptController extends \yii\console\Controller
 {
 
+    private $_test;
+
+    public function __construct($id, Module $module, array $config = [], TestInterface $test)
+    {
+        $this->_test = $test;
+        parent::__construct($id, $module, $config);
+    }
 
     protected function cmd($str='')
     {
@@ -33,7 +43,27 @@ class CodeceptController extends \yii\console\Controller
      */
     public function actionGenerateScript()
     {
-        echo '哈哈';
+        $types = [
+            1 => 'acceptance',
+            2 => 'api',
+        ];
+        $dir = \Yii::getAlias('@tests');
+        $workflow = $this->_test->getExeTestWorkflowList();
+        foreach ($workflow as $flow){
+            $php = new CreatePhpFile();
+            $php->head($flow);
+            $php->setType($types[1]);
+            if(!empty($flow->before_flow)){
+                $ids = explode(',', $flow->before_flow);
+                $beforeCases = $this->_test->getTestCaseByWorkflowId($ids, true);
+                $php->setBefore($beforeCases);
+            }
+            $cases = $flow->cases;
+            foreach ($cases as $case){
+                $php->setCase($case);
+            }
+            $php->generateFile($dir);
+        }
     }
 
     /**

@@ -9,7 +9,7 @@ use Yii;
  *
  * @property integer $id
  * @property integer $test_item_id
- * @property string  $name
+ * @property string  $before_item
  * @property integer $element_type
  * @property string  $element
  * @property string  $element_params
@@ -37,15 +37,13 @@ class TestSetCase extends \business\common\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'event_type', 'element_type', 'element'], 'required'],
+            [['event_type', 'element_type', 'element'], 'required'],
             [['test_item_id', 'element_type', 'wait_time', 'is_required', 'is_xss', 'is_sql'], 'integer'],
             [['wait_time'], 'integer', 'min' => 0],
-            [['name'], 'string', 'max' => 32],
             [['element', 'element_params'], 'string', 'max' => 255],
             [
                 [
                     'test_item_id',
-                    'name',
                     'element_type',
                     'event_type',
                     'element',
@@ -69,7 +67,6 @@ class TestSetCase extends \business\common\ActiveRecord
         return [
             'id'             => 'ID',
             'test_item_id'   => '测试项id',
-            'name'           => '名称',
             'element_type'   => '查找类型',
             'event_type'     => '事件类型',
             'element'        => '查找元素',
@@ -102,7 +99,6 @@ class TestSetCase extends \business\common\ActiveRecord
      * 添加 用例设置
      *
      * @param array $params ['test_item_id',
-     *                      'name',
      *                      'element_type',
      *                      'event_type',
      *                      'element',

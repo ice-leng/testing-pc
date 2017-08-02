@@ -58,7 +58,7 @@ class Base extends \Codeception\Module
 
     public function _afterSuite()
     {
-        $log = \Helper\BaseHelperCase::getInstance(codecept_output_dir())->batchAddLog();
+        \Helper\BaseHelperCase::getInstance(codecept_output_dir())->batchAddLog();
         parent::_afterSuite();
         $this->mvLog();
         $this->mvCase();

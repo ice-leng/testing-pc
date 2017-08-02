@@ -49,11 +49,12 @@ interface TestInterface
      * 通过测试流程id获得测试流程项信息
      *
      * @param int $workflowId
+     * @param int $projectId
      *
      * @return mixed
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function getTestItemByWorkflowId($workflowId);
+    public function getTestItemByWorkflowId($workflowId, $projectId);
 
     /**
      * 是否执行测试
@@ -69,11 +70,12 @@ interface TestInterface
      * 通过项目id 获得所有测试流程
      *
      * @param int $pid project id
+     * @param int $id  item id
      *
      * @return array [ [id => name], ... ]
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function getTestWorkflowByProjectId($pid);
+    public function getTestItemByProjectId($pid, $id=0);
 
     /**
      * 通过测试流程id获得测试流程排序
@@ -136,13 +138,31 @@ interface TestInterface
 
     /**
      * 修改是否执行状态
+     *
      * @param $workflowId
      * @param $status
      *
      * @return object
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function changeWorkFlowIsExe($workflowId, $status=null);
+    public function changeWorkFlowIsExe($workflowId, $status = null);
 
+    /**
+     * 获得需要执行的测试流程列表
+     *
+     * @return array
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getExeTestWorkflowList();
 
+    /**
+     * 通过流程id 获得测试流程信息
+     *
+     * @param array/int $workflowId
+     * @param boolean   $isRight
+     *
+     * @return array|\yii\db\ActiveRecord[]
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getTestCaseByWorkflowId($workflowId, $isRight = false);
 }

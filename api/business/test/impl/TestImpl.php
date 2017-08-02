@@ -17,6 +17,7 @@ use business\test\dao\TestLog;
 use business\test\dao\TestSetCase;
 use business\test\dao\TestWorkflow;
 use business\test\TestInterface;
+use common\helpers\BaseHelper;
 use common\helpers\CodeHelper;
 use yii\base\Exception;
 
@@ -92,13 +93,28 @@ class TestImpl extends BaseService implements TestInterface
      * 通过测试流程id获得测试流程项信息
      *
      * @param int $workflowId
+     * @param int $projectId
      *
      * @return mixed
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function getTestItemByWorkflowId($workflowId)
+    public function getTestItemByWorkflowId($workflowId, $projectId)
     {
-        return $this->_item->getTestItemByWorkflowId($workflowId);
+        $items = $this->_item->getTestItemByWorkflowId($workflowId);
+        $testItems = $testItems = $this->getTestItemByProjectId($projectId);
+        foreach ($items as $i => $item) {
+            $beforeItem = [];
+            if (!empty($item['before_item'])) {
+                $ids = explode(',', $item['before_item']);
+                foreach ($ids as $id) {
+                    if (isset($testItems[$id])) {
+                        $beforeItem[$id] = $testItems[$id];
+                    }
+                }
+            }
+            $items[$i]['before_item'] = BaseHelper::changeJson($beforeItem);;
+        }
+        return $items;
     }
 
     /**
@@ -158,13 +174,14 @@ class TestImpl extends BaseService implements TestInterface
      * 通过项目id 获得所有测试流程
      *
      * @param int $pid project id
+     * @param int $id  item id
      *
      * @return array [ [id => name], ... ]
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function getTestWorkflowByProjectId($pid)
+    public function getTestItemByProjectId($pid, $id = 0)
     {
-        $testWorkflow = $this->_workFlow->getTestWorkflowByProjectId($pid);
+        $testWorkflow = $this->_item->getTestItemByProjectId($pid, $id);
         $data = [];
         foreach ($testWorkflow as $flow) {
             $data[$flow['id']] = $flow['name'];
@@ -191,15 +208,13 @@ class TestImpl extends BaseService implements TestInterface
         $workflow = [];
         $error = [];
         $flow = isset($params['flow']) ? $params['flow'] : [];
-        $pid = isset($flow['project_id']) ? $flow['project_id'] : 0;
-        $flows = $this->getTestWorkflowByProjectId($pid);
         $items = isset($params['item']) ? $params['item'] : [];
         $setCases = isset($params['setCase']) ? $params['setCase'] : [];
         $accepts = isset($params['accept']) ? $params['accept'] : [];
         $con = \Yii::$app->db->beginTransaction();
         try {
             try {
-                $workflow = $this->_workFlow->updateTestWorkflow($flow, $flows);
+                $workflow = $this->_workFlow->updateTestWorkflow($flow);
             } catch (Exception $e) {
                 if ($e->getCode() === CodeHelper::SYS_PARAMS_ERROR) {
                     throw $e;
@@ -207,12 +222,14 @@ class TestImpl extends BaseService implements TestInterface
                 $error['flow'] = $e->getMessage();
             }
             $flowId = isset($workflow['id']) ? $workflow['id'] : 0;
-            $this->_item->deleteTestItem($flowId);
+            $testItems = $this->getTestItemByProjectId($flow['project_id']);
             foreach ($items as $i => $item) {
                 $itemObj = [];
+                $item['project_id'] = $flow['project_id'];
                 $item['test_workflow_id'] = $flowId;
+                $i = !empty($item['id']) ? $item['id'] : $i;
                 try {
-                    $itemObj = $this->_item->updateTestItem($item);
+                    $itemObj = $this->_item->updateTestItem($item, $testItems);
                 } catch (Exception $e) {
                     $error['item'][$i] = $e->getMessage();
                 }
@@ -261,7 +278,7 @@ class TestImpl extends BaseService implements TestInterface
      */
     public function isRun($workflowId)
     {
-        if(empty($workflowId)){
+        if (empty($workflowId)) {
             return 0;
         }
         $workflow = $this->getTestWorkflowById($workflowId);
@@ -271,15 +288,16 @@ class TestImpl extends BaseService implements TestInterface
     /**
      * batch case
      *
-     * @param array $setCase
-     * @param int   $workflowId
-     * @param int   $isRight
-     * @param int   $type
+     * @param array  $setCase
+     * @param array  $workflow
+     * @param string $beforeItem
+     * @param int    $isRight
+     * @param int    $type
      *
      * @return array
      * @author lengbin(lengbin0@gmail.com)
      */
-    private function _getBatchCase($setCase, $workflowId, $isRight = 0, $type = 0)
+    private function _getBatchCase($setCase, $workflow, $beforeItem, $isRight = 0, $type = 0)
     {
         switch ($type) {
             case 1:
@@ -300,9 +318,10 @@ class TestImpl extends BaseService implements TestInterface
                 break;
         }
         return [
-            $workflowId,
-            $setCase['id'],
-            $setCase['name'] . $name,
+            $workflow['id'],
+            $setCase['test_item_id'],
+            $beforeItem,
+            $workflow['name'] . $name,
             $setCase['element_type'],
             $setCase['event_type'],
             $setCase['element'],
@@ -317,21 +336,22 @@ class TestImpl extends BaseService implements TestInterface
 
     /**
      * 修改是否执行状态
+     *
      * @param $workflowId
      * @param $status
      *
      * @return object
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function changeWorkFlowIsExe($workflowId, $status=null)
+    public function changeWorkFlowIsExe($workflowId, $status = null)
     {
         $workflow = $this->getTestWorkflowById($workflowId);
-        if($status !== null){
+        if ($status !== null) {
             $workflow->is_exe = $status;
-        }else{
-            if($workflow->is_exe === 1){
-                $workflow->is_exe = 0;
-            }else{
+        } else {
+            if ($workflow->is_exe === 1) {
+                $workflow->is_exe = 2;
+            } else {
                 $workflow->is_exe = 1;
             }
         }
@@ -351,24 +371,25 @@ class TestImpl extends BaseService implements TestInterface
     public function generateCase($workflowId)
     {
         $cases = [];
-        $this->getTestWorkflowById($workflowId);
-        $items = $this->getTestItemByWorkflowId($workflowId);
+        $workflow = $this->getTestWorkflowById($workflowId);
+        $items = $this->_item->getTestItemByWorkflowId($workflowId);
         foreach ($items as $item) {
+            $beforeItem = isset($item['before_item']) ? $item['before_item'] : '';
             $setCases = $item->setCases;
             foreach ($setCases as $setCase) {
                 $isRequired = $setCase['is_required'] ? 1 : 0;
                 $isXss = $setCase['is_xss'] ? 1 : 0;
                 $isSql = $setCase['is_sql'] ? 1 : 0;
                 if ($isRequired) {
-                    $cases[] = $this->_getBatchCase($setCase, $workflowId, 0, 1);
+                    $cases[] = $this->_getBatchCase($setCase, $workflow, $beforeItem, 0, 1);
                 }
                 if ($isXss) {
-                    $cases[] = $this->_getBatchCase($setCase, $workflowId, 0, 2);
+                    $cases[] = $this->_getBatchCase($setCase, $workflow, $beforeItem, 0, 2);
                 }
                 if ($isSql) {
-                    $cases[] = $this->_getBatchCase($setCase, $workflowId, 0, 3);
+                    $cases[] = $this->_getBatchCase($setCase, $workflow, $beforeItem, 0, 3);
                 }
-                $cases[] = $this->_getBatchCase($setCase, $workflowId, 1);
+                $cases[] = $this->_getBatchCase($setCase, $workflow, $beforeItem, 1);
             }
         }
         $con = \Yii::$app->db->beginTransaction();
@@ -382,5 +403,30 @@ class TestImpl extends BaseService implements TestInterface
             $con->rollBack();
             throw $e;
         }
+    }
+
+    /**
+     * 获得需要执行的测试流程列表
+     *
+     * @return array
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getExeTestWorkflowList()
+    {
+        return $this->_workFlow->getExeTestWorkflowList();
+    }
+
+    /**
+     * 通过流程id 获得测试流程信息
+     *
+     * @param         array /int $workflowId
+     * @param boolean $isRight
+     *
+     * @return array|\yii\db\ActiveRecord[]
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getTestCaseByWorkflowId($workflowId, $isRight = false)
+    {
+        return $this->_case->getTestCaseByWorkflowId($workflowId, $isRight);
     }
 }
