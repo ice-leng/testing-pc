@@ -49,7 +49,7 @@ interface TestInterface
      * 通过测试流程id获得测试流程项信息
      *
      * @param int $workflowId
-     * @param int $projectId
+     * @param int
      *
      * @return mixed
      * @author lengbin(lengbin0@gmail.com)
@@ -165,4 +165,14 @@ interface TestInterface
      * @author lengbin(lengbin0@gmail.com)
      */
     public function getTestCaseByWorkflowId($workflowId, $isRight = false);
+
+    /**
+     * 通过项目id 获得正确的测试流程
+     *
+     * @param int $projectId
+     *
+     * @return array
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getRightTestCaseByProjectId($projectId);
 }

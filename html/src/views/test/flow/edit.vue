@@ -773,6 +773,10 @@
                     id: this.$route.query.id
                 }).then(({data}) => {
                     this.isRun = data.data.status;
+                    this.$message({
+                        message: '编辑成功!',
+                        type: 'success'
+                    });
                 });
             }
         }

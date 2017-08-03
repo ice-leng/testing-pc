@@ -288,16 +288,14 @@ class TestImpl extends BaseService implements TestInterface
     /**
      * batch case
      *
-     * @param array  $setCase
-     * @param array  $workflow
-     * @param string $beforeItem
-     * @param int    $isRight
-     * @param int    $type
+     * @param array $data
+     * @param int   $isRight
+     * @param int   $type
      *
      * @return array
      * @author lengbin(lengbin0@gmail.com)
      */
-    private function _getBatchCase($setCase, $workflow, $beforeItem, $isRight = 0, $type = 0)
+    private function _getBatchCase($data, $isRight = 0, $type = 0)
     {
         switch ($type) {
             case 1:
@@ -314,19 +312,19 @@ class TestImpl extends BaseService implements TestInterface
                 break;
             default:
                 $name = '';
-                $params = $setCase['element_params'];
+                $params = $data['setCase']['element_params'];
                 break;
         }
         return [
-            $workflow['id'],
-            $setCase['test_item_id'],
-            $beforeItem,
-            $workflow['name'] . $name,
-            $setCase['element_type'],
-            $setCase['event_type'],
-            $setCase['element'],
+            $data['workflowId'],
+            $data['setCase']['test_item_id'],
+            $data['beforeItem'],
+            $data['name'] . $name,
+            $data['setCase']['element_type'],
+            $data['setCase']['event_type'],
+            $data['setCase']['element'],
             $params,
-            $setCase['wait_time'],
+            $data['setCase']['wait_time'],
             $isRight,
             0,
             time(),
@@ -371,7 +369,7 @@ class TestImpl extends BaseService implements TestInterface
     public function generateCase($workflowId)
     {
         $cases = [];
-        $workflow = $this->getTestWorkflowById($workflowId);
+        $this->getTestWorkflowById($workflowId);
         $items = $this->_item->getTestItemByWorkflowId($workflowId);
         foreach ($items as $item) {
             $beforeItem = isset($item['before_item']) ? $item['before_item'] : '';
@@ -380,16 +378,22 @@ class TestImpl extends BaseService implements TestInterface
                 $isRequired = $setCase['is_required'] ? 1 : 0;
                 $isXss = $setCase['is_xss'] ? 1 : 0;
                 $isSql = $setCase['is_sql'] ? 1 : 0;
+                $data = [
+                    'setCase'    => $setCase,
+                    'workflowId' => $workflowId,
+                    'beforeItem' => $beforeItem,
+                    'name'       => isset($item['name']) ? $item['name'] : '',
+                ];
                 if ($isRequired) {
-                    $cases[] = $this->_getBatchCase($setCase, $workflow, $beforeItem, 0, 1);
+                    $cases[] = $this->_getBatchCase($data, 0, 1);
                 }
                 if ($isXss) {
-                    $cases[] = $this->_getBatchCase($setCase, $workflow, $beforeItem, 0, 2);
+                    $cases[] = $this->_getBatchCase($data, 0, 2);
                 }
                 if ($isSql) {
-                    $cases[] = $this->_getBatchCase($setCase, $workflow, $beforeItem, 0, 3);
+                    $cases[] = $this->_getBatchCase($data, 0, 3);
                 }
-                $cases[] = $this->_getBatchCase($setCase, $workflow, $beforeItem, 1);
+                $cases[] = $this->_getBatchCase($data, 1);
             }
         }
         $con = \Yii::$app->db->beginTransaction();
@@ -428,5 +432,18 @@ class TestImpl extends BaseService implements TestInterface
     public function getTestCaseByWorkflowId($workflowId, $isRight = false)
     {
         return $this->_case->getTestCaseByWorkflowId($workflowId, $isRight);
+    }
+
+    /**
+     * 通过项目id 获得正确的测试流程
+     *
+     * @param int $projectId
+     *
+     * @return array
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getRightTestCaseByProjectId($projectId)
+    {
+
     }
 }

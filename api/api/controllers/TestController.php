@@ -54,7 +54,7 @@ class TestController extends Controller
         $itemValidate['model'] = [$itemValidate['model']];
         // 用例设置
         $setCaseNum = 0;
-        $time = 5;
+        $time = 0;
         $setCaseValidate = $this->_test->getTestSetCaseFormValidate();
         $setCaseValidate['model']['wait_time'] = $time;
         $setCaseValidate['model'] = [[$setCaseValidate['model']]];
