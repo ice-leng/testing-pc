@@ -36,7 +36,7 @@ class TestAccept extends \business\common\ActiveRecord
             [['test_item_id', 'element_type', 'element', 'accept_params', 'accept_type'], 'required'],
             [['test_item_id', 'element_type', 'accept_type'], 'integer'],
             [['element', 'accept_params'], 'string', 'max' => 255],
-            [[ 'test_item_id', 'element', 'accept_type', 'accept_params'], 'trim'],
+            [['test_item_id', 'element', 'accept_type', 'accept_params'], 'trim'],
         ];
     }
 
@@ -57,6 +57,7 @@ class TestAccept extends \business\common\ActiveRecord
             'updated_at'    => '更新时间',
         ];
     }
+
     /**
      * 通过测试项id 删除 期望设置
      *
@@ -85,5 +86,20 @@ class TestAccept extends \business\common\ActiveRecord
         $setCase->setAttributes($params);
         $setCase->save();
         return $setCase;
+    }
+
+    /**
+     * 通过测试项 获得测试期望
+     *
+     * @param int /array $itemId
+     *
+     * @return mixed
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getTestAcceptByItemId($itemId)
+    {
+        return $this->find()->where([
+            'test_item_id' => $itemId,
+        ])->all();
     }
 }

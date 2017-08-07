@@ -55,7 +55,7 @@ class BaseHelper
      * @return array
      * @author lengbin(lengbin0@gmail.com)
      */
-    public static function changeJson($params, $isJson=true)
+    public static function changeJson($params, $isJson = true)
     {
         $data = [];
         if ($isJson) {
@@ -123,7 +123,7 @@ class BaseHelper
             ConstantHelper::TEST_CASE_EVENT_TYPE_SELECT   => '选择/单选事件',
             ConstantHelper::TEST_CASE_EVENT_TYPE_CHECKBOX => '复选事件',
             ConstantHelper::TEST_CASE_EVENT_TYPE_FILE     => '上传事件',
-            ConstantHelper::TEST_CASE_EVENT_TYPE_WAIT     => '等待事件',
+            //            ConstantHelper::TEST_CASE_EVENT_TYPE_WAIT     => '等待事件',
         ];
         return self::changeJson($params, $isJson);
     }
@@ -160,26 +160,26 @@ class BaseHelper
     public static function getTestAcceptType($isJson = true)
     {
         $params = [
-            ConstantHelper::TEST_ACCEPT_TYPE_STRING_SEE           => '当前页面包含指定的文本',
-            ConstantHelper::TEST_ACCEPT_TYPE_STRING_NOT_SEE       => '当前页面包不含指定的文本',
-            ConstantHelper::TEST_ACCEPT_TYPE_CHECK_CHECKED        => '当前页面单选选中',
-            ConstantHelper::TEST_ACCEPT_TYPE_CHECK_NOT_CHECKED    => '当前页面单选不选中',
-            ConstantHelper::TEST_ACCEPT_TYPE_CHECKBOX_CHECKED     => '当前页面复选框选中',
-            ConstantHelper::TEST_ACCEPT_TYPE_CHECKBOX_NOT_CHECKED => '当前页面复选不框选中',
-            ConstantHelper::TEST_ACCEPT_TYPE_SELECT_SELECTED      => '当前页面下拉框选中',
-            ConstantHelper::TEST_ACCEPT_TYPE_SELECT_NOT_SELECTED  => '当前页面下拉不框选中',
-            ConstantHelper::TEST_ACCEPT_TYPE_URL_EQUAL            => '当前URI等于',
-            ConstantHelper::TEST_ACCEPT_TYPE_URL_NOT_EQUAL        => '当前URI不等于',
-            ConstantHelper::TEST_ACCEPT_TYPE_URL_MATCH            => '当前URI匹配',
-            ConstantHelper::TEST_ACCEPT_TYPE_URL_NOT_MATCH        => '当前URI不匹配',
-            ConstantHelper::TEST_ACCEPT_TYPE_CURRENT_URL_IN       => '当前的URI包含给定的字符串',
-            ConstantHelper::TEST_ACCEPT_TYPE_CURRENT_URL_NOT_IN   => '当前的URI不包含给定的字符串',
-            ConstantHelper::TEST_ACCEPT_TYPE_ELEMENT_SEE          => '当前页面包含指定的元素',
-            ConstantHelper::TEST_ACCEPT_TYPE_ELEMENT_NOT_SEE      => '当前页面不包含指定的元素',
-            ConstantHelper::TEST_ACCEPT_TYPE_SOURCE_IN            => '当前页面包含指定的源码',
-            ConstantHelper::TEST_ACCEPT_TYPE_SOURCE_NOT_IN        => '当前页面不包含指定的源码',
-            ConstantHelper::TEST_ACCEPT_TYPE_LINK_SEE             => '当前页面包含指定的连接',
-            ConstantHelper::TEST_ACCEPT_TYPE_LINK_NOT_SEE         => '当前页面不包含指定的连接',
+            ConstantHelper::TEST_ACCEPT_TYPE_STRING_SEE          => '当前页面包含指定的文本',
+            ConstantHelper::TEST_ACCEPT_TYPE_STRING_NOT_SEE      => '当前页面包不含指定的文本',
+            ConstantHelper::TEST_ACCEPT_TYPE_CHECK_CHECKED       => '当前页面单选选中',
+            ConstantHelper::TEST_ACCEPT_TYPE_CHECK_NOT_CHECKED   => '当前页面单选不选中',
+            ConstantHelper::TEST_ACCEPT_TYPE_SELECT_SELECTED     => '当前页面下拉框选中',
+            ConstantHelper::TEST_ACCEPT_TYPE_SELECT_NOT_SELECTED => '当前页面下拉不框选中',
+            ConstantHelper::TEST_ACCEPT_TYPE_URL_EQUAL           => '当前URI等于',
+            ConstantHelper::TEST_ACCEPT_TYPE_URL_NOT_EQUAL       => '当前URI不等于',
+            ConstantHelper::TEST_ACCEPT_TYPE_URL_MATCH           => '当前URI匹配',
+            ConstantHelper::TEST_ACCEPT_TYPE_URL_NOT_MATCH       => '当前URI不匹配',
+            ConstantHelper::TEST_ACCEPT_TYPE_CURRENT_URL_IN      => '当前的URI包含给定的字符串',
+            ConstantHelper::TEST_ACCEPT_TYPE_CURRENT_URL_NOT_IN  => '当前的URI不包含给定的字符串',
+            ConstantHelper::TEST_ACCEPT_TYPE_ELEMENT_SEE         => '当前页面包含指定的元素',
+            ConstantHelper::TEST_ACCEPT_TYPE_ELEMENT_NOT_SEE     => '当前页面不包含指定的元素',
+            ConstantHelper::TEST_ACCEPT_TYPE_SOURCE_IN           => '当前页面包含指定的源码',
+            ConstantHelper::TEST_ACCEPT_TYPE_SOURCE_NOT_IN       => '当前页面不包含指定的源码',
+            ConstantHelper::TEST_ACCEPT_TYPE_LINK_SEE            => '当前页面包含指定的连接',
+            ConstantHelper::TEST_ACCEPT_TYPE_LINK_NOT_SEE        => '当前页面不包含指定的连接',
+            ConstantHelper::TEST_ACCEPT_TYPE_COOKIE_SEE          => '当前页面包含指定的cookie',
+            ConstantHelper::TEST_ACCEPT_TYPE_COOKIE_NOT_SEE      => '当前页面不包含指定的cookie',
         ];
         return self::changeJson($params, $isJson);
     }

@@ -8,6 +8,7 @@
 
 namespace console\controllers;
 
+use business\project\ProjectInterface;
 use business\test\TestInterface;
 use console\models\CreatePhpFile;
 use lengbin\helper\directory\DirHelper;
@@ -17,10 +18,12 @@ class CodeceptController extends \yii\console\Controller
 {
 
     private $_test;
+    private $_project;
 
-    public function __construct($id, Module $module, array $config = [], TestInterface $test)
+    public function __construct($id, Module $module, array $config = [], TestInterface $test, ProjectInterface $project)
     {
         $this->_test = $test;
+        $this->_project = $project;
         parent::__construct($id, $module, $config);
     }
 
@@ -43,27 +46,36 @@ class CodeceptController extends \yii\console\Controller
      */
     public function actionGenerateScript()
     {
-        $types = [
-            1 => 'acceptance',
-            2 => 'api',
-        ];
         $dir = \Yii::getAlias('@tests');
         $workflow = $this->_test->getExeTestWorkflowList();
+        if(empty($workflow)){
+            echo "没有需要执行的流程，请查看系统 \n\s";
+            return ;
+        }
+        $pids = [];
+        foreach ($workflow as $f){
+            $pid = isset($f['project_id']) ? $f['project_id'] : '';
+            $pids[] = $pid;
+        }
+        $php = new CreatePhpFile();
+        $items = $this->_test->getTestItemByProjectId($pids, 0, true);
+        $projects = $this->_project->getProjectByIds($pids);
+        $php->setItems($items);
+        $php->setProjects($projects);
+        $itemIds = array_keys($items);
+        $rightCase = $this->_test->getRightTestCaseByItemId($itemIds);
+        $php->setRightCase($rightCase);
+        $accept = $this->_test->getTestAcceptByItemId($itemIds);
+        $php->setTestAccepts($accept);
         foreach ($workflow as $flow){
-            $php = new CreatePhpFile();
-            $php->head($flow);
-            $php->setType($types[1]);
-            if(!empty($flow->before_flow)){
-                $ids = explode(',', $flow->before_flow);
-                $beforeCases = $this->_test->getTestCaseByWorkflowId($ids, true);
-                $php->setBefore($beforeCases);
-            }
+            $php->body($flow);
             $cases = $flow->cases;
             foreach ($cases as $case){
                 $php->setCase($case);
             }
             $php->generateFile($dir);
         }
+        echo "文件生成成功 \n\s";
     }
 
     /**

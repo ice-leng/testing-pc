@@ -91,6 +91,24 @@ class ProjectImpl extends BaseService implements ProjectInterface
     /**
      * 通过项目id 获得项目新消息
      *
+     * @param array $ids
+     *
+     * @return array
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getProjectByIds(array $ids)
+    {
+        $data = [];
+        $projects = $this->_project->getProjectByIds($ids);
+        foreach ($projects as $project){
+            $data[$project['id']] = $project;
+        }
+        return $data;
+    }
+
+    /**
+     * 通过项目id 获得项目新消息
+     *
      * @param int $id
      *
      * @return array

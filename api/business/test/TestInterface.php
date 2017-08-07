@@ -49,7 +49,7 @@ interface TestInterface
      * 通过测试流程id获得测试流程项信息
      *
      * @param int $workflowId
-     * @param int
+     * @param     int
      *
      * @return mixed
      * @author lengbin(lengbin0@gmail.com)
@@ -69,13 +69,14 @@ interface TestInterface
     /**
      * 通过项目id 获得所有测试流程
      *
-     * @param int $pid project id
-     * @param int $id  item id
+     * @param array/int $pid project id
+     * @param int       $id  item id
+     * @param boolean   $isFull
      *
      * @return array [ [id => name], ... ]
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function getTestItemByProjectId($pid, $id=0);
+    public function getTestItemByProjectId($pid, $id = 0, $isFull=false);
 
     /**
      * 通过测试流程id获得测试流程排序
@@ -158,21 +159,30 @@ interface TestInterface
     /**
      * 通过流程id 获得测试流程信息
      *
-     * @param array/int $workflowId
-     * @param boolean   $isRight
+     * @param array /int $workflowId
+     * @param int        $isRight
      *
      * @return array|\yii\db\ActiveRecord[]
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function getTestCaseByWorkflowId($workflowId, $isRight = false);
+    public function getTestCaseByWorkflowId($workflowId, $isRight = 0);
 
     /**
      * 通过项目id 获得正确的测试流程
      *
-     * @param int $projectId
+     * @param int/array $itemId
      *
      * @return array
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function getRightTestCaseByProjectId($projectId);
+    public function getRightTestCaseByItemId($itemId);
+
+    /**
+     * 通过测试项 获得测试期望
+     * @param int/array $itemId
+     *
+     * @return mixed
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getTestAcceptByItemId($itemId);
 }

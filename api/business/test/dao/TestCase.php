@@ -101,16 +101,32 @@ class TestCase extends \business\common\ActiveRecord
      * 通过流程id 获得测试流程信息
      *
      * @param array /int $workflowId
-     * @param boolean    $isRight
+     * @param int        $isRight
      *
      * @return array|\yii\db\ActiveRecord[]
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function getTestCaseByWorkflowId($workflowId, $isRight = false)
+    public function getTestCaseByWorkflowId($workflowId, $isRight = 0)
     {
         return $this->find()->where([
             'test_workflow_id' => $workflowId,
             'is_right'         => $isRight,
+        ])->all();
+    }
+
+    /**
+     * 通过项目id 获得正确的测试流程
+     *
+     * @param int/array $itemId
+     *
+     * @return array
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getRightTestCaseByItemId($itemId)
+    {
+        return $this->find()->where([
+            'test_item_id' => $itemId,
+            'is_right'     => 1,
         ])->all();
     }
 

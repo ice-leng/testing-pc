@@ -45,6 +45,16 @@ interface ProjectInterface
 
     /**
      * 通过项目id 获得项目新消息
+     *
+     * @param array $ids
+     *
+     * @return array
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getProjectByIds(array $ids);
+
+    /**
+     * 通过项目id 获得项目新消息
      * @param int $id
      *
      * @return array

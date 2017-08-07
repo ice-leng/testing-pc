@@ -116,6 +116,22 @@ class Project extends \business\common\ActiveRecord
     }
 
     /**
+     * 通过id获得项目信息
+     *
+     * @param array $ids 项目id
+     *
+     * @return array|null|\yii\db\ActiveRecord
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getProjectByIds(array $ids)
+    {
+        return $this->find()->where([
+            'id'        => $ids,
+            'is_delete' => ConstantHelper::NOT_DELETE,
+        ])->all();
+    }
+
+    /**
      * 更新 / 添加 项目
      *
      * @param array $params [id => '', name => '', url => '', browser => '']
