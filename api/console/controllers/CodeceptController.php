@@ -27,13 +27,13 @@ class CodeceptController extends \yii\console\Controller
         parent::__construct($id, $module, $config);
     }
 
-    protected function cmd($str='')
+    protected function cmd($str='', $tag='')
     {
         $output =  \Yii::getAlias('@api') . '/web/tests';
         if(!is_dir($output)){
             DirHelper::pathExists($output);
         }
-        $com = ' --steps --html index.html --tap run.log --ext DotReporter -o "paths: output: api/web/tests/'.date('YmdHis').'"';
+        $com = ' --steps --html index.html --tap run.log --ext DotReporter -o "paths: output: api/web/tests/'.date('YmdHis').'/"' . $tag;
         $codecept = \Yii::getAlias('@vendor') . '/bin/codecept run ';
         $data = shell_exec($codecept . $str . $com);
         echo $data;
@@ -84,7 +84,7 @@ class CodeceptController extends \yii\console\Controller
      */
     public function actionWeb()
     {
-        $this->cmd('acceptance');
+        $this->cmd('acceptance', 'html');
     }
 
     /**
@@ -93,7 +93,7 @@ class CodeceptController extends \yii\console\Controller
      */
     public function actionApi()
     {
-        $this->cmd('api');
+        $this->cmd('api', 'api');
     }
 
     /**

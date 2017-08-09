@@ -18,13 +18,6 @@ require __DIR__ . '/BaseHelperCase.php';
 class Base extends \Codeception\Module
 {
 
-    public $tag;
-
-    public function setTagDir($tag)
-    {
-        $this->tag = $tag;
-    }
-
     protected function pathExists($dir)
     {
         if (!is_dir($dir)) {
@@ -40,28 +33,17 @@ class Base extends \Codeception\Module
 
     protected function mvLog()
     {
-        $logDir = codecept_output_dir() . '/log';
+        $logDir = codecept_output_dir() . '/../log';
         $this->pathExists($logDir);
         $this->mv(codecept_output_dir() . '/run.log', $logDir . '/run.log');
     }
 
-    protected function mvCase()
-    {
-        $caseDir = codecept_output_dir() . '/' . $this->tag;
-        $this->pathExists($caseDir);
-        DirHelper::copyDir(codecept_output_dir(), $caseDir, [
-            'record',
-            'log',
-            $this->tag,
-        ], [], true);
-    }
 
     public function _afterSuite()
     {
-        \Helper\BaseHelperCase::getInstance(codecept_output_dir())->batchAddLog();
         parent::_afterSuite();
         $this->mvLog();
-        $this->mvCase();
+        \Helper\BaseHelperCase::getInstance(codecept_output_dir())->batchAddLog();
     }
 
 }

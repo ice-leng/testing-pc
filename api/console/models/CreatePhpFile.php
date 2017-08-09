@@ -94,11 +94,17 @@ EDF;
     {
         $count = '';
         $itemIds = explode(',', $beforeCases);
-        foreach ($itemIds as $key => $itemId) {
-            $rightCase = isset($this->rightCase[$itemId]) ? $this->rightCase[$itemId] : [];
-            $count .= $this->head($rightCase, $key === 0);
-            $count .= $this->step($rightCase);
-            $count .= $this->accept($itemId);
+        foreach ($itemIds as $itemId) {
+            $rightCases = isset($this->rightCase[$itemId]) ? $this->rightCase[$itemId] : [];
+            $wait = 0;
+            foreach($rightCases as $key => $rightCase){
+                if($key === 0){
+                    $count .= $this->head($rightCase,true);
+                }
+                $count .= $this->step($rightCase);
+                $wait = isset($rightCase['wait_time']) ? $rightCase['wait_time'] : 0;
+            }
+            $count .= $this->accept($itemId, $wait);
         }
         return $count;
     }
@@ -113,7 +119,8 @@ EDF;
     {
         $name = isset($case['name']) ? $case['name'] : '';
         $content = <<<EDf
-{$this->conversionVariable('I')}->wantTo('{$name}');
+        
+            {$this->conversionVariable('I')}->wantTo('{$name}');
 EDf;
         return $content;
     }
@@ -243,14 +250,14 @@ EDf;
     {
         $item = $this->_getTestItemByCase($case);
         $type = isset($item['type']) ? $item['type'] : 0;
-        $url = '';
+        $url = $content = '';
         if ($type === ConstantHelper::TEST_ITEM_TYPE_HREF) {
             $url = isset($item['url']) ? $item['url'] : '';
         }
         if ($url === '' && $isFirst) {
             $url = $this->rootUrl;
         }
-        $content = $this->_name($case);
+        $content .= $this->_name($case);
         if (!empty($url)) {
             $content = <<<EDf
 {$content}
@@ -264,18 +271,20 @@ EDf;
     {
         $data = $this->_caseEvent($case);
         $content = <<<EDf
-{$data}
-
+            
+            {$data}
 EDf;
         return $content;
     }
 
-    protected function accept($testItemId)
+    protected function accept($testItemId, $waitTime)
     {
         $data = $this->_getAccept($testItemId);
+        $wait = $this->_caseWait($waitTime);
         $content = <<<EDf
-{$data}
-
+    
+            {$data}
+            {$wait}
 EDf;
         return $content;
     }
@@ -329,15 +338,16 @@ EDf;
             } else {
                 $this->testCase["step{$testItemId}"] = $this->head($case, true);
             }
+            $wait = isset($case['wait_time']) ? $case['wait_time'] : 0;
+            if (isset($this->testCase["accept{$testItemId}"])) {
+                $this->testCase["accept{$testItemId}"] .= $this->accept($testItemId, $wait);
+            } else {
+                $this->testCase["accept{$testItemId}"] = $this->accept($testItemId, $wait);
+            }
         }
 
         $this->testCase["step{$testItemId}"] .= $this->step($case);
 
-        if (isset($this->testCase["accept{$testItemId}"])) {
-            $this->testCase["accept{$testItemId}"] .= $this->accept($testItemId);
-        } else {
-            $this->testCase["accept{$testItemId}"] = $this->accept($testItemId);
-        }
     }
 
     protected function clear()

@@ -1,4 +1,5 @@
 <?php
+
 namespace Helper;
 
 // here you can define custom actions
@@ -6,9 +7,5 @@ namespace Helper;
 
 class Api extends Base
 {
-    public function _afterSuite()
-    {
-        $this->setTagDir('api');
-        parent::_afterSuite();
-    }
+
 }

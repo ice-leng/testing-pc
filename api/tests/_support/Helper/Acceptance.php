@@ -7,9 +7,5 @@ namespace Helper;
 
 class Acceptance extends Base
 {
-    public function _afterSuite()
-    {
-        $this->setTagDir('html');
-        parent::_afterSuite();
-    }
+
 }

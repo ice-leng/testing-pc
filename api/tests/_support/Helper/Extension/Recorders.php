@@ -28,7 +28,7 @@ class Recorders extends \Codeception\Extension\Recorder
         $testName = preg_replace('~\W~', '_', Descriptor::getTestAsString($e->getTest()));
 //        $api = \Yii::getAlias('@api');
 //        $this->dir = $api . '/web/tests/' . date('Ymd') . '/record_' . date('Him') . '/' . $testName;
-        $this->dir = codecept_output_dir() . "record/"."record_{$this->seed}_$testName";
+        $this->dir = codecept_output_dir() . "../record/"."record_{$this->seed}_$testName";
         DirHelper::pathExists($this->dir);
     }
 
@@ -74,15 +74,15 @@ class Recorders extends \Codeception\Extension\Recorder
         $html = (new Template($this->template))
             ->place('indicators', $indicatorHtml)
             ->place('slides', $slideHtml)
-            ->place('feature', ucfirst($e->getTest()->getFeature()))
+            ->place('feature', $e->getTest()->getFeature())
             ->place('test', Descriptor::getTestSignature($e->getTest()))
             ->place('carousel_class', $this->config['animate_slides'] ? ' slide' : '')
             ->produce();
 
         $indexFile = $this->dir . DIRECTORY_SEPARATOR . 'index.html';
         file_put_contents($indexFile, $html);
-        $testName = Descriptor::getTestSignature($e->getTest()) . ' - ' . ucfirst($e->getTest()->getFeature());
-        $dir = codecept_output_dir() . '/record';
+        $testName = Descriptor::getTestSignature($e->getTest()) . ' - ' . $e->getTest()->getFeature();
+        $dir = codecept_output_dir() . '/../record';
         $this->recordedTests[$testName] = substr($indexFile, strlen($dir));
     }
 
