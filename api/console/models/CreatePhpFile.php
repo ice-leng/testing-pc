@@ -97,9 +97,9 @@ EDF;
         foreach ($itemIds as $itemId) {
             $rightCases = isset($this->rightCase[$itemId]) ? $this->rightCase[$itemId] : [];
             $wait = 0;
-            foreach($rightCases as $key => $rightCase){
-                if($key === 0){
-                    $count .= $this->head($rightCase,true);
+            foreach ($rightCases as $key => $rightCase) {
+                if ($key === 0) {
+                    $count .= $this->head($rightCase, true);
                 }
                 $count .= $this->step($rightCase);
                 $wait = isset($rightCase['wait_time']) ? $rightCase['wait_time'] : 0;
@@ -127,7 +127,13 @@ EDf;
 
     private function _caseWait($time)
     {
-        return "{$this->conversionVariable('I')}->wait('{$time}');";
+        if ($time <= 0) {
+            return '';
+        }
+        return <<<EDf
+        
+            {$this->conversionVariable('I')}->wait('{$time}');
+EDf;
     }
 
     private function _caseEvent($case)
@@ -154,6 +160,9 @@ EDf;
             case ConstantHelper::TEST_CASE_EVENT_TYPE_WAIT:
                 $content = $this->_caseWait($params);
                 break;
+            case ConstantHelper::TEST_CASE_EVENT_TYPE_CHANGE_TAB:
+                $content = $params ? "{$this->conversionVariable('I')}->switchToNextTab('{$params}');" : "{$this->conversionVariable('I')}->switchToNextTab();";
+                break;
             default:
                 $content = '';
                 break;
@@ -178,10 +187,10 @@ EDf;
         $params = isset($accept['accept_params']) ? $accept['accept_params'] : '';
         switch ($type) {
             case ConstantHelper::TEST_ACCEPT_TYPE_STRING_SEE:
-                $content = "{$this->conversionVariable('I')}->see('{$element}','{$params}');";
+                $content = "{$this->conversionVariable('I')}->see('{$params}','{$element}');";
                 break;
             case ConstantHelper::TEST_ACCEPT_TYPE_STRING_NOT_SEE:
-                $content = "{$this->conversionVariable('I')}->dontSee('{$element}','{$params}');";
+                $content = "{$this->conversionVariable('I')}->dontSee('{$params}','{$element}');";
                 break;
             case ConstantHelper::TEST_ACCEPT_TYPE_CHECK_CHECKED:
                 $content = "{$this->conversionVariable('I')}->seeCheckboxIsChecked('{$element}');";
@@ -232,10 +241,10 @@ EDf;
                 $content = "{$this->conversionVariable('I')}->dontSeeInSource('{$params}');";
                 break;
             case ConstantHelper::TEST_ACCEPT_TYPE_LINK_SEE:
-                $content = "{$this->conversionVariable('I')}->seeLink('{$element}');";
+                $content = "{$this->conversionVariable('I')}->seeLink('{$params}','{$element}');";
                 break;
             case ConstantHelper::TEST_ACCEPT_TYPE_LINK_NOT_SEE:
-                $content = "{$this->conversionVariable('I')}->dontSeeLink('{$element}');";
+                $content = "{$this->conversionVariable('I')}->dontSeeLink('{$params}','{$element}');";
                 break;
             default:
                 $content = '';
@@ -277,14 +286,13 @@ EDf;
         return $content;
     }
 
-    protected function accept($testItemId, $waitTime)
+    protected function accept($testItemId, $waitTime = 0)
     {
         $data = $this->_getAccept($testItemId);
         $wait = $this->_caseWait($waitTime);
         $content = <<<EDf
-    
-            {$data}
             {$wait}
+            {$data}
 EDf;
         return $content;
     }
@@ -338,12 +346,17 @@ EDf;
             } else {
                 $this->testCase["step{$testItemId}"] = $this->head($case, true);
             }
-            $wait = isset($case['wait_time']) ? $case['wait_time'] : 0;
+
             if (isset($this->testCase["accept{$testItemId}"])) {
-                $this->testCase["accept{$testItemId}"] .= $this->accept($testItemId, $wait);
+                $this->testCase["accept{$testItemId}"] .= $this->accept($testItemId);
             } else {
-                $this->testCase["accept{$testItemId}"] = $this->accept($testItemId, $wait);
+                $this->testCase["accept{$testItemId}"] = $this->accept($testItemId);
             }
+        }
+        $waitTime = isset($case['wait_time']) ? $case['wait_time'] : 0;
+        $wait = $this->_caseWait($waitTime);
+        if (!empty($wait)) {
+            $this->testCase["accept{$testItemId}"] = $wait . $this->testCase["accept{$testItemId}"];
         }
 
         $this->testCase["step{$testItemId}"] .= $this->step($case);

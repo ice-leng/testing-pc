@@ -118,12 +118,13 @@ class BaseHelper
     public static function getTestCaseEventType($isJson = true)
     {
         $params = [
-            ConstantHelper::TEST_CASE_EVENT_TYPE_INPUT    => '文本事件',
-            ConstantHelper::TEST_CASE_EVENT_TYPE_CLIENT   => '点击事件',
-            ConstantHelper::TEST_CASE_EVENT_TYPE_SELECT   => '选择/单选事件',
-            ConstantHelper::TEST_CASE_EVENT_TYPE_CHECKBOX => '复选事件',
-            ConstantHelper::TEST_CASE_EVENT_TYPE_FILE     => '上传事件',
+            ConstantHelper::TEST_CASE_EVENT_TYPE_INPUT      => '文本事件',
+            ConstantHelper::TEST_CASE_EVENT_TYPE_CLIENT     => '点击事件',
+            ConstantHelper::TEST_CASE_EVENT_TYPE_SELECT     => '选择/单选事件',
+            ConstantHelper::TEST_CASE_EVENT_TYPE_CHECKBOX   => '复选事件',
+            ConstantHelper::TEST_CASE_EVENT_TYPE_FILE       => '上传事件',
             //            ConstantHelper::TEST_CASE_EVENT_TYPE_WAIT     => '等待事件',
+            ConstantHelper::TEST_CASE_EVENT_TYPE_CHANGE_TAB => '切换标签事件',
         ];
         return self::changeJson($params, $isJson);
     }
