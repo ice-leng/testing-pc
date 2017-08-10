@@ -65,7 +65,7 @@ web
 4，配置站点（省略）
 5，编辑文件 path/html/src/configs/index.js  修改rootUrl 参数，此参数为站点uri
 6，前端页面显示，debug模式 path/html  npm run dev 或者 直接访问  path/html/dist
-7，使用命令 java -jar /path/api/tests/selenium/selenium-server-standalone-3.0.0.jar 开启selenium服务
+7，使用命令 java -jar /path/api/tests/selenium/selenium-server-standalone-3.x.x.jar 开启selenium服务
 8，后端目录(path/api)使用命令 ./yii  codecept/generate-script 生成测试文件
 9，后端目录(path/api)使用命令 ./yii  codecept/web 执行ui测试
 ```
