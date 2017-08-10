@@ -13,6 +13,3 @@ php requirements.php
 
 ```
 
-## 站点自己配置
-- api
-- html 
