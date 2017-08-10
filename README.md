@@ -68,12 +68,15 @@ web
 7，使用命令 java -jar /path/api/tests/selenium/selenium-server-standalone-3.x.x.jar 开启selenium服务
 8，后端目录(path/api)使用命令 ./yii  codecept/generate-script 生成测试文件
 9，后端目录(path/api)使用命令 ./yii  codecept/web 执行ui测试
+10，目前默认测试浏览器是 chrome，如果换的话，编辑文件 /path/api/tests/acceptance.suite.yml 修改 browser 参数就行
+11，浏览器扩展 记得需要加入环境变量
 ```
 ## 项目中使用的扩展需要自己去下载
-- ![selenium]( https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver)
+- ![nodeJs]( https://nodejs.org/en/)
+- ![npmjs]( https://www.npmjs.com/)
+- ![selenium]( http://docs.seleniumhq.org/download )
 - 浏览器扩展
-  - 
-
-
+  - ![ChromeDriver]( https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver)
+  - ![Firefox]( https://github.com/mozilla/geckodriver)
 
 
