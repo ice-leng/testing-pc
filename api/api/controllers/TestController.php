@@ -35,7 +35,11 @@ class TestController extends Controller
 
     public function actionIndex()
     {
-        return [];
+        $this->getProject();
+        $params = \Yii::$app->request->get();
+        $pid = isset($params['pid']) ? $params['pid'] : -1;
+        $data = $this->_test->getTestWorkflowList($pid, $params);
+        return $this->getList($data, $params);
     }
 
     public function actionFormValidate()
@@ -154,6 +158,13 @@ class TestController extends Controller
         $id = \Yii::$app->request->get('id');
         $status = $this->_test->changeWorkFlowIsExe($id);
         return ['status' => $status->is_exe];
+    }
+
+    public function actionDeleteWorkflow()
+    {
+        $id = \Yii::$app->request->get('id');
+        $this->_test->deleteTestWorkflowById($id);
+        return [];
     }
 
 }

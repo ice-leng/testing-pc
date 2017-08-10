@@ -57,18 +57,18 @@ class TestWorkflow extends \business\common\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'          => 'ID',
-            'project_id'  => '项目id',
-            'name'        => '名称',
-            'fixed_bug'   => '已修改bug',
-            'total_case'  => '总测试用例',
-            'total_bug'   => '总bug',
-            'exe_times'   => '执行次数',
-            'order'       => '排序',
-            'is_exe'      => '是否执行',
-            'is_delete'   => '是否删除',
-            'created_at'  => '创建时间',
-            'updated_at'  => '更新时间',
+            'id'         => 'ID',
+            'project_id' => '项目id',
+            'name'       => '名称',
+            'fixed_bug'  => '已修改bug',
+            'total_case' => '总测试用例',
+            'total_bug'  => '总bug',
+            'exe_times'  => '执行次数',
+            'order'      => '排序',
+            'is_exe'     => '是否执行',
+            'is_delete'  => '是否删除',
+            'created_at' => '创建时间',
+            'updated_at' => '更新时间',
         ];
     }
 
@@ -137,6 +137,41 @@ class TestWorkflow extends \business\common\ActiveRecord
             'is_delete' => 0,
             'is_exe'    => 1,
         ])->all();
+    }
+
+    /**
+     * 获得测试流程列表
+     *
+     * @param int   $projectId 项目id
+     * @param array $params    ['name' => 'xxx']
+     *
+     * @return mixed [
+     *                  [
+     *
+     *                  ],
+     *              ]
+     *
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function getTestWorkflowList($projectId, array $params = [])
+    {
+        $query = new Query();
+        $query->select([
+            'id',
+            'name',
+            'fixed_bug',
+            'total_case',
+            'total_bug',
+            'order',
+            'is_exe',
+        ])
+            ->from($this->tableName())
+            ->where(['project_id' => $projectId, 'is_delete' => 0]);
+        if (isset($params['name']) && !empty($params['name'])) {
+            $query->andWhere(['like', 'name', $params['name']]);
+        }
+        $query->orderBy('order');
+        return $this->page($query);
     }
 
     public function getCases()

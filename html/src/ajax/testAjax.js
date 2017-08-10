@@ -11,6 +11,13 @@ export default {
             body: body
         });
     },
+    testWorkflowList(body) {
+        return Base({
+            url: '/test',
+            body: body,
+            method: 'get'
+        });
+    },
     testItemName(body) {
         return Base({
             url: '/test/test-item-name',
@@ -22,6 +29,13 @@ export default {
             url: '/test/update',
             body: body,
             method: 'post'
+        });
+    },
+    testWorkflowDelete(body) {
+        return Base({
+            url: '/test/delete-workflow',
+            body: body,
+            method: 'get'
         });
     },
     generateCase(body) {

@@ -41,6 +41,29 @@ class TestImpl extends BaseService implements TestInterface
         parent::__construct($config);
     }
 
+    /**
+     * 获得名称
+     *
+     * @param $isExe
+     *
+     * @return string
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    protected function getIsExeName($isExe)
+    {
+        switch ($isExe) {
+            case 1:
+                $name = '激活';
+                break;
+            case 2:
+                $name = '取消';
+                break;
+            default:
+                $name = '初始化';
+                break;
+        }
+        return $name;
+    }
 
     /**
      * 获得测试流程列表
@@ -58,7 +81,35 @@ class TestImpl extends BaseService implements TestInterface
      */
     public function getTestWorkflowList($projectId, array $params = [])
     {
-        // TODO: Implement getTestWorkflowList() method.
+        $itemTypes = BaseHelper::getTestItemType(false);
+        $workflow = $this->_workFlow->getTestWorkflowList($projectId, $params);
+        $testItems = $testItems = $this->getTestItemByProjectId($projectId);
+        foreach ($workflow['models'] as $key => $flow) {
+            $data = [];
+            $items = $this->_item->getTestItemByWorkflowId($flow['id']);
+            foreach ($items as $item) {
+                $beforeItemName = '';
+                if (!empty($item['before_item'])) {
+                    $ids = explode(',', $item['before_item']);
+                    foreach ($ids as $id) {
+                        if (isset($testItems[$id])) {
+                            $beforeItemName .= $testItems[$id] . ',';
+                        }
+                    }
+                    $beforeItemName = substr($beforeItemName, 0, -1);
+                }
+                $data[] = [
+                    'name'        => $item->name,
+                    'before_item' => $beforeItemName ? $beforeItemName : '无',
+                    'type'        => isset($itemTypes[$item->type]) ? $itemTypes[$item->type] : $item->type,
+                    'url'         => $item->url ? $item->url : '无',
+                ];
+            }
+            $isExe = isset($flow['is_exe']) ? $flow['is_exe'] : 0;
+            $workflow['models'][$key]['items'] = $data;
+            $workflow['models'][$key]['is_exe'] = $this->getIsExeName($isExe);
+        }
+        return $workflow;
     }
 
     /**
@@ -173,14 +224,14 @@ class TestImpl extends BaseService implements TestInterface
     /**
      * 通过项目id 获得所有测试流程
      *
-     * @param array/int $pid project id
-     * @param int       $id  item id
-     * @param boolean   $isFull
+     * @param         array /int $pid project id
+     * @param int     $id   item id
+     * @param boolean $isFull
      *
      * @return array [ [id => name], ... ]
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function getTestItemByProjectId($pid, $id = 0, $isFull=false)
+    public function getTestItemByProjectId($pid, $id = 0, $isFull = false)
     {
         $testWorkflow = $this->_item->getTestItemByProjectId($pid, $id);
         $data = [];
@@ -424,8 +475,8 @@ class TestImpl extends BaseService implements TestInterface
     /**
      * 通过流程id 获得测试流程信息
      *
-     * @param array /int $workflowId
-     * @param int        $isRight
+     * @param     array /int $workflowId
+     * @param int $isRight
      *
      * @return array|\yii\db\ActiveRecord[]
      * @author lengbin(lengbin0@gmail.com)
@@ -438,7 +489,7 @@ class TestImpl extends BaseService implements TestInterface
     /**
      * 通过项目id 获得正确的测试流程
      *
-     * @param int/array $itemId
+     * @param int /array $itemId
      *
      * @return array
      * @author lengbin(lengbin0@gmail.com)
@@ -447,7 +498,7 @@ class TestImpl extends BaseService implements TestInterface
     {
         $data = [];
         $cases = $this->_case->getRightTestCaseByItemId($itemId);
-        foreach ($cases as $case){
+        foreach ($cases as $case) {
             $data[$case['test_item_id']][] = $case;
         }
         return $data;
@@ -455,7 +506,8 @@ class TestImpl extends BaseService implements TestInterface
 
     /**
      * 通过测试项 获得测试期望
-     * @param int/array $itemId
+     *
+     * @param int /array $itemId
      *
      * @return mixed
      * @author lengbin(lengbin0@gmail.com)
@@ -464,10 +516,25 @@ class TestImpl extends BaseService implements TestInterface
     {
         $data = [];
         $accepts = $this->_accept->getTestAcceptByItemId($itemId);
-        foreach ($accepts as $accept){
+        foreach ($accepts as $accept) {
             $data[$accept['test_item_id']][] = $accept;
         }
         return $data;
     }
 
+    /**
+     * 通过id 删除 测试流程
+     *
+     * @param int $id
+     *
+     * @return mixed
+     * @author lengbin(lengbin0@gmail.com)
+     */
+    public function deleteTestWorkflowById($id)
+    {
+        $workflow = $this->getTestWorkflowById($id);
+        $workflow->is_delete = 1;
+        $workflow->save();
+        return $workflow;
+    }
 }
