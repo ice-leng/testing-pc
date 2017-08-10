@@ -2942,15 +2942,4 @@ trait AcceptanceTesterActions
     public function assertArraySubset($subset, $array, $strict = null, $message = null) {
         return $this->getScenario()->runStep(new \Codeception\Step\Action('assertArraySubset', func_get_args()));
     }
-
- 
-    /**
-     * [!] Method is generated. Documentation taken from corresponding module.
-     *
-     *
-     * @see \Helper\Base::setTagDir()
-     */
-    public function setTagDir($tag) {
-        return $this->getScenario()->runStep(new \Codeception\Step\Action('setTagDir', func_get_args()));
-    }
 }
