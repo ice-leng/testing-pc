@@ -72,8 +72,8 @@ web
 11，浏览器扩展 记得需要加入环境变量
 ```
 ## 项目中使用的扩展需要自己去下载
-- ![nodeJs]( https://nodejs.org/en/)
-- ![npmjs]( https://www.npmjs.com/)
+- ![nodeJs]( https://nodejs.org/en)
+- ![npmjs]( https://www.npmjs.com)
 - ![selenium]( http://docs.seleniumhq.org/download )
 - 浏览器扩展
   - ![ChromeDriver]( https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver)
