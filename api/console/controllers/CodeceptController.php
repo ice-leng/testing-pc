@@ -27,13 +27,14 @@ class CodeceptController extends \yii\console\Controller
         parent::__construct($id, $module, $config);
     }
 
-    protected function cmd($str='', $tag='')
+    protected function cmd($str = '', $tag = '')
     {
-        $output =  \Yii::getAlias('@api') . '/web/tests';
-        if(!is_dir($output)){
+        $version = date('YmdHis');
+        $output = \Yii::getAlias('@api') . '/web/tests/'. $version . '/' . $tag;
+        if (!is_dir($output)) {
             DirHelper::pathExists($output);
         }
-        $com = ' --steps --html index.html --tap run.log --ext DotReporter -o "paths: output: api/web/tests/'.date('YmdHis').'/"' . $tag;
+        $com = ' --steps --html index.html --tap run.log --ext DotReporter -o "paths: output: api/web/tests/' . $version . '/' . $tag . '"';
         $codecept = \Yii::getAlias('@vendor') . '/bin/codecept run ';
         $data = shell_exec($codecept . $str . $com);
         echo $data;
@@ -48,12 +49,12 @@ class CodeceptController extends \yii\console\Controller
     {
         $dir = \Yii::getAlias('@tests');
         $workflow = $this->_test->getExeTestWorkflowList();
-        if(empty($workflow)){
+        if (empty($workflow)) {
             echo "没有需要执行的流程，请查看系统 \n\s";
-            return ;
+            return;
         }
         $pids = [];
-        foreach ($workflow as $f){
+        foreach ($workflow as $f) {
             $pid = isset($f['project_id']) ? $f['project_id'] : '';
             $pids[] = $pid;
         }
@@ -67,10 +68,10 @@ class CodeceptController extends \yii\console\Controller
         $php->setRightCase($rightCase);
         $accept = $this->_test->getTestAcceptByItemId($itemIds);
         $php->setTestAccepts($accept);
-        foreach ($workflow as $flow){
+        foreach ($workflow as $flow) {
             $php->body($flow);
             $cases = $flow->cases;
-            foreach ($cases as $case){
+            foreach ($cases as $case) {
                 $php->setCase($case);
             }
             $php->generateFile($dir);
@@ -103,7 +104,7 @@ class CodeceptController extends \yii\console\Controller
     public function actionFailed()
     {
         $codecept = \Yii::getAlias('@vendor') . '/bin/codecept run -g failed ';
-        $data = shell_exec($codecept );
+        $data = shell_exec($codecept);
         echo $data;
     }
 
