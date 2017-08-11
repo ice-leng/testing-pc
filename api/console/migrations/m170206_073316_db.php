@@ -67,7 +67,7 @@ class m170206_073316_db extends Migration
             'is_delete'        => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('是否删除'),
             'created_at'       => $this->integer()->notNull()->comment('创建时间'),
             'updated_at'       => $this->integer()->notNull()->comment('更新时间'),
-        ], $tableOptions . ' AUTO_INCREMENT=10000 comment \'测试项\'');
+        ], $tableOptions . ' AUTO_INCREMENT = 10000 comment \'测试项\'');
         $this->createIndex('test_workflow_id_index', '{{%test_item}}', 'test_workflow_id');
 
         $this->createTable('{{%test_set_case}}', [
