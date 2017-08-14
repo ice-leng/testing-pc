@@ -92,13 +92,13 @@ class TestItem extends \business\common\ActiveRecord
      * @return mixed
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function getTestItemByProjectId($pid, $id=0)
+    public function getTestItemByProjectId($pid, $id = 0)
     {
         $itmes = $this->find()->where([
             'project_id' => $pid,
             'is_delete'  => 0,
         ]);
-        if($id > 0 ){
+        if ($id > 0) {
             $itmes->andFilterCompare('id', $id, '<');
         }
         return $itmes->all();
@@ -108,16 +108,22 @@ class TestItem extends \business\common\ActiveRecord
      * 通过id 获得所有测试项
      *
      * @param $id
+     * @param $isDelete
      *
      * @return mixed
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function getTestItemById($id)
+    public function getTestItemById($id, $isDelete = true)
     {
-        return $this->find()->where([
-            'id'        => $id,
-            'is_delete' => 0,
-        ])->one();
+        $model = $this->find()->where([
+            'id' => $id,
+        ]);
+        if ($isDelete) {
+            $model->andWhere([
+                'is_delete' => 0,
+            ]);
+        }
+        return $model->one();
     }
 
     public function getSetCases()
@@ -139,7 +145,9 @@ class TestItem extends \business\common\ActiveRecord
      */
     public function deleteTestItem($workflowId)
     {
-        TestItem::deleteAll([
+        TestItem::updateAll([
+            'is_delete' => 1,
+        ], [
             'test_workflow_id' => $workflowId,
         ]);
     }
@@ -147,7 +155,7 @@ class TestItem extends \business\common\ActiveRecord
     /**
      * 添加 测试项
      *
-     * @param array $params ['url', 'name', 'type', 'test_workflow_id']
+     * @param array $params    ['url', 'name', 'type', 'test_workflow_id']
      * @param array $testItems [[1=>name]]
      *
      * @return object
@@ -156,10 +164,11 @@ class TestItem extends \business\common\ActiveRecord
     public function updateTestItem(array $params, array $testItems)
     {
         if (isset($params['id']) && !empty($params['id'])) {
-            $item = $this->getTestItemById($params['id']);
+            $item = $this->getTestItemById($params['id'], false);
             if (empty($item)) {
                 $this->invalidParamException('测试项id不存在');
             }
+            $item->is_delete = 0;
         } else {
             $item = new TestItem();
         }

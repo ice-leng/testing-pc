@@ -2,7 +2,7 @@
     <div>
         <el-breadcrumb separator="/" class="pd10">
             <el-breadcrumb-item :to="{ path: '/project' }">项目列表</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/test' }">测试流程</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/test', query: {id: this.$route.query.pid} }">测试流程</el-breadcrumb-item>
             <el-breadcrumb-item>测试流程编辑</el-breadcrumb-item>
         </el-breadcrumb>
 
@@ -69,7 +69,8 @@
                                     >
                                         {{tag.text}}
                                     </el-tag>
-                                    <el-dialog :title="labels.item.before_item || 'before_item'" :visible.sync="dialogVisible"
+                                    <el-dialog :title="labels.item.before_item || 'before_item'"
+                                               :visible.sync="dialogVisible"
                                                size="tiny">
                                         <el-tag
                                                 :key="tag2.id"
@@ -84,7 +85,9 @@
                                             <el-button type="primary" @click="dialogSure(item, i)">确 定</el-button>
                                         </span>
                                     </el-dialog>
-                                    <el-button class="button-new-tag" size="small" @click="addBeforeItem(item.before_item, i)">+ 添加{{labels.item.before_item}}</el-button>
+                                    <el-button class="button-new-tag" size="small"
+                                               @click="addBeforeItem(item.before_item, i)">+ 添加{{labels.item.before_item}}
+                                    </el-button>
                                 </el-form-item>
 
                             </el-form>
@@ -352,7 +355,8 @@
                                             <el-button
                                                     size="small"
                                                     type="danger"
-                                                    @click="deleteAccept(scope.$index, (item.id !== '' ? item.id : i))">删除
+                                                    @click="deleteAccept(scope.$index, (item.id !== '' ? item.id : i))">
+                                                删除
                                             </el-button>
                                         </template>
                                     </el-table-column>
@@ -368,7 +372,8 @@
                 <el-form-item>
                     <el-button type="primary" @click="submit()" v-loading.fullscreen.lock="loading">保存</el-button>
                     <el-button type="info" @click="create()" :disabled="isCreateCase">生成测试用例</el-button>
-                    <el-button type="success" @click="run()" :disabled="isExe">{{isRun === 1 ? '取消' : '激活'}}测试</el-button>
+                    <el-button type="success" @click="run()" :disabled="isExe">{{isRun === 1 ? '取消' : '激活'}}测试
+                    </el-button>
                     <el-button @click="$router.go(-1)">取消</el-button>
                 </el-form-item>
             </el-form>
@@ -565,8 +570,18 @@
                 this.showItem.splice(this.showItem.indexOf(item), 1);
                 this.model.item = this.showItem;
                 let id = item.id !== '' ? item.id : i;
-                this.showCase.splice(this.showCase.indexOf(this.showCase[id]), 1);
-                this.showAccept.splice(this.showAccept.indexOf(this.showAccept[id]), 1);
+                for (let showCaseIndex in this.showCase) {
+                    if (id === parseInt(showCaseIndex)) {
+                        delete this.showCase[showCaseIndex];
+                    }
+                }
+                for (let showAcceptIndex in this.showAccept) {
+                    if (id === parseInt(showAcceptIndex)) {
+                        delete this.showAccept[showAcceptIndex];
+                    }
+                }
+//                this.showCase.splice(this.showCase.indexOf(this.showCase[id]), 1);
+//                this.showAccept.splice(this.showAccept.indexOf(this.showAccept[id]), 1);
                 this.model.setCase = this.showCase;
                 this.model.accept = this.showAccept;
             },

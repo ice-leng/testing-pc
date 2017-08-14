@@ -276,6 +276,7 @@ class TestImpl extends BaseService implements TestInterface
             }
             $flowId = isset($workflow['id']) ? $workflow['id'] : 0;
             $testItems = $this->getTestItemByProjectId($flow['project_id']);
+            $this->_item->deleteTestItem($flowId);
             foreach ($items as $i => $item) {
                 $itemObj = [];
                 $item['project_id'] = $flow['project_id'];
