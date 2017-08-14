@@ -2,6 +2,7 @@
 
 namespace business\test\dao;
 
+use business\project\dao\Project;
 use Yii;
 use yii\db\Query;
 
@@ -136,9 +137,10 @@ class TestWorkflow extends \business\common\ActiveRecord
      */
     public function getExeTestWorkflowList()
     {
-        return $this->find()->where([
-            'is_delete' => 0,
-            'is_exe'    => 1,
+        return $this->find()->leftJoin(Project::tableName(), Project::tableName() . '.id = ' . $this->tableName() . '.project_id')->where([
+            $this->tableName() . '.is_delete'   => 0,
+            Project::tableName() . '.is_delete' => 0,
+            $this->tableName() . '.is_exe'      => 1,
         ])->all();
     }
 

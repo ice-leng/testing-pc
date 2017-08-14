@@ -58,6 +58,8 @@ class CodeceptController extends \yii\console\Controller
             $pid = isset($f['project_id']) ? $f['project_id'] : '';
             $pids[] = $pid;
         }
+        $path = $dir . '/acceptance/';
+        DirHelper::emptyDir($path);
         $php = new CreatePhpFile();
         $items = $this->_test->getTestItemByProjectId($pids, 0, true);
         $projects = $this->_project->getProjectByIds($pids);
