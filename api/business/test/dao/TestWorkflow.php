@@ -83,6 +83,7 @@ class TestWorkflow extends \business\common\ActiveRecord
         $query = new Query();
         $order = $query->select("MAX(`order`) as o")
             ->from($this->tableName())
+            ->where(['is_delete' => 0])
             ->one();
         return isset($order['o']) ? $order['o'] : 0;
     }
