@@ -140,6 +140,7 @@ EDf;
     {
         $type = isset($case['event_type']) ? $case['event_type'] : 0;
         $element = isset($case['element']) ? $case['element'] : '';
+        $element = addslashes($element);
         $params = isset($case['element_params']) ? $case['element_params'] : '';
         switch ($type) {
             case ConstantHelper::TEST_CASE_EVENT_TYPE_INPUT:
@@ -184,6 +185,7 @@ EDf;
     {
         $type = isset($accept['accept_type']) ? $accept['accept_type'] : 0;
         $element = isset($accept['element']) ? $accept['element'] : '';
+        $element = addslashes($element);
         $params = isset($accept['accept_params']) ? $accept['accept_params'] : '';
         switch ($type) {
             case ConstantHelper::TEST_ACCEPT_TYPE_STRING_SEE:
