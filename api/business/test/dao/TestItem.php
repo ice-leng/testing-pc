@@ -80,6 +80,7 @@ class TestItem extends \business\common\ActiveRecord
             'url',
         ])->where([
             'test_workflow_id' => $workflowId,
+            'is_delete'        => 0,
         ])->all();
     }
 
