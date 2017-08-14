@@ -247,7 +247,7 @@
                                             <el-button
                                                     size="small"
                                                     type="danger"
-                                                    @click="deleteCase(scope.$index, i)">删除
+                                                    @click="deleteCase(scope.$index, (item.id !== '' ? item.id : i))">删除
                                             </el-button>
                                         </template>
                                     </el-table-column>
@@ -352,7 +352,7 @@
                                             <el-button
                                                     size="small"
                                                     type="danger"
-                                                    @click="deleteAccept(scope.$index, i)">删除
+                                                    @click="deleteAccept(scope.$index, (item.id !== '' ? item.id : i))">删除
                                             </el-button>
                                         </template>
                                     </el-table-column>
