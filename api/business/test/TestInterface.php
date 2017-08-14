@@ -81,12 +81,13 @@ interface TestInterface
     /**
      * 通过测试流程id获得测试流程排序
      *
+     * @param int $pid
      * @param int $id
      *
      * @return mixed
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function getTestWorkflowOrder($id = 0);
+    public function getTestWorkflowOrder($pid, $id = 0);
 
     /**
      * 测试项 表单验证规则

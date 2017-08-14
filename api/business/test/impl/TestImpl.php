@@ -171,18 +171,19 @@ class TestImpl extends BaseService implements TestInterface
     /**
      * 通过测试流程id获得测试流程排序
      *
+     * @param int $pid
      * @param int $id
      *
      * @return mixed
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function getTestWorkflowOrder($id = 0)
+    public function getTestWorkflowOrder($pid, $id = 0)
     {
         if ($id > 0) {
             $workflow = $this->getTestWorkflowById($id);
             $order = $workflow->order;
         } else {
-            $workflow = $this->_workFlow->getMaxOrder();
+            $workflow = $this->_workFlow->getMaxOrder($pid);
             $order = $workflow + 1;
         }
         return $order;

@@ -49,7 +49,7 @@ class TestController extends Controller
         $pid = \Yii::$app->request->get('pid');
         // 测试流程规则
         $flowValidate = $this->_test->getTestWorkflowFormValidate();
-        $order = $this->_test->getTestWorkflowOrder();
+        $order = $this->_test->getTestWorkflowOrder($pid);
         $flowValidate['model']['order'] = $order;
         // 测试项
         $itemNum = 0;

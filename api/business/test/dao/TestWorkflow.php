@@ -75,15 +75,17 @@ class TestWorkflow extends \business\common\ActiveRecord
     /**
      * 获得最大排序
      *
+     * @param int $pid
+     *
      * @return int
      * @author lengbin(lengbin0@gmail.com)
      */
-    public function getMaxOrder()
+    public function getMaxOrder($pid)
     {
         $query = new Query();
         $order = $query->select("MAX(`order`) as o")
             ->from($this->tableName())
-            ->where(['is_delete' => 0])
+            ->where(['is_delete' => 0, 'project_id' => $pid])
             ->one();
         return isset($order['o']) ? $order['o'] : 0;
     }
