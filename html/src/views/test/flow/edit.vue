@@ -90,6 +90,16 @@
                                     </el-button>
                                 </el-form-item>
 
+                                <el-form-item :label="labels.item.is_exe || 'exe'" prop="is_exe"
+                                              :required="required.item.is_exe"
+                                              :error="error.item[i].is_exe">
+                                    <el-switch
+                                            v-model= "item.is_exe"
+                                            on-color="#13ce66"
+                                            off-color="#ff4949">
+                                    </el-switch>
+                                </el-form-item>
+
                             </el-form>
                             <!-- item end -->
                             <!-- set case start -->
@@ -751,7 +761,6 @@
                     this.loading = false;
                     let id = data.data.id;
                     this.$router.replace({path: '/test/edit', query: {pid: this.$route.query.pid, id: id}});
-                    window.location.reload();
                 }).catch((data) => {
                     this.loading = false;
                     let msg = data.data.message;

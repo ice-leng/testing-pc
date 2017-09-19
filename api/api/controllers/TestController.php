@@ -77,12 +77,11 @@ class TestController extends Controller
             if (count($items) > 0) {
                 $itemNum = 1;
                 $isCreateCase = true;
-                $itemValidate['model'] = $items;
                 $setCaseModel = $setCaseValidate['model'];
                 $acceptModel = $acceptValidate['model'];
                 $setCaseValidate['model'] = [];
                 $acceptValidate['model'] = [];
-                foreach ($items as $item) {
+                foreach ($items as $key => $item) {
                     $tid = isset($item['id']) ? $item['id'] : '';
                     $setCase = $item->setCases;
                     if (count($setCase) > 0) {
@@ -94,6 +93,7 @@ class TestController extends Controller
                         $acceptNum = 1;
                         $acceptValidate['model'][$tid] = $accept;
                     }
+                    $items[$key]['is_exe'] = (boolean) $item['is_exe'];
                 }
                 if (empty($setCaseValidate['model'])) {
                     $setCaseValidate['model'] = $setCaseModel;
@@ -101,6 +101,7 @@ class TestController extends Controller
                 if (empty($acceptValidate['model'])) {
                     $acceptValidate['model'] = $acceptModel;
                 }
+                $itemValidate['model'] = $items;
             }
 
         }

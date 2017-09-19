@@ -181,7 +181,14 @@ class TestWorkflow extends \business\common\ActiveRecord
 
     public function getCases()
     {
-        return $this->hasMany(TestCase::className(), ['test_workflow_id' => 'id']);
+        return (new Query())
+            ->select('ts.*')
+            ->from(TestCase::tableName() . ' as ts')
+            ->leftJoin(['ti' => TestItem::tableName()], 'ts.test_item_id = ti.id')
+            ->where([
+                'ts.test_workflow_id' => $this->id,
+                'ti.is_exe' => 1,
+            ])->all();
     }
 
     /**

@@ -32,13 +32,13 @@ class TestItem extends \business\common\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'type'], 'required'],
+            [['name', 'type', 'is_exe'], 'required'],
             [['test_workflow_id', 'type', 'project_id'], 'integer'],
             [['name'], 'string', 'max' => 32],
             [['url'], 'string', 'max' => 255],
             [['url'], 'url', 'defaultScheme' => 'http'],
             ['before_item', 'safe'],
-            [['id', 'url', 'name', 'type', 'test_workflow_id', 'before_item', 'project_id'], 'trim'],
+            [['id', 'url', 'name', 'type', 'is_exe', 'test_workflow_id', 'before_item', 'project_id'], 'trim'],
         ];
     }
 
@@ -55,6 +55,7 @@ class TestItem extends \business\common\ActiveRecord
             'name'             => '名称',
             'type'             => '访问类型',
             'url'              => '访问网络地址',
+            'is_exe'           => '是否执行',
             'is_delete'        => '是否删除',
             'created_at'       => '创建时间',
             'updated_at'       => '更新时间',
@@ -78,6 +79,7 @@ class TestItem extends \business\common\ActiveRecord
             'name',
             'type',
             'url',
+            'is_exe',
         ])->where([
             'test_workflow_id' => $workflowId,
             'is_delete'        => 0,
@@ -184,7 +186,10 @@ class TestItem extends \business\common\ActiveRecord
             }
             $bf = implode(',', $ids);
             $params['before_item'] = $bf;
+        } else {
+            $params['before_item'] = '';
         }
+        $params['is_exe'] = $params['is_exe'] === 'true' ? 1 : 0;
         $item->setAttributes($params);
         $item->save();
         return $item;
