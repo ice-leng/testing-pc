@@ -55,6 +55,7 @@ class TestController extends Controller
         $itemNum = 0;
         $itemValidate = $this->_test->getTestItemFormValidate();
         $itemValidate['model']['before_item'] = [];
+        $itemValidate['model']['is_exe'] = true;
         $itemValidate['model'] = [$itemValidate['model']];
         // 用例设置
         $setCaseNum = 0;

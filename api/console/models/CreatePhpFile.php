@@ -94,12 +94,14 @@ EDF;
     {
         $count = '';
         $itemIds = explode(',', $beforeCases);
+        $stats = true;
         foreach ($itemIds as $itemId) {
             $rightCases = isset($this->rightCase[$itemId]) ? $this->rightCase[$itemId] : [];
             $wait = 0;
             foreach ($rightCases as $key => $rightCase) {
                 if ($key === 0) {
-                    $count .= $this->head($rightCase, true);
+                    $count .= $this->head($rightCase, $stats);
+                    $stats = false;
                 }
                 $count .= $this->step($rightCase);
                 $wait = isset($rightCase['wait_time']) ? $rightCase['wait_time'] : 0;
@@ -136,10 +138,45 @@ EDf;
 EDf;
     }
 
+    private function _elementEvent($elementType, $element)
+    {
+        $isArray = false;
+        switch ($elementType) {
+            case ConstantHelper::TEST_CASE_FIND_ELEMENT_TYPE_ID:
+                $click = $element;
+                break;
+            case ConstantHelper::TEST_CASE_FIND_ELEMENT_TYPE_XPATH:
+                $click = $element;
+                break;
+            case ConstantHelper::TEST_CASE_FIND_ELEMENT_TYPE_CLASS:
+                $click = $element;
+                break;
+            case ConstantHelper::TEST_CASE_FIND_ELEMENT_TYPE_CSS:
+                $click = $element;
+                break;
+            case ConstantHelper::TEST_CASE_FIND_ELEMENT_TYPE_NAME:
+                $click = "['name' => '{$element}']";
+                $isArray = true;
+                break;
+            case ConstantHelper::TEST_CASE_FIND_ELEMENT_TYPE_LINK:
+                $click = "['link' => '{$element}']";
+                $isArray = true;
+                break;
+            default:
+                $click = $element;
+                break;
+        }
+        return [
+            'content' => $click,
+            'isArray' => $isArray,
+        ];
+    }
+
     private function _caseEvent($case)
     {
         $type = isset($case['event_type']) ? $case['event_type'] : 0;
         $element = isset($case['element']) ? $case['element'] : '';
+        $elementType = isset($case['element_type']) ? $case['element_type'] : 0;
         $element = addslashes($element);
         $params = isset($case['element_params']) ? $case['element_params'] : '';
         switch ($type) {
@@ -147,7 +184,12 @@ EDf;
                 $content = "{$this->conversionVariable('I')}->fillField('{$element}','{$params}');";
                 break;
             case ConstantHelper::TEST_CASE_EVENT_TYPE_CLIENT:
-                $content = "{$this->conversionVariable('I')}->click('{$element}');";
+                $data = $this->_elementEvent($elementType, $element);
+                if ($data['isArray']) {
+                    $content = "{$this->conversionVariable('I')}->click({$data['content']});";
+                } else {
+                    $content = "{$this->conversionVariable('I')}->click('{$data['content']}');";
+                }
                 break;
             case ConstantHelper::TEST_CASE_EVENT_TYPE_SELECT:
                 $content = "{$this->conversionVariable('I')}->checkOption('{$element}');";

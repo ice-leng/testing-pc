@@ -10,6 +10,7 @@ modules:
         - WebDriver:
             url: http://www.xk.com/
             browser: chrome
+            window_size: 1440x900
 #            browser: phantomjs
 #            browser: firefox
 #            host: 192.168.1.116

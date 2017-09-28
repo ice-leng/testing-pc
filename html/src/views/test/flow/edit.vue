@@ -563,6 +563,7 @@
                 let data = {};
                 for (let i in this.defaultItem) {
                     data[i] = i === 'before_item' ? [] : '';
+                    data[i] = i === 'is_exe' ? true : '';
                 }
                 this.showItem.push(data);
                 let num = this.showItem.length;
@@ -759,6 +760,7 @@
                         type: 'success'
                     });
                     this.loading = false;
+                    this.isCreateCase = false;
                     let id = data.data.id;
                     this.$router.replace({path: '/test/edit', query: {pid: this.$route.query.pid, id: id}});
                 }).catch((data) => {
