@@ -534,9 +534,18 @@ class TestImpl extends BaseService implements TestInterface
      */
     public function deleteTestWorkflowById($id)
     {
-        $workflow = $this->getTestWorkflowById($id);
-        $workflow->is_delete = 1;
-        $workflow->save();
-        return $workflow;
+        $con = \Yii::$app->db->beginTransaction();
+        try{
+            $workflow = $this->getTestWorkflowById($id);
+            $workflow->is_delete = 1;
+            $workflow->save();
+            $this->_item->deleteTestItem($id);
+            $con->commit();
+            return $workflow;
+        }catch (\yii\db\Exception $e){
+            \Yii::error($e->getMessage());
+            $con->rollBack();
+            throw $e;
+        }
     }
 }
